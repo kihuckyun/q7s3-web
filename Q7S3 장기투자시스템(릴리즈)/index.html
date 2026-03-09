@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 🌟 스마트폰 홈 화면 캐시(Cache) 강제 초기화 방지 태그 추가 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <title>Q7S3 장기투자 시스템</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        zinc: { 850: '#1f1f22', 900: '#18181b', 950: '#09090b' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { font-family: 'Pretendard', sans-serif; background-color: #000000; color: #f4f4f5; background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 24px 24px; -webkit-tap-highlight-color: transparent; }
+        
+        .num-font { font-family: 'Verdana', 'Arial', sans-serif !important; letter-spacing: 0.5px; }
+        .card { background: #09090b; border-radius: 1.25rem; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.8); border: 1px solid #27272a; transition: all 0.3s ease; }
+        
+        .input-group { display: flex; align-items: stretch; border: 1px solid #27272a; border-radius: 0.75rem; background-color: #000000; overflow: hidden; transition: all 0.2s ease; }
+        .input-group:focus-within { border-color: #3b82f6; box-shadow: 0 0 0 1px #3b82f6, 0 0 15px -3px rgba(59, 130, 246, 0.3); }
+        .input-group input { flex: 1; min-width: 0; background: transparent; text-align: right; padding: 0.5rem 0.5rem; outline: none; font-size: 0.9rem; font-weight: 700; color: #f4f4f5; }
+        .input-group .unit { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 0 0.5rem; background-color: #09090b; color: #71717a; font-size: 0.75rem; font-weight: 800; border-left: 1px solid #27272a; }
+        
+        @media (min-width: 640px) {
+            .input-group input { padding: 0.75rem 0.75rem; font-size: 1.125rem; }
+            .input-group .unit { padding: 0 1rem; font-size: 0.875rem; }
+        }
+
+        .signal-input { width: 100%; text-align: center; font-size: 1.125rem; font-weight: 900; color: #f4f4f5; background: transparent; border: none; outline: none; border-bottom: 1px solid transparent; transition: all 0.2s; }
+        .signal-input:focus { border-bottom-color: #3b82f6; }
+        .signal-input::placeholder { color: #52525b; font-weight: 500; }
+
+        .manual-required { border-color: #ef4444 !important; animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); } 50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); } }
+        .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .signal-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); transition: all 0.3s; }
+        .signal-off { background-color: #27272a; }
+        .signal-on-red { background-color: #ef4444; box-shadow: 0 0 10px #ef4444, inset 0 2px 4px rgba(0,0,0,0.3); }
+        
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; opacity: 0.6; hover:opacity: 1; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000000; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+        .tab-content { transition: opacity 0.3s ease; }
+        .pb-safe { padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #27272a; border-radius: 2px; }
+    </style>
+</head>
+<body class="pb-28 sm:pb-24">
+
+    <div id="toast_container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center space-y-2 pointer-events-none w-11/12 max-w-md"></div>
+
+    <div class="max-w-[1400px] mx-auto px-4 pt-6 md:pt-8 relative">
+        <div class="absolute top-2 right-4 md:top-6 md:right-8 text-[10px] sm:text-xs font-bold text-zinc-500 bg-zinc-900/80 px-3 py-1.5 rounded-full border border-zinc-800 shadow-sm z-50 backdrop-blur-md">
+            by에이미, ver2.2 (UI Hotfix)
+        </div>
+
+        <header class="mb-6 text-center mt-4 md:mt-0">
+            <div class="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 mb-3 rounded-2xl bg-zinc-900 text-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.15)] border border-zinc-800">
+                <i class="fa-solid fa-chess-knight text-xl sm:text-2xl"></i>
+            </div>
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">Q7S3 장기투자 시스템</h1>
+            <p class="text-[11px] sm:text-xs text-zinc-400 mt-1.5 font-medium tracking-widest uppercase">Hybrid Terminal Edition</p>
+        </header>
+
+        <!-- ========================================== -->
+        <!-- 탭 1: 시장 & 업적 -->
+        <!-- ========================================== -->
+        <div id="tab1" class="tab-content block animate-fade-in-up space-y-4 sm:space-y-6">
+            <section class="card p-4 sm:p-6 md:p-8 border-t-2 border-yellow-500/50 shadow-[0_-4px_25px_-10px_rgba(234,179,8,0.15)] relative overflow-hidden">
+                <div class="absolute -top-32 -left-32 w-80 h-80 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 relative z-10 gap-3">
+                    <h2 class="text-lg sm:text-xl font-extrabold text-white flex items-center whitespace-nowrap">
+                        <i class="fa-solid fa-trophy text-yellow-500 mr-2 text-xl drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]"></i> 명예의 전당
+                    </h2>
+                    <div class="flex items-center w-full sm:w-auto bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden focus-within:border-yellow-500/50 transition-all shadow-inner">
+                        <div class="bg-zinc-950 text-zinc-400 px-3 py-2 text-[10px] sm:text-xs font-bold border-r border-zinc-800 uppercase tracking-widest whitespace-nowrap">나의 시작일</div>
+                        <input type="date" id="start_date" class="bg-transparent text-white px-3 py-2 w-full outline-none text-[11px] sm:text-sm cursor-pointer font-bold" onchange="window.updateTrophyRoom(); window.calculateAssets(); window.saveLocalState();">
+                    </div>
+                </div>
+                <div id="trophy_content" class="relative z-10"></div>
+            </section>
+
+            <section class="card p-4 sm:p-6 border-t-2 border-indigo-500/50 shadow-[0_-4px_25px_-10px_rgba(99,102,241,0.15)]">
+                <div class="flex justify-between items-center mb-4 sm:mb-5">
+                    <h2 class="text-base sm:text-lg font-extrabold text-white flex items-center">
+                        <i class="fa-solid fa-traffic-light text-indigo-400 mr-2"></i> 알파 타점 신호등
+                    </h2>
+                    <div class="bg-zinc-800 text-zinc-300 px-2 py-1 sm:px-3 sm:py-1 rounded-md text-[9px] sm:text-xs font-black transition-all border border-zinc-700 uppercase tracking-wider" id="signal_score_badge">대기중</div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-5 items-stretch">
+                    <div class="bg-black border border-zinc-800 p-4 rounded-xl shadow-inner flex flex-col justify-between relative">
+                        <div class="flex justify-between items-center mb-1">
+                            <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">VIX 공포지수</p>
+                            <div id="sig_vix_status" class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-500">대기중</div>
+                        </div>
+                        <input type="number" step="0.1" id="api_vix" class="signal-input num-font my-2" placeholder="-" oninput="updateIndicators(); saveLocalState(); removeManualStatus(this);">
+                        <div class="w-full mt-3 relative">
+                            <div class="flex justify-between text-[8px] sm:text-[9px] font-bold mb-1.5 px-0.5 tracking-tighter">
+                                <span class="text-emerald-500 w-1/3 text-left">안정(~19)</span>
+                                <span class="text-orange-500 w-1/3 text-center">경계(20~29)</span>
+                                <span class="text-red-500 w-1/3 text-right">패닉(30+)</span>
+                            </div>
+                            <div class="relative w-full h-1.5 bg-zinc-800 rounded-full">
+                                <div class="absolute inset-0 bg-gradient-to-r from-emerald-500 via-orange-500 to-red-500 rounded-full opacity-80"></div>
+                                <div id="vix_marker" class="absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,1)] transition-all duration-500" style="left: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-black border border-zinc-800 p-4 rounded-xl shadow-inner flex flex-col justify-between relative">
+                        <div class="flex justify-between items-center mb-1">
+                            <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Fear & Greed</p>
+                            <div id="sig_fg_status" class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-500">대기중</div>
+                        </div>
+                        <input type="number" id="api_fg" class="signal-input num-font my-2" placeholder="-" oninput="updateIndicators(); saveLocalState(); removeManualStatus(this);">
+                        <div class="w-full mt-3 relative">
+                            <div class="flex justify-between text-[7px] sm:text-[8px] font-bold mb-1.5 px-0.5 tracking-tighter">
+                                <span class="text-red-500 w-1/5 text-left truncate">극.공포</span>
+                                <span class="text-orange-500 w-1/5 text-center truncate">공포</span>
+                                <span class="text-yellow-500 w-1/5 text-center truncate">중립</span>
+                                <span class="text-emerald-400 w-1/5 text-center truncate">탐욕</span>
+                                <span class="text-emerald-600 w-1/5 text-right truncate">극.탐욕</span>
+                            </div>
+                            <div class="relative w-full h-1.5 bg-zinc-800 rounded-full">
+                                <div class="absolute inset-0 bg-gradient-to-r from-red-600 via-orange-500 via-yellow-500 via-emerald-400 to-emerald-600 rounded-full opacity-80"></div>
+                                <div id="fg_marker" class="absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,1)] transition-all duration-500" style="left: 50%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-black border border-zinc-800 p-4 rounded-xl shadow-inner flex flex-col justify-between relative">
+                        <div class="flex justify-between items-center mb-1">
+                            <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">QQQ RSI (14)</p>
+                            <div id="sig_rsi_status" class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-500">대기중</div>
+                        </div>
+                        <input type="number" step="0.1" id="api_rsi" class="signal-input num-font my-2" placeholder="-" oninput="updateIndicators(); saveLocalState(); removeManualStatus(this);">
+                        <div class="w-full mt-3 relative">
+                            <div class="flex justify-between text-[8px] sm:text-[9px] font-bold mb-1.5 px-0.5 tracking-tighter">
+                                <span class="text-red-500 w-1/3 text-left">과매도(~30)</span>
+                                <span class="text-zinc-400 w-1/3 text-center">안정(31~69)</span>
+                                <span class="text-blue-500 w-1/3 text-right">과매수(70+)</span>
+                            </div>
+                            <div class="relative w-full h-1.5 bg-zinc-800 rounded-full">
+                                <div class="absolute inset-0 bg-gradient-to-r from-red-500 via-zinc-500 to-blue-500 rounded-full opacity-80"></div>
+                                <div id="rsi_marker" class="absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,1)] transition-all duration-500" style="left: 50%;"></div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="api_qqq_price">
+                    </div>
+                </div>
+                <div class="bg-zinc-900/50 border border-zinc-800/50 text-white p-3 sm:p-4 rounded-xl flex items-center transition-all" id="signal_recommendation">
+                    <i class="fa-solid fa-circle-notch text-zinc-600 text-2xl mr-3"></i>
+                    <div>
+                        <h4 class="font-black text-sm sm:text-base text-zinc-300">데이터 대기중</h4>
+                        <p class="text-[10px] sm:text-xs text-zinc-500 mt-0.5">시장 데이터를 동기화하거나 빈칸을 채워주세요.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card p-4 sm:p-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                    <div class="flex flex-col">
+                        <h2 class="text-base sm:text-lg font-extrabold text-white flex items-center">
+                            <i class="fa-solid fa-globe text-blue-500 mr-2"></i> 기초 시장 데이터
+                        </h2>
+                        <span id="last_sync_time" class="text-[9px] sm:text-[10px] text-zinc-500 mt-0.5 font-bold"><i class="fa-regular fa-clock mr-1"></i>최근 동기화: 기록 없음</span>
+                    </div>
+                    <button id="fetch_btn" onclick="fetchMarketData()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white text-[11px] sm:text-xs font-black px-4 py-2.5 rounded-lg shadow-[0_0_15px_rgba(37,99,235,0.3)] transition-all active:scale-95 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-rotate mr-2"></i>개인 DB 동기화
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3 pb-3">
+                    <div class="space-y-1 relative">
+                        <label class="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">환율 (KRW)</label>
+                        <div class="input-group"><input type="text" inputmode="decimal" id="api_fx" class="market-input-target num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit">원</div></div>
+                    </div>
+                    <div class="space-y-1 relative">
+                        <label class="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">QQQM (1x)</label>
+                        <div class="input-group"><input type="text" inputmode="decimal" id="api_qqqm" class="market-input-target text-indigo-400 num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit">$</div></div>
+                        <div id="krw_qqqm" class="text-[8px] sm:text-[9px] font-bold text-zinc-500 text-right pr-1 absolute -bottom-3.5 right-0 w-full truncate"></div>
+                    </div>
+                    <div class="space-y-1 relative">
+                        <label class="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">QLD (2x)</label>
+                        <div class="input-group"><input type="text" inputmode="decimal" id="api_qld" class="market-input-target text-blue-400 num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit">$</div></div>
+                        <div id="krw_qld" class="text-[8px] sm:text-[9px] font-bold text-zinc-500 text-right pr-1 absolute -bottom-3.5 right-0 w-full truncate"></div>
+                    </div>
+                    <div class="space-y-1 relative">
+                        <label class="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">SGOV (20%)</label>
+                        <div class="input-group"><input type="text" inputmode="decimal" id="api_sgov" class="market-input-target text-emerald-400 num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit">$</div></div>
+                        <div id="krw_sgov" class="text-[8px] sm:text-[9px] font-bold text-zinc-500 text-right pr-1 absolute -bottom-3.5 right-0 w-full truncate"></div>
+                    </div>
+                    <div class="space-y-1 relative">
+                        <label class="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">IAU (10%)</label>
+                        <div class="input-group"><input type="text" inputmode="decimal" id="api_iau" class="market-input-target text-yellow-500 num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit">$</div></div>
+                        <div id="krw_iau" class="text-[8px] sm:text-[9px] font-bold text-zinc-500 text-right pr-1 absolute -bottom-3.5 right-0 w-full truncate"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <div class="text-center pt-2">
+                <button onclick="switchTab(2)" class="bg-zinc-900 hover:bg-zinc-800 text-blue-400 border border-zinc-800 font-bold py-3 px-8 rounded-full shadow-sm transition-all active:scale-95 text-xs sm:text-sm">
+                    내 자산 및 매매 탭으로 이동 <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 탭 2: 내 자산 & 매매 -->
+        <!-- ========================================== -->
+        <div id="tab2" class="tab-content hidden animate-fade-in-up pb-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-stretch">
+                
+                <!-- 좌측: 입력 패널 -->
+                <div class="lg:col-span-4 flex flex-col gap-5 sm:gap-6">
+                    <section class="card p-4 sm:p-6 border-t-2 border-emerald-500/50 shadow-[0_-4px_25px_-10px_rgba(16,185,129,0.15)]">
+                        <div class="flex justify-between items-center mb-4 sm:mb-5">
+                            <h2 class="text-base font-black text-white"><i class="fa-solid fa-wallet text-emerald-500 mr-2"></i>내 보유 수량</h2>
+                            <div class="flex gap-2">
+                                <button onclick="exportData()" class="text-[9px] text-zinc-400 hover:text-white font-black uppercase transition-colors bg-zinc-800 px-2 py-1 rounded border border-zinc-700"><i class="fa-solid fa-download mr-1"></i>백업</button>
+                                <button onclick="document.getElementById('import_file').click()" class="text-[9px] text-zinc-400 hover:text-white font-black uppercase transition-colors bg-zinc-800 px-2 py-1 rounded border border-zinc-700"><i class="fa-solid fa-upload mr-1"></i>복원</button>
+                                <input type="file" id="import_file" accept=".json" class="hidden" onchange="importData(event)">
+                                <button onclick="resetData()" class="text-[9px] text-red-400/80 hover:text-red-400 font-black uppercase transition-colors ml-1"><i class="fa-solid fa-trash mr-1"></i>초기화</button>
+                            </div>
+                        </div>
+                        <div class="space-y-3 sm:space-y-4">
+                            <div class="space-y-0.5">
+                                <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest ml-1">QQQM 수량</label>
+                                <div class="input-group focus-within:border-indigo-500"><input type="text" inputmode="decimal" id="h_qqqm" class="text-indigo-400 num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit">주</div></div>
+                                <p id="val_qqqm_krw" class="text-[10px] text-indigo-400/70 font-bold text-right pr-1 num-font">0원</p>
+                            </div>
+                            <div class="space-y-0.5">
+                                <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest ml-1">QLD 수량</label>
+                                <div class="input-group focus-within:border-blue-500"><input type="text" inputmode="decimal" id="h_qld" class="text-blue-400 num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit">주</div></div>
+                                <p id="val_qld_krw" class="text-[10px] text-blue-400/70 font-bold text-right pr-1 num-font">0원</p>
+                            </div>
+                            <div class="space-y-0.5">
+                                <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest ml-1">SGOV 수량</label>
+                                <div class="input-group focus-within:border-emerald-500"><input type="text" inputmode="decimal" id="h_sgov" class="text-emerald-400 num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit">주</div></div>
+                                <p id="val_sgov_krw" class="text-[10px] text-emerald-400/70 font-bold text-right pr-1 num-font">0원</p>
+                            </div>
+                            <div class="space-y-0.5">
+                                <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest ml-1">IAU 수량</label>
+                                <div class="input-group focus-within:border-yellow-500"><input type="text" inputmode="decimal" id="h_iau" class="text-yellow-500 num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit">주</div></div>
+                                <p id="val_iau_krw" class="text-[10px] text-yellow-500/70 font-bold text-right pr-1 num-font">0원</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 mt-3 border-t border-zinc-800 space-y-2">
+                            <div class="flex justify-between items-center bg-black px-3 py-2 rounded-lg border border-zinc-800/50">
+                                <span class="text-[10px] font-bold text-zinc-400">주식 합계 (Q)</span>
+                                <span class="text-xs sm:text-sm font-black text-blue-500 num-font" id="val_risk_total">0원</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-black px-3 py-2 rounded-lg border border-zinc-800/50">
+                                <span class="text-[10px] font-bold text-zinc-400">현금 합계 (SGOV+IAU)</span>
+                                <span class="text-xs sm:text-sm font-black text-emerald-500 num-font" id="val_safe_total">0원</span>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section class="card p-4 sm:p-6 border-t-2 border-purple-500/50 shadow-[0_-4px_25px_-10px_rgba(168,85,247,0.15)] flex flex-col justify-center">
+                        <div class="flex justify-between items-center mb-3 sm:mb-4">
+                            <h2 class="text-base font-black text-white"><i class="fa-solid fa-piggy-bank text-purple-500 mr-2"></i>투자금 관리</h2>
+                        </div>
+                        
+                        <div class="space-y-4 sm:space-y-5">
+                            <div>
+                                <div class="flex justify-between items-end mb-1 ml-1">
+                                    <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">누적 투입 원금</label>
+                                    <span class="text-[8px] text-purple-400/80 font-bold tracking-wider">* 확정 시 합산</span>
+                                </div>
+                                <div class="input-group border-purple-900/30 focus-within:border-purple-500">
+                                    <input type="text" inputmode="numeric" id="total_principal" class="text-purple-400 !text-base sm:!text-lg py-2 num-font" oninput="formatNumber(this); calculateAssets();" value="0">
+                                    <div class="unit text-purple-500/50 text-xs">원</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-end mb-1 ml-1">
+                                    <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">이번 달 적립금 (DCA)</label>
+                                    <span class="text-[8px] text-indigo-400/80 font-bold tracking-wider">* 확정 후 0원</span>
+                                </div>
+                                <div class="input-group border-indigo-900/30 focus-within:border-indigo-500">
+                                    <input type="text" inputmode="numeric" id="dca_amount" class="text-indigo-400 !text-base sm:!text-lg py-2 num-font" oninput="formatNumber(this); calculateAssets();" value="0">
+                                    <div class="unit text-indigo-500/50 text-xs">원</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- 우측: 상태판 & 차트 통합 패널 -->
+                <div class="lg:col-span-8 flex flex-col h-full gap-5 sm:gap-6">
+                    <section class="card bg-zinc-950 p-4 sm:p-6 md:p-8 text-white relative overflow-hidden shadow-2xl flex flex-col flex-grow border-zinc-800">
+                        <div class="absolute -top-32 -right-32 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl pointer-events-none"></div>
+                        
+                        <div class="relative z-10 flex flex-col flex-grow">
+                            <!-- 레이아웃 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-4 md:mb-6">
+                                <!-- 순수 총 자산 & 레이싱 보드 -->
+                                <div class="flex flex-col">
+                                    <div class="mb-3">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <h2 class="text-[10px] font-black text-blue-500 uppercase tracking-widest">총 자산 평가액</h2>
+                                            <span class="text-[8px] bg-zinc-900 text-zinc-400 px-1.5 py-0.5 rounded border border-zinc-800 shrink-0">순수 보유 자산</span>
+                                        </div>
+                                        <p class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight num-font text-white break-all" id="total_val_disp">0<span class="text-[14px] sm:text-lg font-medium ml-1 text-zinc-600 inline-block" style="font-family:'Pretendard',sans-serif;">원</span></p>
+                                    </div>
+                                    
+                                    <div class="mt-auto bg-black rounded-xl p-3 sm:p-4 border border-zinc-800 shadow-inner">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <h3 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest whitespace-nowrap"><i class="fa-solid fa-trophy text-yellow-500/80 mr-1"></i> VS SPY 수익률 레이싱</h3>
+                                            <span class="text-[9px] font-bold text-zinc-600 whitespace-nowrap shrink-0">SPY 목표: 10%</span>
+                                        </div>
+                                        
+                                        <!-- 🌟 줄바꿈 방어 및 수익금 실시간 표시 -->
+                                        <div class="flex flex-wrap items-baseline gap-x-1.5 gap-y-1 mb-2 w-full overflow-hidden">
+                                            <span class="text-[10px] font-bold text-zinc-500 pb-0.5 shrink-0">내 연평균(CAGR)</span>
+                                            <span class="text-xl sm:text-2xl md:text-3xl font-black num-font text-zinc-300 leading-none shrink-0" id="disp_cagr">대기중</span>
+                                            <span class="text-[9px] sm:text-[10px] font-bold text-zinc-500 pb-0.5 num-font leading-none break-all" id="disp_total_return"></span>
+                                        </div>
+
+                                        <div class="relative w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800 mt-1.5 mb-2">
+                                            <div class="absolute top-0 bottom-0 w-0.5 bg-yellow-500/50 z-20" style="left: 50%;" title="SPY 10%"></div>
+                                            <div id="cagr_bar" class="h-full bg-zinc-700 transition-all duration-1000 ease-out" style="width: 0%"></div>
+                                        </div>
+                                        
+                                        <div id="cagr_msg" class="text-[9px] sm:text-[10px] font-bold text-zinc-500 bg-zinc-900/50 p-2 rounded-md border border-zinc-800/50 break-keep">
+                                            💡 시작일과 투입 원금을 입력해야 계산됩니다.
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 3단계 시뮬레이션 패널 -->
+                                <div class="flex flex-col justify-end space-y-2 sm:space-y-2.5 mt-4 md:mt-0 h-full">
+                                    <div class="flex flex-row justify-between items-center px-3 py-2.5 rounded-lg bg-black border border-zinc-800 overflow-hidden">
+                                        <span class="text-[9px] sm:text-[10px] font-bold text-zinc-500 shrink-0">① 현재 비중 현황</span>
+                                        <div class="text-right num-font text-[10px] sm:text-[11px] font-black shrink-0 ml-1">
+                                            <span class="text-blue-500" id="disp_weight_current">Q 0.0%</span> 
+                                            <span class="text-zinc-700 mx-0.5">|</span> 
+                                            <span class="text-emerald-500" id="disp_safe_current">현금 0.0%</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-row justify-between items-center px-3 py-2.5 rounded-lg bg-blue-950/20 border border-blue-900/30 overflow-hidden">
+                                        <span class="text-[9px] sm:text-[10px] font-bold text-blue-500 flex flex-row items-center shrink-0">
+                                            <span>② 적립 후</span><span class="text-[8px] font-normal text-blue-500/50 ml-1 shrink-0">(DCA)</span>
+                                        </span>
+                                        <div class="text-right num-font text-[10px] sm:text-[11px] font-black shrink-0 ml-1">
+                                            <span class="text-blue-400" id="disp_weight_post_dca">Q 0.0%</span> 
+                                            <span class="text-blue-900 mx-0.5">|</span> 
+                                            <span class="text-emerald-400" id="disp_safe_post_dca">현금 0.0%</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-row justify-between items-center px-3 py-3 sm:py-3.5 rounded-lg bg-blue-900/20 border border-blue-500/40 shadow-[0_0_15px_rgba(59,130,246,0.1)] overflow-hidden">
+                                        <span class="text-[10px] sm:text-[11px] font-black text-blue-200 uppercase tracking-wider shrink-0 mr-1">③ 최종 가이드</span>
+                                        <div class="text-right num-font shrink-0 leading-none">
+                                            <span class="text-[12px] sm:text-[14px] font-black text-white" id="disp_weight_final">Q 0.0%</span> 
+                                            <span class="text-blue-500/50 mx-0.5 sm:mx-1">|</span> 
+                                            <span class="text-[12px] sm:text-[14px] font-black text-emerald-400" id="disp_safe_final">현금 0.0%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 밴드 비주얼라이저 -->
+                            <div class="mb-4 px-1">
+                                <div class="w-full h-1.5 bg-black rounded-full overflow-hidden flex relative border border-zinc-800">
+                                    <div class="absolute left-[65%] top-0 bottom-0 w-0.5 bg-red-500/80 z-20"></div>
+                                    <div class="absolute left-[80%] top-0 bottom-0 w-0.5 bg-red-500/80 z-20"></div>
+                                    <div class="absolute left-[70%] top-0 bottom-0 w-1 bg-white/20 z-20"></div>
+                                    <div id="q_bar" class="h-full bg-gradient-to-r from-blue-600 to-indigo-500 transition-all duration-1000 ease-out" style="width: 0%"></div>
+                                </div>
+                                <div class="flex justify-between text-[8px] sm:text-[9px] font-black text-zinc-600 mt-1.5 uppercase num-font tracking-widest">
+                                    <span>0%</span><span class="text-red-500/60">Low(65)</span><span class="text-white/30">Target(70)</span><span class="text-red-500/60">High(80)</span><span>100%</span>
+                                </div>
+                            </div>
+
+                            <!-- 차트 영역 -->
+                            <div class="flex-grow flex flex-col mt-2 sm:mt-4 mb-4 sm:mb-6">
+                                <div class="flex justify-between items-end mb-2 sm:mb-3 px-1">
+                                    <h3 class="text-[10px] sm:text-[11px] font-bold text-zinc-400 uppercase tracking-widest"><i class="fa-solid fa-chart-line mr-1.5"></i> History Log</h3>
+                                    <div class="flex bg-black p-1 rounded-md gap-1 border border-zinc-800">
+                                        <button onclick="updateChartFilter(30, this)" class="px-2 py-1 text-[8px] sm:text-[9px] font-black rounded bg-zinc-800 text-white shadow-sm chart-filter-btn transition-colors">1개월</button>
+                                        <button onclick="updateChartFilter(180, this)" class="px-2 py-1 text-[8px] sm:text-[9px] font-black rounded text-zinc-500 hover:bg-zinc-800 chart-filter-btn transition-colors">6개월</button>
+                                        <button onclick="updateChartFilter(9999, this)" class="px-2 py-1 text-[8px] sm:text-[9px] font-black rounded text-zinc-500 hover:bg-zinc-800 chart-filter-btn transition-colors">전체</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 flex-grow">
+                                    <!-- 1. 자산 차트 패널 -->
+                                    <div class="flex flex-col gap-2 w-full">
+                                        <div class="bg-black rounded-xl p-2 sm:p-3 border border-zinc-800/70 relative flex flex-col h-48 sm:h-56 w-full shadow-inner">
+                                            <div class="text-[9px] sm:text-[10px] font-bold text-zinc-500 text-center mb-1 sm:mb-2">총 자산 증식</div>
+                                            <div class="relative flex-grow w-full"><canvas id="assetHistoryChart"></canvas></div>
+                                        </div>
+                                        <!-- 원금 표시 전용 범례 -->
+                                        <div class="flex justify-center items-center h-8 sm:h-10 bg-zinc-900/50 rounded-lg border border-zinc-800/50 gap-4 shrink-0">
+                                            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 align-middle shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span><span class="text-[9px] sm:text-[10px] text-zinc-400 font-bold">총 자산 평가액</span></div>
+                                            <div class="flex items-center gap-1.5"><span class="w-4 h-0.5 border-t-2 border-dashed border-zinc-500 align-middle"></span><span class="text-[9px] sm:text-[10px] text-zinc-400 font-bold">누적 투입 원금</span></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 2. 비중 차트 패널 -->
+                                    <div class="flex flex-col gap-2 w-full">
+                                        <div class="bg-black rounded-xl p-2 sm:p-3 border border-zinc-800/70 relative flex flex-col h-48 sm:h-56 w-full shadow-inner">
+                                            <div class="text-[9px] sm:text-[10px] font-bold text-zinc-500 text-center mb-1 sm:mb-2">주식 비중 로깅</div>
+                                            <div class="relative flex-grow w-full"><canvas id="weightHistoryChart"></canvas></div>
+                                        </div>
+                                        <!-- 전용 범례 -->
+                                        <div class="flex flex-wrap justify-center items-center h-8 sm:h-10 gap-x-2.5 sm:gap-x-4 bg-zinc-900/50 rounded-lg border border-zinc-800/50 px-2 shrink-0">
+                                            <div class="flex items-center gap-1"><span class="w-3 sm:w-4 h-0.5 bg-zinc-500 border-t border-dashed border-zinc-500"></span><span class="text-[8px] sm:text-[10px] text-zinc-400 font-bold">원래비중</span></div>
+                                            <div class="flex items-center gap-1"><span class="w-3 sm:w-4 h-1 sm:h-1.5 bg-orange-500 rounded-sm"></span><span class="text-[8px] sm:text-[10px] text-zinc-400 font-bold">최종비중</span></div>
+                                            <div class="flex items-center gap-0.5 sm:gap-1"><span class="text-red-500/80 text-[8px] sm:text-[10px]">🔺</span><span class="text-[8px] sm:text-[10px] text-zinc-400 font-bold">매수</span></div>
+                                            <div class="flex items-center gap-0.5 sm:gap-1"><span class="text-blue-500/80 text-[8px] sm:text-[10px]">🔻</span><span class="text-[8px] sm:text-[10px] text-zinc-400 font-bold">익절</span></div>
+                                            <div class="flex items-center gap-0.5 sm:gap-1"><span class="text-yellow-500 text-[8px] sm:text-[10px]">⭐</span><span class="text-[8px] sm:text-[10px] text-zinc-400 font-bold">알파</span></div>
+                                            <div class="flex items-center gap-0.5 sm:gap-1"><span class="text-purple-500 text-[8px] sm:text-[10px]">◆</span><span class="text-[8px] sm:text-[10px] text-zinc-400 font-bold">수동개입</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 3. 리밸런싱 이력 월별 텍스트 로그 -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4 sm:mt-6">
+                                    <div class="bg-black rounded-xl p-3 border border-zinc-800/70 shadow-inner flex flex-col h-36 sm:h-40">
+                                        <div class="text-[10px] sm:text-xs font-bold text-red-500 text-center mb-2 pb-2 border-b border-zinc-800/80 flex items-center justify-center gap-2">
+                                            <i class="fa-solid fa-arrow-trend-down"></i> 65% 하단 이탈 이력 (매수)
+                                        </div>
+                                        <div id="log_under_65" class="overflow-y-auto flex-grow pr-1 custom-scrollbar"></div>
+                                    </div>
+                                    <div class="bg-black rounded-xl p-3 border border-zinc-800/70 shadow-inner flex flex-col h-36 sm:h-40">
+                                        <div class="text-[10px] sm:text-xs font-bold text-blue-500 text-center mb-2 pb-2 border-b border-zinc-800/80 flex items-center justify-center gap-2">
+                                            <i class="fa-solid fa-arrow-trend-up"></i> 80% 상단 돌파 이력 (익절)
+                                        </div>
+                                        <div id="log_over_80" class="overflow-y-auto flex-grow pr-1 custom-scrollbar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-end mt-2 mb-1 pr-1">
+                            <label class="text-[10px] sm:text-xs text-zinc-400 font-bold flex items-center cursor-pointer hover:text-purple-400 transition-colors select-none">
+                                <input type="checkbox" id="is_manual_trade" class="mr-1.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded bg-zinc-900 border-zinc-700 text-purple-500 focus:ring-purple-500 focus:ring-offset-zinc-950">
+                                ⚡ 수동 매매(원칙 외 개입) 기록
+                            </label>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-auto pt-1">
+                            <button onclick="generatePlan(false)" class="relative z-10 w-full bg-zinc-800 hover:bg-zinc-700 text-white font-black py-3 rounded-lg shadow-sm transition-all active:scale-95 text-[11px] sm:text-xs border border-zinc-700 flex items-center justify-center break-keep">
+                                <i class="fa-solid fa-flask mr-1.5 text-zinc-400"></i>가이드 생성
+                            </button>
+                            <button onclick="generatePlan(true)" class="relative z-10 w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-lg shadow-[0_0_15px_rgba(37,99,235,0.3)] transition-all active:scale-95 text-[11px] sm:text-xs border border-blue-500 flex items-center justify-center break-keep">
+                                <i class="fa-solid fa-database mr-1.5"></i>확정 및 DB저장
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- 가이드 결과 영역 -->
+            <section id="plan_section" class="w-full hidden animate-fade-in-up mt-6">
+                <div class="card border border-blue-500/50 overflow-hidden shadow-[0_10px_40px_-10px_rgba(37,99,235,0.2)] bg-zinc-950 mb-4">
+                    <div class="bg-blue-950/30 p-3 sm:p-4 text-blue-100 flex justify-between items-center border-b border-blue-900/50">
+                        <h3 class="font-black text-sm sm:text-base flex items-center"><i class="fa-solid fa-terminal mr-2 text-blue-500"></i>Terminal Output</h3>
+                        <span class="text-[9px] bg-blue-600 text-white px-2 py-0.5 rounded font-black uppercase tracking-widest">Execution</span>
+                    </div>
+                    <div class="p-4 sm:p-6 space-y-6">
+                        
+                        <div id="market_briefing" class="bg-black border border-zinc-800 rounded-lg p-3 sm:p-4 shadow-inner"></div>
+
+                        <div>
+                            <h4 class="text-[9px] sm:text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2 flex items-center">
+                                <span class="w-4 h-1 bg-blue-500/50 rounded-full mr-2"></span> Step 1. 스마트 분배 (DCA)
+                            </h4>
+                            <div id="plan_step1" class="bg-black p-3 sm:p-4 rounded-xl text-zinc-300 text-[10px] sm:text-xs font-medium border border-zinc-800 leading-relaxed"></div>
+                        </div>
+                        <div>
+                            <h4 class="text-[9px] sm:text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2 flex items-center">
+                                <span class="w-4 h-1 bg-blue-500/50 rounded-full mr-2"></span> Step 2. 시스템 리밸런싱
+                            </h4>
+                            <div id="plan_step2" class="transition-colors"></div>
+                        </div>
+                        <div class="pt-5 border-t border-zinc-800 text-center">
+                            <h4 class="font-black text-xl sm:text-2xl text-white mb-1 uppercase tracking-tighter">Final Orders</h4>
+                            <p class="text-[9px] sm:text-[10px] text-zinc-500 mb-4 font-bold bg-black inline-block px-3 py-1 rounded-md border border-zinc-800">최종 매매 지시서</p>
+                            <div id="final_order_list" class="space-y-2 max-w-2xl mx-auto"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- 하단 네비게이션 앱 바 -->
+    <nav class="fixed bottom-0 left-0 w-full bg-black/90 backdrop-blur-md border-t border-zinc-800 z-50 flex justify-around pb-safe">
+        <button onclick="switchTab(1)" id="nav_tab1" class="flex-1 py-3 text-blue-500 font-bold flex flex-col items-center justify-center gap-1 transition-colors">
+            <i class="fa-solid fa-chart-pie text-lg"></i>
+            <span class="text-[9px] tracking-wider">시장/업적</span>
+        </button>
+        <button onclick="switchTab(2)" id="nav_tab2" class="flex-1 py-3 text-zinc-600 font-bold flex flex-col items-center justify-center gap-1 transition-colors">
+            <i class="fa-solid fa-wallet text-lg"></i>
+            <span class="text-[9px] tracking-wider">자산/매매</span>
+        </button>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        if (window.Chart) {
+            window.Chart.defaults.color = '#71717a'; 
+            window.Chart.defaults.borderColor = 'rgba(255,255,255,0.03)';
+        }
+
+        let db = null; let auth = null; let currentUser = null;
+        let appId = typeof __app_id !== 'undefined' ? __app_id : 'default_q7s3_app';
+        let assetChartInstance = null;
+        let weightChartInstance = null;
+        let historyData = [];
+
+        try {
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+            if(firebaseConfig) {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app); auth = getAuth(app);
+                const initAuth = async () => {
+                    try {
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
+                        else await signInAnonymously(auth);
+                    } catch(err) {}
+                };
+                initAuth();
+                onAuthStateChanged(auth, (user) => { currentUser = user; if(user) loadHistoryFromDB(); });
+            }
+        } catch(e) {}
+
+        window.switchTab = (tabIndex) => {
+            document.getElementById('tab1').classList.toggle('hidden', tabIndex !== 1);
+            document.getElementById('tab2').classList.toggle('hidden', tabIndex !== 2);
+            document.getElementById('nav_tab1').className = `flex-1 py-3 font-bold flex flex-col items-center justify-center gap-1 transition-colors ${tabIndex === 1 ? 'text-blue-500' : 'text-zinc-600'}`;
+            document.getElementById('nav_tab2').className = `flex-1 py-3 font-bold flex flex-col items-center justify-center gap-1 transition-colors ${tabIndex === 2 ? 'text-blue-500' : 'text-zinc-600'}`;
+            
+            if (tabIndex === 2) {
+                setTimeout(() => {
+                    if (assetChartInstance) assetChartInstance.resize();
+                    if (weightChartInstance) weightChartInstance.resize();
+                }, 50);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.formatNumber = (i) => { let v = i.value.replace(/,/g, '').replace(/[^0-9]/g, ''); i.value = v ? parseInt(v, 10).toLocaleString('ko-KR') : ''; };
+        
+        window.formatDecimal = (i) => {
+            let raw = i.value.replace(/[^0-9.]/g, ''); 
+            let parts = raw.split('.');
+            if (parts.length > 2) {
+                raw = parts[0] + '.' + parts.slice(1).join(''); 
+                parts = raw.split('.');
+            }
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+            i.value = parts.join('.'); 
+        };
+
+        window.getVal = (id) => parseFloat(document.getElementById(id) ? document.getElementById(id).value.replace(/,/g, '') : 0) || 0;
+        
+        window.setVal = (id, v, isInt=false) => { 
+            const el = document.getElementById(id); 
+            if(!el) return; 
+            if(v === undefined || v === null || isNaN(v)){ el.value=''; return; } 
+            
+            if (isInt) {
+                el.value = Math.round(v).toLocaleString('ko-KR');
+            } else {
+                let parts = parseFloat(v.toFixed(4)).toString().split('.');
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                el.value = parts.join('.');
+            }
+        };
+        
+        window.formatKRW = (n) => Math.round(n).toLocaleString('ko-KR') + "원";
+        
+        window.showToast = (m, e=false, neutral=false) => { 
+            const c=document.getElementById('toast_container'), t=document.createElement('div'); 
+            let styles = neutral ? 'bg-zinc-800 border-zinc-700' : (e ? 'bg-red-950 border-red-900' : 'bg-zinc-900 border-zinc-800');
+            let icon = neutral ? 'fa-info-circle text-blue-400' : (e ? 'fa-triangle-exclamation text-red-500' : 'fa-circle-check text-emerald-500');
+            t.className=`toast ${styles} text-zinc-200 px-4 py-3 rounded-lg shadow-2xl text-[10px] sm:text-xs font-bold flex items-center mb-2 border w-full max-w-sm`; 
+            t.innerHTML=`<i class="fa-solid ${icon} mr-2 text-sm sm:text-base"></i><span>${m}</span>`; 
+            c.appendChild(t); setTimeout(()=>{t.style.opacity='0'; setTimeout(()=>t.remove(),500)}, 3000); 
+        };
+
+        window.removeManualStatus = (el) => { 
+            if(!el) return;
+            const wrapper = el.closest('.input-group') || el.parentElement; 
+            if(wrapper) wrapper.classList.remove('manual-required'); 
+        };
+        
+        window.saveLocalState = () => {
+            const d = { 
+                h_qqqm: window.getVal('h_qqqm'), h_qld: window.getVal('h_qld'), h_sgov: window.getVal('h_sgov'), h_iau: window.getVal('h_iau'),
+                dca: window.getVal('dca_amount'), 
+                total_principal: window.getVal('total_principal'),
+                fx: window.getVal('api_fx'),
+                p_qqqm: window.getVal('api_qqqm'), p_qld: window.getVal('api_qld'), p_sgov: window.getVal('api_sgov'), p_iau: window.getVal('api_iau'),
+                fg: document.getElementById('api_fg') ? document.getElementById('api_fg').value : "",
+                vix: document.getElementById('api_vix') ? document.getElementById('api_vix').value : "",
+                rsi: document.getElementById('api_rsi') ? document.getElementById('api_rsi').value : "",
+                start_date: document.getElementById('start_date') ? document.getElementById('start_date').value : "",
+                last_sync: document.getElementById('last_sync_time') ? document.getElementById('last_sync_time').innerHTML : ""
+            };
+            localStorage.setItem('q7s3_v2_core', JSON.stringify(d));
+        };
+
+        window.resetData = () => { 
+            if(confirm("데이터를 초기화하시겠습니까?\n(나의 장투 시작일은 보호됩니다)")) { 
+                ['h_qqqm', 'h_qld', 'h_sgov', 'h_iau', 'dca_amount', 'total_principal'].forEach(id => { const el = document.getElementById(id); if(el) el.value = (id === 'dca_amount' || id === 'total_principal') ? '0' : ''; }); 
+                window.calculateAssets(); 
+                window.saveLocalState(); 
+            } 
+        };
+
+        window.exportData = () => {
+            const core = localStorage.getItem('q7s3_v2_core');
+            const history = localStorage.getItem('q7s3_v2_history');
+            if(!core && !history) return window.showToast("백업할 데이터가 없습니다.", true);
+            
+            const backup = { core: core ? JSON.parse(core) : {}, history: history ? JSON.parse(history) : [] };
+            const blob = new Blob([JSON.stringify(backup)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const downloadNode = document.createElement('a');
+            downloadNode.setAttribute("href", url);
+            const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '');
+            downloadNode.setAttribute("download", `Q7S3_Backup_${dateStr}.json`);
+            
+            document.body.appendChild(downloadNode);
+            downloadNode.click();
+            document.body.removeChild(downloadNode);
+            URL.revokeObjectURL(url);
+            
+            window.showToast("파일 다운로드 완료! 새 버전에서 복원해주세요.", false, true);
+        };
+
+        window.importData = (event) => {
+            if (!event.target.files || event.target.files.length === 0) return;
+            const file = event.target.files[0];
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const backup = JSON.parse(e.target.result);
+                    if (backup.core) localStorage.setItem('q7s3_v2_core', JSON.stringify(backup.core));
+                    if (backup.history) localStorage.setItem('q7s3_v2_history', JSON.stringify(backup.history));
+                    
+                    window.showToast("데이터 이식 성공! 1초 뒤 새로고침됩니다.", false, true);
+                    setTimeout(() => window.location.reload(), 1500);
+                } catch (err) {
+                    window.showToast("복원 실패: 유효하지 않은 백업 파일입니다.", true);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; 
+        };
+
+        window.updateTrophyRoom = () => {
+            const startDateStr = document.getElementById('start_date').value;
+            const container = document.getElementById('trophy_content');
+
+            if (!startDateStr) {
+                container.innerHTML = `
+                    <div class="text-center py-6 sm:py-10 bg-black rounded-xl border border-zinc-800 border-dashed mt-4">
+                        <i class="fa-solid fa-calendar-days text-2xl sm:text-4xl text-zinc-700 mb-2 sm:mb-3"></i>
+                        <p class="text-[10px] sm:text-sm text-zinc-500 font-bold break-keep">상단에서 시작일을 설정하고<br>위대한 기록을 시작하세요!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const [y, m, d] = startDateStr.split('-');
+            const startDate = new Date(y, m - 1, d);
+            startDate.setHours(0,0,0,0);
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            const diffTime = today - startDate;
+            const actualDays = diffTime >= 0 ? Math.floor(diffTime / (1000 * 60 * 60 * 24)) : 0;
+
+            const milestones = [
+                { days: 100, title: "철혈의 기사", icon: "🛡️", color: "from-zinc-400 to-zinc-200", border: "border-zinc-500", shadow: "shadow-[0_0_15px_rgba(161,161,170,0.3)]", text: "text-zinc-200" },
+                { days: 365, title: "고독한 개척자", icon: "🐺", color: "from-blue-500 to-indigo-400", border: "border-blue-500", shadow: "shadow-[0_0_15px_rgba(59,130,246,0.3)]", text: "text-blue-200" },
+                { days: 1095, title: "폭풍의 지배자", icon: "🦅", color: "from-purple-500 to-fuchsia-400", border: "border-purple-500", shadow: "shadow-[0_0_15px_rgba(168,85,247,0.3)]", text: "text-purple-200" },
+                { days: 1825, title: "고대의 수호룡", icon: "🐉", color: "from-emerald-500 to-teal-400", border: "border-emerald-500", shadow: "shadow-[0_0_15px_rgba(16,185,129,0.3)]", text: "text-emerald-200" },
+                { days: 3650, title: "시간의 지배자", icon: "👑", color: "from-yellow-500 to-amber-300", border: "border-yellow-500", shadow: "shadow-[0_0_15px_rgba(234,179,8,0.5)]", text: "text-yellow-200" }
+            ];
+
+            let nextMilestone = milestones.find(m => actualDays < m.days);
+            let progressHtml = "";
+
+            if (nextMilestone) {
+                let percent = (actualDays / nextMilestone.days) * 100;
+                if(percent > 100) percent = 100;
+
+                progressHtml = `
+                    <div class="mb-5 sm:mb-6 mt-2">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-1.5">
+                            <div class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-200 tracking-tighter num-font leading-none mb-1 sm:mb-0">
+                                D+${actualDays.toLocaleString()}
+                            </div>
+                            <div class="text-[9px] sm:text-xs font-bold text-zinc-400 pb-0.5">
+                                다음 목표: <span class="text-yellow-500">${nextMilestone.icon} ${nextMilestone.title}</span> <span class="ml-1 text-zinc-500 num-font">(${nextMilestone.days - actualDays}일 남음)</span>
+                            </div>
+                        </div>
+                        <div class="w-full h-1.5 sm:h-2 bg-black rounded-full overflow-hidden border border-zinc-800">
+                            <div class="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 rounded-full transition-all duration-1000 ease-out relative" style="width: ${percent}%">
+                                <div class="absolute inset-0 bg-white/20 w-full animate-pulse"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                progressHtml = `
+                    <div class="mb-5 sm:mb-6 mt-2 text-center">
+                        <div class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-200 tracking-tighter mb-1 drop-shadow-[0_0_10px_rgba(234,179,8,0.3)] num-font">
+                            D+${actualDays.toLocaleString()}
+                        </div>
+                        <div class="text-[10px] sm:text-sm font-black text-yellow-500">모든 위대한 여정을 완수하셨습니다!</div>
+                    </div>
+                `;
+            }
+
+            let badgesHtml = '<div class="grid grid-cols-5 gap-2 sm:gap-3">';
+            milestones.forEach(m => {
+                const isUnlocked = actualDays >= m.days;
+                if (isUnlocked) {
+                    badgesHtml += `
+                        <div class="relative bg-zinc-950 rounded-xl p-2 sm:p-3 border border-zinc-800 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center text-center overflow-hidden cursor-default">
+                            <div class="absolute inset-0 bg-gradient-to-br ${m.color} opacity-10"></div>
+                            <div class="relative z-10 w-8 h-8 sm:w-12 sm:h-12 mb-1.5 sm:mb-2 rounded-full bg-black border border-zinc-800 ${m.shadow} flex items-center justify-center text-sm sm:text-xl">
+                                ${m.icon}
+                            </div>
+                            <h4 class="relative z-10 font-black ${m.text} text-[8px] sm:text-[11px] mb-0.5 whitespace-nowrap hidden sm:block">${m.title}</h4>
+                            <p class="relative z-10 text-[7px] sm:text-[9px] font-bold text-zinc-500 tracking-widest num-font">${m.days}D</p>
+                            <div class="absolute top-1 right-1 text-yellow-500 text-[8px] sm:text-[10px] drop-shadow-[0_0_5px_rgba(234,179,8,0.8)]"><i class="fa-solid fa-star"></i></div>
+                        </div>
+                    `;
+                } else {
+                    badgesHtml += `
+                        <div class="relative bg-black rounded-xl p-2 sm:p-3 border border-zinc-900 flex flex-col items-center justify-center text-center opacity-40 grayscale transition-all cursor-not-allowed">
+                            <div class="absolute inset-0 flex items-center justify-center z-20">
+                                <i class="fa-solid fa-lock text-lg sm:text-2xl text-black drop-shadow-[0_1px_1px_rgba(255,255,255,0.1)] opacity-80"></i>
+                            </div>
+                            <div class="relative z-10 w-8 h-8 sm:w-12 sm:h-12 mb-1.5 sm:mb-2 rounded-full bg-zinc-950 border border-zinc-900 flex items-center justify-center text-sm sm:text-xl blur-[1px]">
+                                ${m.icon}
+                            </div>
+                            <h4 class="relative z-10 font-bold text-zinc-600 text-[8px] sm:text-[11px] mb-0.5 whitespace-nowrap hidden sm:block">${m.title}</h4>
+                            <p class="relative z-10 text-[7px] sm:text-[9px] font-bold text-zinc-700 tracking-widest num-font">${m.days}D</p>
+                        </div>
+                    `;
+                }
+            });
+            badgesHtml += '</div>';
+
+            container.innerHTML = progressHtml + badgesHtml;
+        };
+
+        async function saveAssetToDB(totalAsset, wCurrent, wPostDca, wFinal, wAlpha, principal) {
+            const today = new Date().toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }).replace(/\. /g, '-').replace('.', '');
+            const isManual = document.getElementById('is_manual_trade') ? document.getElementById('is_manual_trade').checked : false;
+            const data = { 
+                date: today, total: totalAsset, 
+                w_current: wCurrent, w_post_dca: wPostDca, w_final: wFinal, 
+                w_alpha: wAlpha || null,
+                is_manual: isManual,
+                principal: principal,
+                timestamp: Date.now() 
+            };
+            let localHist = JSON.parse(localStorage.getItem('q7s3_v2_history') || '[]');
+            const idx = localHist.findIndex(h => h.date === today);
+            if (idx >= 0) localHist[idx] = data; else localHist.push(data);
+            localHist.sort((a,b) => a.date.localeCompare(b.date));
+            localStorage.setItem('q7s3_v2_history', JSON.stringify(localHist));
+            historyData = localHist;
+            if (db && currentUser) {
+                try {
+                    const ref = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'asset_history_v2');
+                    await setDoc(doc(ref, today), data);
+                } catch(e) {}
+            }
+            if(document.getElementById('is_manual_trade')) document.getElementById('is_manual_trade').checked = false;
+            window.renderChart(30); 
+        }
+
+        async function loadHistoryFromDB() {
+            historyData = JSON.parse(localStorage.getItem('q7s3_v2_history') || '[]');
+            if (db && currentUser) {
+                try {
+                    const ref = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'asset_history_v2');
+                    const snapshot = await getDocs(ref);
+                    let fbData = [];
+                    snapshot.forEach(doc => fbData.push(doc.data()));
+                    if(fbData.length > 0) {
+                        fbData.sort((a,b) => a.date.localeCompare(b.date));
+                        historyData = fbData;
+                        localStorage.setItem('q7s3_v2_history', JSON.stringify(fbData));
+                    }
+                } catch(e) {}
+            }
+            window.renderChart(30);
+        }
+
+        window.updateChartFilter = (days, btnEl) => {
+            document.querySelectorAll('.chart-filter-btn').forEach(btn => {
+                btn.className = 'px-2 py-1 text-[8px] sm:text-[9px] font-black rounded bg-zinc-800 text-white shadow-sm chart-filter-btn transition-colors';
+                if(btn !== btnEl) {
+                    btn.className = 'px-2 py-1 text-[8px] sm:text-[9px] font-black rounded text-zinc-500 hover:bg-zinc-800 chart-filter-btn transition-colors';
+                }
+            });
+            window.renderChart(days);
+        }
+
+        window.renderChart = (daysLimit) => {
+            const ctxAsset = document.getElementById('assetHistoryChart').getContext('2d');
+            const ctxWeight = document.getElementById('weightHistoryChart').getContext('2d');
+            const filteredData = historyData.slice(-daysLimit);
+            const labels = filteredData.map(d => d.date.substring(5)); 
+            
+            // 🌟 수정 포인트 1: 과거 데이터에 원금이 없을 경우 현재 입력된 원금을 대체값(Fallback)으로 사용하여 선이 끊기거나 안 보이는 현상 방지
+            const currentP = window.getVal('total_principal') || 0;
+            const principalData = filteredData.map(d => d.principal !== undefined ? d.principal : currentP);
+
+            if(assetChartInstance) assetChartInstance.destroy();
+            assetChartInstance = new window.Chart(ctxAsset, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { 
+                            label: '총 자산', data: filteredData.map(d => d.total), 
+                            borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', 
+                            fill: true, tension: 0.3, borderWidth: 2, 
+                            pointBackgroundColor: '#3b82f6', pointRadius: 2, pointHoverRadius: 4
+                        },
+                        {
+                            label: '누적 원금', data: principalData,
+                            borderColor: '#71717a', borderDash: [4, 4], borderWidth: 1.5,
+                            tension: 0.3, pointRadius: 0, fill: false, spanGaps: true
+                        }
+                    ]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    layout: { padding: { bottom: 5, left: 5 } }, 
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${Math.round(ctx.raw).toLocaleString()} 원` } } }, 
+                    scales: { 
+                        y: { 
+                            beginAtZero: false, 
+                            ticks: { 
+                                font: {size: 9}, 
+                                stepSize: 500000, 
+                                callback: v => {
+                                    if (v >= 100000000) return (v/100000000).toFixed(2) + '억';
+                                    if (v >= 10000) return Math.round(v/10000).toLocaleString() + '만';
+                                    return v.toLocaleString();
+                                }
+                            }, 
+                            grid: { color: 'rgba(255,255,255,0.03)' } 
+                        }, 
+                        x: { 
+                            display: true, 
+                            ticks: { display: false }, 
+                            grid: { display: false } 
+                        } 
+                    } 
+                }
+            });
+
+            const wGhosts = filteredData.map(d => d.w_post_dca !== undefined ? d.w_post_dca : d.w_current);
+            const wFinals = filteredData.map(d => d.w_final !== undefined ? d.w_final : d.w_current);
+            const wAlphas = filteredData.map(d => d.w_alpha ? d.w_alpha : null);
+            
+            const validGhosts = wGhosts.filter(x => x !== null && x !== undefined && !isNaN(x));
+            const validFinals = wFinals.filter(x => x !== null && x !== undefined && !isNaN(x));
+            const validAlphas = wAlphas.filter(x => x !== null && x !== undefined && !isNaN(x));
+            
+            let yMin = 30; let yMax = 90;
+            
+            const pointColors = filteredData.map(d => {
+                if (d.is_manual) return '#a855f7';
+                const wP = d.w_post_dca; const wF = d.w_final;
+                return (wP && wF && Math.abs(wP - wF) > 0.1) ? '#ef4444' : '#f59e0b'; 
+            });
+            const pointStyles = filteredData.map(d => {
+                if (d.is_manual) return 'rectRot';
+                const wP = d.w_post_dca; const wF = d.w_final;
+                return (wP && wF && Math.abs(wP - wF) > 0.1) ? 'triangle' : 'circle'; 
+            });
+            const pointRadii = filteredData.map(d => {
+                if (d.is_manual) return 5;
+                const wP = d.w_post_dca; const wF = d.w_final;
+                return (wP && wF && Math.abs(wP - wF) > 0.1) ? 5 : 2; 
+            });
+
+            if(weightChartInstance) weightChartInstance.destroy();
+            weightChartInstance = new window.Chart(ctxWeight, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: '하단(65%)', data: Array(labels.length).fill(65), borderColor: 'rgba(16, 185, 129, 0.4)', borderWidth: 1, borderDash: [4, 4], pointRadius: 0, fill: false },
+                        { label: '상단(80%)', data: Array(labels.length).fill(80), borderColor: 'rgba(16, 185, 129, 0.4)', borderWidth: 1, borderDash: [4, 4], pointRadius: 0, fill: '-1', backgroundColor: 'rgba(16, 185, 129, 0.05)' },
+                        { label: '원래 비중 (고스트)', data: wGhosts, borderColor: 'rgba(113, 113, 122, 0.5)', backgroundColor: 'transparent', borderWidth: 1.5, borderDash: [4, 4], pointRadius: 0, pointHoverRadius: 0, tension: 0.2 },
+                        { label: '최종 비중', data: wFinals, borderColor: '#f59e0b', backgroundColor: 'transparent', borderWidth: 2, pointBackgroundColor: pointColors, pointBorderColor: pointColors, pointStyle: pointStyles, pointRadius: pointRadii, pointHoverRadius: 5, tension: 0.2, spanGaps: true },
+                        { label: '알파 예상 비중', data: wAlphas, borderColor: 'rgba(239, 68, 68, 0.7)', backgroundColor: 'transparent', borderWidth: 1.5, borderDash: [4, 4], pointBackgroundColor: '#EF4444', pointBorderColor: '#EF4444', pointStyle: 'star', pointRadius: 4, pointHoverRadius: 6, tension: 0.2, spanGaps: false }
+                    ]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+                    layout: { padding: { bottom: 5, left: 5 } },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if(context.datasetIndex !== 3 && context.datasetIndex !== 4) return null; 
+                                    if(context.datasetIndex === 4 && filteredData[context.dataIndex].w_final !== undefined) return null;
+                                    const d = filteredData[context.dataIndex];
+                                    const wC = d.w_current ? d.w_current.toFixed(1) : '-';
+                                    const wP = d.w_post_dca ? d.w_post_dca.toFixed(1) : '-';
+                                    const wF = d.w_final ? d.w_final.toFixed(1) : '-';
+                                    
+                                    let lines = [`🎯 주식 최종 비중: ${wF}%`, `-------------------------`];
+                                    
+                                    if (d.is_manual) {
+                                        lines.push(`⚡ 사용자 수동 개입 (원칙 외 매매)`);
+                                    }
+
+                                    lines.push(`① 기존 비중: ${wC}%`);
+                                    lines.push(`② 적립후 비중: ${wP}%`);
+                                    if (wP !== '-' && wF !== '-' && Math.abs(parseFloat(wP) - parseFloat(wF)) > 0.1) {
+                                        const action = parseFloat(wP) < 65 ? '위기 대응 매수' : '수익 수확 매도';
+                                        lines.push(`③ 🔺 리밸런싱 (${action}) 적용됨`);
+                                    } else {
+                                        lines.push(`③ 관망 (안전 밴드 내 유지)`);
+                                    }
+                                    if (d.w_alpha) lines.push(`④ ⭐ 알파 시뮬레이션: ${d.w_alpha.toFixed(1)}%`);
+                                    return lines;
+                                }
+                            }
+                        }
+                    }, 
+                    scales: { 
+                        y: { 
+                            min: 30, 
+                            max: 90, 
+                            ticks: { font:{size:9}, stepSize: 10, callback: v => v + '%' }, 
+                            grid: { color: 'rgba(255,255,255,0.03)' } 
+                        },
+                        x: { display: true, ticks: {display: false}, grid: {display: false} } 
+                    } 
+                }
+            });
+
+            const underGroups = {};
+            const overGroups = {};
+
+            filteredData.forEach(d => {
+                if (d.w_post_dca === undefined || d.w_final === undefined) return;
+                const diff = d.w_final - d.w_post_dca;
+                if (Math.abs(diff) < 0.01) return; 
+
+                const monthKey = d.date.substring(0, 7); 
+                const displayDate = d.date.substring(5); 
+
+                if (diff > 0) { 
+                    if (!underGroups[monthKey]) underGroups[monthKey] = [];
+                    underGroups[monthKey].push({date: displayDate, diff: diff});
+                } else if (diff < 0) { 
+                    if (!overGroups[monthKey]) overGroups[monthKey] = [];
+                    overGroups[monthKey].push({date: displayDate, diff: diff});
+                }
+            });
+
+            const renderLog = (groups, colorClass, actionText) => {
+                let html = '';
+                const months = Object.keys(groups).sort().reverse(); 
+                if (months.length === 0) return `<div class="text-[10px] text-zinc-600 text-center mt-6">해당 이탈 기록 없음</div>`;
+                
+                months.forEach(m => {
+                    html += `<div class="mb-2">`;
+                    html += `<div class="text-[9px] font-bold text-zinc-400 mb-1 bg-zinc-900/80 px-2 py-1 rounded flex justify-between items-center">
+                                <span>${m}</span>
+                                <span class="bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded-sm">${groups[m].length}회</span>
+                             </div>`;
+                    
+                    const items = [...groups[m]].reverse(); 
+                    items.forEach(item => {
+                        const sign = item.diff > 0 ? '+' : '';
+                        html += `<div class="flex justify-between items-center px-2 py-1.5 border-b border-zinc-800/50 last:border-0 hover:bg-zinc-900/30 transition-colors">
+                            <span class="text-[9px] text-zinc-500 font-num">${item.date}</span>
+                            <span class="text-[9px] font-bold ${colorClass}">${sign}${item.diff.toFixed(1)}%p ${actionText}</span>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                });
+                return html;
+            };
+
+            document.getElementById('log_under_65').innerHTML = renderLog(underGroups, 'text-red-500', '매수 방어');
+            document.getElementById('log_over_80').innerHTML = renderLog(overGroups, 'text-blue-500', '익절 수확');
+        }
+
+        window.getAlphaScore = () => {
+            const vixStr = document.getElementById('api_vix') ? document.getElementById('api_vix').value : '';
+            const fgStr = document.getElementById('api_fg') ? document.getElementById('api_fg').value : '';
+            const rsiStr = document.getElementById('api_rsi') ? document.getElementById('api_rsi').value : '';
+            if (!vixStr && !fgStr && !rsiStr) return -1; 
+            const vix = parseFloat(vixStr) || 0; const fg = parseInt(fgStr) || 0; const rsi = parseFloat(rsiStr) || 0;
+            let score = 0;
+            if (vix >= 30) score++; if (fg > 0 && fg <= 25) score++; if (rsi > 0 && rsi <= 30) score++;
+            return score;
+        };
+
+        window.updateIndicators = () => {
+            const score = window.getAlphaScore();
+            const vix = parseFloat(document.getElementById('api_vix') ? document.getElementById('api_vix').value : 0) || 0;
+            const fg = parseInt(document.getElementById('api_fg') ? document.getElementById('api_fg').value : 0) || 0;
+            const rsi = parseFloat(document.getElementById('api_rsi') ? document.getElementById('api_rsi').value : 0) || 0;
+            const badge = document.getElementById('signal_score_badge');
+            const rec = document.getElementById('signal_recommendation');
+
+            const setStatus = (id, text, colorClass, bgClass) => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.innerText = text;
+                    el.className = `text-[9px] font-bold px-1.5 py-0.5 rounded ${bgClass} ${colorClass}`;
+                }
+            };
+
+            const setGauge = (id, percent) => {
+                const marker = document.getElementById(id);
+                if(marker) marker.style.left = `${percent}%`;
+            };
+
+            if (score === -1) {
+                if(badge) { badge.className = "bg-zinc-800 text-zinc-400 px-2 py-1 rounded-md text-[9px] sm:text-xs font-black transition-all border border-zinc-700 uppercase tracking-wider"; badge.innerText = `대기중`; }
+                if(rec) {
+                    rec.className = "bg-zinc-900/50 border border-zinc-800/50 text-white p-3 sm:p-4 rounded-xl flex items-center transition-all";
+                    rec.innerHTML = `<i class="fa-solid fa-circle-notch text-zinc-600 text-2xl mr-3"></i><div><h4 class="font-black text-sm sm:text-base text-zinc-300">데이터 대기중</h4><p class="text-[10px] sm:text-xs text-zinc-500 mt-0.5">시장 데이터를 동기화하거나 빈칸을 채워주세요.</p></div>`;
+                }
+                setStatus('sig_vix_status', '대기중', 'text-zinc-500', 'bg-zinc-900');
+                setStatus('sig_fg_status', '대기중', 'text-zinc-500', 'bg-zinc-900');
+                setStatus('sig_rsi_status', '대기중', 'text-zinc-500', 'bg-zinc-900');
+                setGauge('vix_marker', 0); setGauge('fg_marker', 50); setGauge('rsi_marker', 50);
+                return;
+            }
+
+            let vixPct = Math.min(Math.max(((vix - 10) / 30) * 100, 0), 100);
+            setGauge('vix_marker', vixPct);
+            if (vix >= 30) setStatus('sig_vix_status', '패닉 (30+)', 'text-red-500', 'bg-red-950/50');
+            else if (vix >= 20) setStatus('sig_vix_status', '경계 (20~29)', 'text-orange-500', 'bg-orange-950/50');
+            else setStatus('sig_vix_status', '안정 (~19)', 'text-emerald-500', 'bg-emerald-950/50');
+
+            let fgPct = Math.min(Math.max(fg, 0), 100);
+            setGauge('fg_marker', fgPct);
+            // 🌟 5구간 세분화 반영
+            if (fg <= 24) setStatus('sig_fg_status', '극단적 공포 (0~24)', 'text-red-500', 'bg-red-950/50');
+            else if (fg <= 44) setStatus('sig_fg_status', '공포 (25~44)', 'text-orange-500', 'bg-orange-950/50');
+            else if (fg <= 55) setStatus('sig_fg_status', '중립 (45~55)', 'text-yellow-500', 'bg-yellow-950/30');
+            else if (fg <= 75) setStatus('sig_fg_status', '탐욕 (56~75)', 'text-emerald-400', 'bg-emerald-950/50');
+            else setStatus('sig_fg_status', '극단적 탐욕 (76~100)', 'text-emerald-600', 'bg-emerald-900/50');
+
+            let rsiPct = Math.min(Math.max(rsi, 0), 100);
+            setGauge('rsi_marker', rsiPct);
+            if (rsi <= 30) setStatus('sig_rsi_status', '과매도 (~30)', 'text-red-500', 'bg-red-950/50');
+            else if (rsi >= 70) setStatus('sig_rsi_status', '과매수 (70+)', 'text-blue-500', 'bg-blue-950/50');
+            else setStatus('sig_rsi_status', '안정 (31~69)', 'text-zinc-400', 'bg-zinc-800/50');
+
+            if (score >= 2) {
+                if(badge) { badge.className = "bg-red-950 text-red-500 px-2 py-1 rounded-md text-[9px] sm:text-xs font-black border border-red-900 shadow-[0_0_10px_rgba(239,68,68,0.3)] uppercase tracking-wider"; badge.innerText = `공포 (Score: ${score}/3)`; }
+                if(rec) {
+                    rec.className = "bg-red-950/40 text-white p-3 sm:p-4 rounded-xl flex items-center shadow-[0_0_20px_rgba(239,68,68,0.15)] transition-all border border-red-900/50";
+                    rec.innerHTML = `<i class="fa-solid fa-fire-flame-curved text-2xl mr-3 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]"></i><div><h4 class="font-black text-sm sm:text-base text-red-100">강력 매수 (Extreme Fear)</h4><p class="text-[10px] sm:text-xs mt-0.5 text-red-400 break-keep">시장에 극도의 공포가 퍼졌습니다. 알파 전략(더블 매수)을 고려해 볼 만한 완벽한 타점입니다.</p></div>`;
+                }
+            } else if (score >= 1) {
+                if(badge) { badge.className = "bg-orange-950 text-orange-500 px-2 py-1 rounded-md text-[9px] sm:text-xs font-black border border-orange-900 uppercase tracking-wider"; badge.innerText = `경계 (Score: ${score}/3)`; }
+                if(rec) {
+                    rec.className = "bg-orange-950/40 text-white p-3 sm:p-4 rounded-xl flex items-center shadow-md transition-all border border-orange-900/50";
+                    rec.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-2xl mr-3 text-orange-500"></i><div><h4 class="font-black text-sm sm:text-base text-orange-100">분할 매수 (Caution)</h4><p class="text-[10px] sm:text-xs mt-0.5 text-orange-400 break-keep">조정장이 진행 중입니다. 기계적 리밸런싱 룰에 따라 하단 밴드 이탈 시 매수를 집행하세요.</p></div>`;
+                }
+            } else {
+                if(badge) { badge.className = "bg-emerald-950 text-emerald-500 px-2 py-1 rounded-md text-[9px] sm:text-xs font-black border border-emerald-900 uppercase tracking-wider"; badge.innerText = `안정 (Score: ${score}/3)`; }
+                if(rec) {
+                    rec.className = "bg-emerald-950/40 text-white p-3 sm:p-4 rounded-xl flex items-center shadow-md transition-all border border-emerald-900/50";
+                    rec.innerHTML = `<i class="fa-solid fa-mug-hot text-2xl mr-3 text-emerald-500"></i><div><h4 class="font-black text-sm sm:text-base text-emerald-100">관망 유지 (Stable)</h4><p class="text-[10px] sm:text-xs mt-0.5 text-emerald-400 break-keep">시장이 평온합니다. 기존 65~80% 밴드 룰을 유지하며 추가 개입은 삼가세요.</p></div>`;
+                }
+            }
+        };
+
+        async function safeFetch(url, timeoutMs = 3500) {
+            const fetchWithTimeout = async (targetUrl) => {
+                const controller = new AbortController();
+                const id = setTimeout(() => controller.abort(), timeoutMs);
+                const response = await fetch(targetUrl, { signal: controller.signal });
+                clearTimeout(id);
+                if (!response.ok) throw new Error("HTTP " + response.status);
+                return response;
+            };
+
+            const proxies = [
+                `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+                `https://corsproxy.io/?url=${encodeURIComponent(url)}`
+            ];
+
+            for (let p of proxies) {
+                try { 
+                    let res = await fetchWithTimeout(p); 
+                    let json = await res.json(); 
+                    if(p.includes('allorigins')) {
+                        if(json.contents) return JSON.parse(json.contents);
+                    } else {
+                        return json;
+                    }
+                } catch(e) {
+                    continue; 
+                }
+            }
+            throw new Error("Proxy failed");
+        }
+
+        window.fetchMarketData = async () => {
+            const btn = document.getElementById('fetch_btn');
+            const originalBtnHtml = '<i class="fa-solid fa-rotate mr-2"></i>개인 DB 동기화';
+            btn.disabled = true;
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>동기화 중...';
+
+            try {
+                const response = await fetch('https://port-0-q7s3-data-fetcher-mmdcyvng998a9d6f.sel3.cloudtype.app/api/data');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const d = await response.json();
+
+                window.setVal('api_fx', d.fx);
+                window.setVal('api_qqqm', d.qqqm);
+                window.setVal('api_qld', d.qld);
+                window.setVal('api_sgov', d.sgov);
+                window.setVal('api_iau', d.iau);
+
+                if(document.getElementById('api_vix')) document.getElementById('api_vix').value = d.vix;
+                if(document.getElementById('api_fg')) document.getElementById('api_fg').value = Math.round(d.fg);
+                if(document.getElementById('api_rsi')) document.getElementById('api_rsi').value = d.rsi;
+
+                ['api_fx', 'api_qqqm', 'api_qld', 'api_sgov', 'api_iau', 'api_vix', 'api_fg', 'api_rsi'].forEach(id => {
+                     const el = document.getElementById(id);
+                     if(el) {
+                         const wrapper = el.closest('.input-group') || el.parentElement;
+                         if(wrapper) wrapper.classList.remove('manual-required');
+                     }
+                });
+
+                if (document.getElementById('last_sync_time') && d.updated_at) {
+                    const dateObj = new Date(d.updated_at);
+                    let timeStr = d.updated_at; 
+                    if (!isNaN(dateObj)) {
+                         timeStr = dateObj.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' + dateObj.toLocaleTimeString('ko-KR', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    }
+                    document.getElementById('last_sync_time').innerHTML = `<i class="fa-regular fa-clock mr-1"></i>최근 동기화: ${timeStr}`;
+                }
+
+                window.calculateAssets();
+                window.updateIndicators();
+                window.saveLocalState();
+
+                window.showToast("최신 시장 데이터 동기화 완료!");
+
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                window.showToast("서버에서 데이터를 불러오는데 실패했습니다.", true);
+            } finally {
+                btn.innerHTML = originalBtnHtml;
+                btn.disabled = false;
+            }
+        };
+
+        window.calculateAssets = () => {
+            const fx = window.getVal('api_fx');
+            const val_q = (window.getVal('h_qqqm') * window.getVal('api_qqqm') + window.getVal('h_qld') * window.getVal('api_qld')) * fx;
+            const val_s = window.getVal('h_sgov') * window.getVal('api_sgov') * fx;
+            const val_iau = window.getVal('h_iau') * window.getVal('api_iau') * fx;
+            const total = val_q + val_s + val_iau;
+            
+            const total_post_dca = total + window.getVal('dca_amount');
+            
+            if(document.getElementById('krw_qqqm')) document.getElementById('krw_qqqm').innerText = `≈ ${window.formatKRW(window.getVal('api_qqqm') * fx)}`;
+            if(document.getElementById('krw_qld')) document.getElementById('krw_qld').innerText = `≈ ${window.formatKRW(window.getVal('api_qld') * fx)}`;
+            if(document.getElementById('krw_sgov')) document.getElementById('krw_sgov').innerText = `≈ ${window.formatKRW(window.getVal('api_sgov') * fx)}`;
+            if(document.getElementById('krw_iau')) document.getElementById('krw_iau').innerText = `≈ ${window.formatKRW(window.getVal('api_iau') * fx)}`;
+            
+            if(document.getElementById('val_qqqm_krw')) document.getElementById('val_qqqm_krw').innerText = `${window.formatKRW(window.getVal('h_qqqm') * window.getVal('api_qqqm') * fx)}`;
+            if(document.getElementById('val_qld_krw')) document.getElementById('val_qld_krw').innerText = `${window.formatKRW(window.getVal('h_qld') * window.getVal('api_qld') * fx)}`;
+            if(document.getElementById('val_sgov_krw')) document.getElementById('val_sgov_krw').innerText = `${window.formatKRW(val_s)}`;
+            if(document.getElementById('val_iau_krw')) document.getElementById('val_iau_krw').innerText = `${window.formatKRW(val_iau)}`;
+
+            if(document.getElementById('val_risk_total')) document.getElementById('val_risk_total').innerText = window.formatKRW(val_q);
+            if(document.getElementById('val_safe_total')) document.getElementById('val_safe_total').innerText = window.formatKRW(val_s + val_iau);
+
+            document.getElementById('total_val_disp').innerHTML = Math.round(total).toLocaleString('ko-KR') + '<span class="text-[14px] sm:text-lg font-medium ml-1 text-zinc-600 inline-block" style="font-family:\'Pretendard\',sans-serif;">원</span>';
+            
+            const weight = total > 0 ? (val_q / total) * 100 : 0;
+            const safe_weight = total > 0 ? ((val_s + val_iau) / total) * 100 : 0;
+            document.getElementById('disp_weight_current').innerText = "Q " + weight.toFixed(1) + "%";
+            if(document.getElementById('disp_safe_current')) document.getElementById('disp_safe_current').innerText = "현금 " + safe_weight.toFixed(1) + "%";
+            document.getElementById('q_bar').style.width = weight + "%";
+            
+            const w_post_dca = total_post_dca > 0 ? (val_q / total_post_dca) * 100 : 0;
+            const safe_post_dca = total_post_dca > 0 ? ((val_s + val_iau + window.getVal('dca_amount')) / total_post_dca) * 100 : 0;
+            document.getElementById('disp_weight_post_dca').innerText = "Q " + w_post_dca.toFixed(1) + "%";
+            if(document.getElementById('disp_safe_post_dca')) document.getElementById('disp_safe_post_dca').innerText = "현금 " + safe_post_dca.toFixed(1) + "%";
+
+            const total_principal = window.getVal('total_principal');
+            const startDateStr = document.getElementById('start_date') ? document.getElementById('start_date').value : '';
+            
+            let cagr = 0;
+            let totalReturn = 0;
+            let hasValidDate = false;
+
+            if (total_principal > 0 && total > 0) {
+                if (startDateStr) {
+                    const [y, m, d] = startDateStr.split('-');
+                    const startDate = new Date(y, m - 1, d);
+                    startDate.setHours(0,0,0,0);
+                    const today = new Date();
+                    today.setHours(0,0,0,0);
+                    
+                    const diffTime = today - startDate;
+                    const days = diffTime >= 0 ? Math.floor(diffTime / (1000 * 60 * 60 * 24)) : 0;
+                    const years = days / 365.25;
+
+                    hasValidDate = true;
+                    totalReturn = ((total / total_principal) - 1) * 100;
+                    
+                    if (years > 0) {
+                        if (years < 1) {
+                            cagr = totalReturn; 
+                        } else {
+                            cagr = (((total / total_principal) ** (1 / years)) - 1) * 100;
+                        }
+                    } else {
+                        cagr = totalReturn;
+                    }
+                }
+            }
+
+            const cagrDisp = document.getElementById('disp_cagr');
+            const returnDisp = document.getElementById('disp_total_return');
+            const cagrBar = document.getElementById('cagr_bar');
+            const cagrMsg = document.getElementById('cagr_msg');
+
+            if (cagrDisp && cagrBar && cagrMsg && returnDisp) {
+                if (total_principal <= 0) {
+                    cagrDisp.innerText = "계산 대기";
+                    cagrDisp.className = "text-sm sm:text-lg font-black text-zinc-600 shrink-0";
+                    returnDisp.innerText = "";
+                    cagrBar.style.width = "0%";
+                    cagrMsg.innerHTML = "💡 <b>[투자금 관리]</b> 탭에서 누적 원금을 입력하세요.";
+                    cagrMsg.className = "text-[9px] sm:text-[10px] font-bold text-zinc-500 bg-zinc-900/50 p-2 sm:p-2.5 rounded-md border border-zinc-800/50 break-keep";
+                } else if (!hasValidDate) {
+                    cagrDisp.innerText = "날짜 필요";
+                    cagrDisp.className = "text-sm sm:text-lg font-black text-zinc-600 shrink-0";
+                    returnDisp.innerText = "";
+                    cagrBar.style.width = "0%";
+                    cagrMsg.innerHTML = "💡 <b>[시장 & 업적]</b> 탭에서 시작일을 설정하세요.";
+                    cagrMsg.className = "text-[9px] sm:text-[10px] font-bold text-zinc-500 bg-zinc-900/50 p-2 sm:p-2.5 rounded-md border border-zinc-800/50 break-keep";
+                } else {
+                    cagrDisp.innerText = cagr.toFixed(1) + "%";
+                    
+                    const totalReturnAmt = total - total_principal;
+                    const sign = totalReturnAmt >= 0 ? '+' : '';
+                    // 🌟 한국식 수익금/수익률 색상 통일 (수익=빨강, 손실=파랑)
+                    const colorClass = totalReturnAmt >= 0 ? 'text-red-500' : 'text-blue-500';
+                    
+                    returnDisp.innerHTML = `(누적 <span class="${colorClass}">${totalReturn > 0 ? '+' : ''}${totalReturn.toFixed(1)}%</span> <span class="text-zinc-600 mx-0.5">|</span> <span class="${colorClass}">${sign}${window.formatKRW(totalReturnAmt)}</span>)`;
+                    
+                    let barPct = (cagr / 20) * 100;
+                    if(cagr < 0) barPct = 0;
+                    if(barPct > 100) barPct = 100;
+                    
+                    cagrBar.style.width = `${barPct}%`;
+                    // 🌟 메인 CAGR 텍스트 컬러도 일괄 적용
+                    cagrDisp.className = `text-xl sm:text-2xl md:text-3xl font-black num-font ${colorClass} shrink-0`;
+
+                    // 🌟 하단 진행바 및 메시지 박스 색상도 한국식 색상 룰에 맞춰 정돈
+                    if (cagr >= 10) {
+                        cagrBar.className = "h-full bg-gradient-to-r from-red-600 to-red-400 transition-all duration-1000 ease-out";
+                        cagrMsg.innerHTML = "🔥 <b>SPY(10%)를 압도하고 있습니다!</b> 시장을 이기는 위대한 투자자입니다.";
+                        cagrMsg.className = "text-[9px] sm:text-[10px] font-bold text-red-400 bg-red-950/40 p-2 sm:p-2.5 rounded-md border border-red-900/50 break-keep";
+                    } else if (cagr >= 0) {
+                        cagrBar.className = "h-full bg-red-500 transition-all duration-1000 ease-out";
+                        cagrMsg.innerHTML = "🐢 <b>순항 중입니다.</b> 복리의 마법이 눈덩이를 굴리기 시작했습니다.";
+                        cagrMsg.className = "text-[9px] sm:text-[10px] font-bold text-red-400 bg-red-950/40 p-2 sm:p-2.5 rounded-md border border-red-900/50 break-keep";
+                    } else {
+                        cagrBar.className = "h-full bg-blue-500 transition-all duration-1000 ease-out";
+                        cagrMsg.innerHTML = "🛠️ <b>페인트가 마르는 중입니다.</b> 하락장은 싼값에 수량을 모으는 기회입니다.";
+                        cagrMsg.className = "text-[9px] sm:text-[10px] font-bold text-blue-400 bg-blue-950/40 p-2 sm:p-2.5 rounded-md border border-blue-900/50 break-keep";
+                    }
+                }
+            }
+
+            window.saveLocalState();
+            return total_post_dca;
+        };
+
+        window.generatePlan = async (shouldSave = true) => {
+            const fx = window.getVal('api_fx');
+            const p_qqqm = window.getVal('api_qqqm');
+            const p_qld = window.getVal('api_qld');
+            const p_sgov = window.getVal('api_sgov');
+            const p_iau = window.getVal('api_iau');
+            const dca = window.getVal('dca_amount');
+            const rsi_val = window.getVal('api_rsi');
+            const fg_val = window.getVal('api_fg');
+            let currentPrincipal = window.getVal('total_principal'); 
+
+            if(!fx || !p_qqqm || !p_qld || !p_sgov || !p_iau) {
+                window.showToast("시장 지표를 모두 입력해야 계산이 가능합니다.", true);
+                document.querySelectorAll('.market-input-target').forEach(el => { if(!el.value) el.closest('.input-group').classList.add('manual-required'); });
+                return;
+            }
+
+            const val_qqqm = window.getVal('h_qqqm') * p_qqqm * fx;
+            const val_qld = window.getVal('h_qld') * p_qld * fx;
+            const val_sgov = window.getVal('h_sgov') * p_sgov * fx;
+            const val_iau = window.getVal('h_iau') * p_iau * fx;
+            const val_q = val_qqqm + val_qld;
+            const total_before = val_q + val_sgov + val_iau;
+            const expected_total = total_before + dca;
+
+            const rsi_html = (rsi_val > 0 && rsi_val <= 30) 
+                ? `<span class="text-red-500 font-black px-1 num-font"><i class="fa-solid fa-triangle-exclamation mr-1"></i>${rsi_val} (과매도)</span>` 
+                : `<span class="font-bold text-zinc-400 px-1 num-font">${rsi_val > 0 ? rsi_val : '데이터 없음'}</span>`;
+
+            document.getElementById('market_briefing').innerHTML = `
+                <p class="text-[10px] sm:text-xs text-zinc-400 break-keep">
+                    <span class="text-blue-500 mr-1 sm:mr-2"><i class="fa-solid fa-lightbulb"></i></span>
+                    <b>[시장 상태]</b> F&G 지수는 <span class="text-white font-black num-font">${fg_val > 0 ? fg_val : '-'}점</span>이며, QQQ RSI는 <b class="num-font">${rsi_html}</b>입니다.
+                </p>
+            `;
+
+            let s1_buy_qqqm = 0, s1_buy_qld = 0, s1_buy_sgov = 0, s1_buy_iau = 0;
+            let step1_msg = "";
+            
+            let def_qqqm = Math.max(0, expected_total * 0.35 - val_qqqm);
+            let def_qld = Math.max(0, expected_total * 0.35 - val_qld);
+            let def_sgov = Math.max(0, expected_total * 0.20 - val_sgov);
+            let def_iau = Math.max(0, expected_total * 0.10 - val_iau);
+            let total_def = def_qqqm + def_qld + def_sgov + def_iau;
+            
+            const w_current = total_before > 0 ? (val_q / total_before) * 100 : 0;
+            const w_post_dca = expected_total > 0 ? (val_q / expected_total) * 100 : 0; 
+            
+            // 🌟 수정 포인트 2: 모바일에서 비중 변화 텍스트가 줄바꿈으로 깨지는 현상을 막기 위해 위/아래(flex-col) 배치로 변경
+            step1_msg = `<div class="flex flex-col gap-3">
+                            <div class="flex items-center justify-center bg-black border border-zinc-800 p-3 sm:p-4 rounded-xl shadow-inner">
+                                <div class="text-center w-full">
+                                    <p class="text-[9px] text-zinc-500 font-bold mb-2 uppercase tracking-widest">DCA 투입 후 포트폴리오 비중 예상</p>
+                                    <div class="flex flex-col sm:flex-row items-center justify-center text-[12px] sm:text-sm font-black num-font gap-1.5 sm:gap-0">
+                                        <div class="flex items-center">
+                                            <span class="text-blue-500/50 line-through mr-1.5">Q ${w_current.toFixed(1)}%</span>
+                                            <i class="fa-solid fa-arrow-right text-zinc-600 mx-1 text-[10px]"></i>
+                                            <span class="text-blue-400 ml-1.5">Q <span id="summary_q_post">0.0</span>%</span>
+                                        </div>
+                                        <span class="text-zinc-700 hidden sm:inline-block mx-4">|</span>
+                                        <div class="flex items-center">
+                                            <span class="text-emerald-500/50 line-through mr-1.5">S ${(100 - w_current).toFixed(1)}%</span>
+                                            <i class="fa-solid fa-arrow-right text-zinc-600 mx-1 text-[10px]"></i>
+                                            <span class="text-emerald-400 ml-1.5">S <span id="summary_s_post">0.0</span>%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+
+            if (dca > 0) {
+                if (total_def > 0) {
+                    s1_buy_qqqm = dca * (def_qqqm / total_def);
+                    s1_buy_qld = dca * (def_qld / total_def);
+                    s1_buy_sgov = dca * (def_sgov / total_def);
+                    s1_buy_iau = dca * (def_iau / total_def);
+                    step1_msg += `<div class="flex items-start px-1"><i class="fa-solid fa-scale-balanced text-blue-500 mt-0.5 mr-2 sm:mr-3 text-sm sm:text-lg"></i><div class="w-full break-keep text-[10px] sm:text-xs text-zinc-300">목표 비중(주식 70% : 현금 30%)에 맞추어 적립금 <span class="font-black text-blue-400 num-font">${window.formatKRW(dca)}</span>을 분할 배정합니다.</div></div>`;
+                } else {
+                    s1_buy_sgov = dca;
+                    step1_msg += `<div class="flex items-start px-1"><i class="fa-solid fa-shield-halved text-emerald-500 mt-0.5 mr-2 sm:mr-3 text-sm sm:text-lg"></i><div class="w-full break-keep text-[10px] sm:text-xs text-zinc-300">모든 자산이 목표치를 초과하여, 적립금 전액을 현금 비중인 <b>SGOV</b>에 비축합니다.</div></div>`;
+                }
+
+                const w_qqqm_curr = total_before > 0 ? (val_qqqm / total_before) * 100 : 0;
+                const w_qld_curr = total_before > 0 ? (val_qld / total_before) * 100 : 0;
+                const w_sgov_curr = total_before > 0 ? (val_sgov / total_before) * 100 : 0;
+                const w_iau_curr = total_before > 0 ? (val_iau / total_before) * 100 : 0;
+
+                const w_qqqm_post = expected_total > 0 ? ((val_qqqm + s1_buy_qqqm) / expected_total) * 100 : 0;
+                const w_qld_post = expected_total > 0 ? ((val_qld + s1_buy_qld) / expected_total) * 100 : 0;
+                const w_sgov_post = expected_total > 0 ? ((val_sgov + s1_buy_sgov) / expected_total) * 100 : 0;
+                const w_iau_post = expected_total > 0 ? ((val_iau + s1_buy_iau) / expected_total) * 100 : 0;
+
+                let details = [];
+                const pushDetail = (name, amt, colorClass, wCurr, wPost) => {
+                    let wChangeHtml = `<div class="text-[8px] sm:text-[9px] text-zinc-500 font-normal mt-0.5 num-font">비중: <span class="line-through opacity-70 mr-0.5">${wCurr.toFixed(1)}%</span>➔<span class="font-bold text-zinc-300 ml-0.5">${wPost.toFixed(1)}%</span></div>`;
+                    if (amt > 0) {
+                        details.push(`<div class="flex justify-between items-center bg-zinc-950 p-2 sm:p-2.5 rounded-lg border border-zinc-800 gap-2"><div class="flex flex-col shrink-0"><span class="${colorClass} font-bold text-[9px] sm:text-[10px] num-font">${name}</span>${wChangeHtml}</div> <span class="font-black text-white text-[11px] sm:text-xs num-font break-all text-right">${window.formatKRW(amt)}</span></div>`);
+                    } else {
+                        details.push(`<div class="flex justify-between items-center bg-zinc-950/40 p-2 sm:p-2.5 rounded-lg border border-zinc-900 opacity-70 gap-2"><div class="flex flex-col shrink-0"><span class="text-zinc-600 font-bold text-[9px] sm:text-[10px] num-font">${name}</span>${wChangeHtml}</div> <span class="text-zinc-700 text-[8px] sm:text-[9px] font-bold text-right break-all shrink-0">목표 초과 (0원)</span></div>`);
+                    }
+                };
+
+                pushDetail('QQQM (목표 35%)', s1_buy_qqqm, 'text-indigo-400', w_qqqm_curr, w_qqqm_post);
+                pushDetail('QLD (목표 35%)', s1_buy_qld, 'text-blue-500', w_qld_curr, w_qld_post);
+                pushDetail('SGOV (목표 20%)', s1_buy_sgov, 'text-emerald-500', w_sgov_curr, w_sgov_post);
+                pushDetail('IAU (목표 10%)', s1_buy_iau, 'text-yellow-500', w_iau_curr, w_iau_post);
+                
+                step1_msg += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 w-full">${details.join('')}</div></div>`;
+            } else {
+                step1_msg += `<div class="text-zinc-600 italic text-center py-2 text-[10px] sm:text-xs">이번 달은 투입되는 적립금(DCA)이 없습니다.</div></div>`;
+            }
+            document.getElementById('plan_step1').innerHTML = step1_msg;
+
+            const post_val_qqqm = val_qqqm + s1_buy_qqqm;
+            const post_val_qld = val_qld + s1_buy_qld;
+            const post_val_sgov = val_sgov + s1_buy_sgov;
+            const post_val_iau = val_iau + s1_buy_iau;
+            const post_q = post_val_qqqm + post_val_qld;
+            const post_total = post_q + post_val_sgov + post_val_iau;
+            
+            const actual_w_post_dca = post_total > 0 ? (post_q / post_total) * 100 : 0;
+            const safe_post_dca = post_total > 0 ? ((post_val_sgov + post_val_iau) / post_total) * 100 : 0;
+            
+            if(document.getElementById('summary_q_post')) document.getElementById('summary_q_post').innerText = actual_w_post_dca.toFixed(1);
+            if(document.getElementById('summary_s_post')) document.getElementById('summary_s_post').innerText = safe_post_dca.toFixed(1);
+
+            document.getElementById('disp_weight_post_dca').innerText = "Q " + actual_w_post_dca.toFixed(1) + "%";
+            if(document.getElementById('disp_safe_post_dca')) document.getElementById('disp_safe_post_dca').innerText = "현금 " + safe_post_dca.toFixed(1) + "%";
+
+            let step2_msg = "", step2_class = "";
+            let s2_buy_qld = 0, s2_sell_qld = 0, s2_sell_qqqm = 0, s2_sell_sgov = 0, s2_buy_sgov = 0, s2_sell_iau = 0, s2_buy_iau = 0;
+
+            let final_weight = actual_w_post_dca;
+            let globalAlphaAmt = 0;
+            let globalAlphaWeight = null;
+            const currentAlphaScore = window.getAlphaScore();
+
+            if (actual_w_post_dca < 65) {
+                const target_buy_amt = post_total * ((70 - actual_w_post_dca)/100) * 0.5;
+                const safe_assets = post_val_sgov + post_val_iau;
+                const min_safe_req = post_total * 0.10; 
+                const max_spendable = Math.max(0, safe_assets - min_safe_req);
+                const actual_buy_amt = Math.min(target_buy_amt, max_spendable);
+                s2_buy_qld = actual_buy_amt;
+
+                s2_sell_sgov = Math.min(actual_buy_amt, post_val_sgov);
+                let remaining_needed = actual_buy_amt - s2_sell_sgov;
+                if (remaining_needed > 0) s2_sell_iau = Math.min(remaining_needed, post_val_iau);
+
+                final_weight = ((post_q + actual_buy_amt) / post_total) * 100;
+
+                let safety_warning = max_spendable < target_buy_amt ? `<div class="mt-2 text-[9px] sm:text-[10px] text-red-500 font-bold bg-red-950/50 p-2 rounded border border-red-900 break-keep">⚠️ 10% 안전장치 발동: 현금 고갈을 막기 위해 매수 금액이 조절되었습니다.</div>` : "";
+                
+                let panelB_html = "";
+
+                if (currentAlphaScore >= 2) {
+                    const available_for_alpha = Math.max(0, post_val_sgov + post_val_iau - actual_buy_amt - min_safe_req); 
+                    const alpha_amt = Math.min(target_buy_amt, available_for_alpha); 
+                    globalAlphaAmt = alpha_amt;
+                    globalAlphaWeight = ((post_q + actual_buy_amt + alpha_amt) / post_total) * 100;
+
+                    if (alpha_amt > 0) {
+                        panelB_html = `
+                        <div class="bg-red-950/30 border border-red-900/80 rounded-xl p-4 sm:p-5 shadow-[0_0_20px_rgba(239,68,68,0.1)] relative overflow-hidden transition-all mt-4">
+                            <div class="absolute top-0 right-0 bg-red-600 text-white text-[8px] sm:text-[9px] font-black px-2 py-1 rounded-bl-lg uppercase shadow-sm">선택 사항</div>
+                            <div class="flex items-center mb-2 sm:mb-3"><i class="fa-solid fa-bolt text-red-500 text-lg sm:text-xl mr-2 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]"></i><h5 class="text-xs sm:text-sm font-black text-red-100">Panel B: 🚨 알파(α) 투자 권고</h5></div>
+                            <p class="text-[10px] sm:text-[11px] text-red-200/80 mb-2 sm:mb-3 leading-relaxed break-keep">극도의 공포 구간입니다. 반등 화력을 높이기 위해 아래 금액을 <b class="underline decoration-red-500 text-red-400">'추가로'</b> 매수하실 것을 제안합니다.</p>
+                            
+                            <div class="bg-black/50 border border-red-900/50 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
+                                <span class="font-bold text-red-400 text-[10px] sm:text-xs shrink-0">안전자산 매도 ➔ QLD 매수</span>
+                                <span class="font-black text-red-500 text-sm sm:text-lg num-font break-all text-right">${window.formatKRW(alpha_amt)}</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-center p-2 bg-zinc-950/80 border border-zinc-800 rounded-md">
+                                <span class="text-yellow-500 mr-1.5 text-xs"><i class="fa-solid fa-lightbulb"></i></span>
+                                <span class="text-[8px] sm:text-[10px] font-bold text-zinc-400 break-keep">알파 매수 후 나스닥 비중: <span class="text-white num-font">${final_weight.toFixed(1)}%</span> ➔ <b class="text-red-500 num-font">${globalAlphaWeight.toFixed(1)}%</b></span>
+                            </div>
+                        </div>`;
+                    } else {
+                        panelB_html = `
+                        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 shadow-sm relative overflow-hidden transition-all opacity-90 mt-4">
+                            <div class="absolute top-0 right-0 bg-red-600 text-white text-[8px] font-black px-2 py-1 rounded-bl-lg uppercase">매수 차단</div>
+                            <div class="flex items-center mb-2"><i class="fa-solid fa-shield-halved text-red-500 text-sm mr-2"></i><h5 class="text-[11px] sm:text-xs font-black text-red-400">Panel B: 🚨 알파(α) 매수 차단</h5></div>
+                            <p class="text-[9px] sm:text-[10px] text-zinc-500 leading-relaxed break-keep">조건은 충족되었으나 <b>안전자산이 10% 방어선에 도달</b>하여, 추가 매수를 강제로 차단합니다.</p>
+                        </div>`;
+                    }
+                } else {
+                    globalAlphaAmt = 0;
+                    globalAlphaWeight = null;
+                    panelB_html = `
+                    <div class="bg-black border border-zinc-900 rounded-xl p-4 shadow-sm relative overflow-hidden transition-all opacity-80 mt-4">
+                        <div class="absolute top-0 right-0 bg-zinc-800 text-zinc-400 text-[8px] font-black px-2 py-1 rounded-bl-lg uppercase">대기 중</div>
+                        <div class="flex items-center mb-2"><i class="fa-solid fa-lock text-zinc-600 text-sm mr-2"></i><h5 class="text-[11px] sm:text-xs font-black text-zinc-500">Panel B: 알파(α) 투자 잠금</h5></div>
+                        <p class="text-[9px] sm:text-[10px] text-zinc-600 leading-relaxed break-keep">알파 스코어 미달. 기계적 필수 매수만 집행하고 관망하세요.</p>
+                    </div>`;
+                }
+
+                step2_msg = `
+                <div class="bg-zinc-900 border border-red-900/40 rounded-xl p-4 sm:p-5 shadow-sm">
+                    <div class="flex items-center mb-2"><i class="fa-solid fa-triangle-exclamation text-red-500 text-lg sm:text-xl mr-2"></i><h5 class="text-xs sm:text-sm font-black text-white">Case A: 위기 대응 (하단 이탈)</h5></div>
+                    <p class="text-[10px] sm:text-[11px] text-zinc-400 mb-3 leading-relaxed break-keep">주식 비중이 65% 미만으로 하락했습니다. 70%와의 격차 중 <b>딱 절반</b>만 복구하도록 <span class="text-blue-500 font-bold">QLD를 집중 매수</span>합니다. <span class="text-[8px] sm:text-[9px] text-zinc-600">(1순위 SGOV 소진, 부족 시 2순위 IAU 매도)</span></p>
+                    
+                    <div class="bg-red-950/50 border border-red-900/50 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
+                        <span class="font-bold text-red-400 text-[10px] sm:text-[11px] shrink-0">현금 비중 매도 ➔ QLD 매수</span>
+                        <span class="font-black text-red-500 text-sm sm:text-lg num-font break-all text-right">${window.formatKRW(actual_buy_amt)}</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-center p-2 bg-black border border-zinc-800 rounded-md">
+                        <span class="text-[9px] sm:text-[10px] font-bold text-zinc-400">💡 매수 후 예상 나스닥 비중: <span class="text-white num-font">${actual_w_post_dca.toFixed(1)}%</span> ➔ <b class="text-red-500 num-font">${final_weight.toFixed(1)}%</b></span>
+                    </div>
+                    
+                    ${safety_warning}
+                </div>
+                ${panelB_html}`;
+                step2_class = "border-none p-0";
+            } else if (actual_w_post_dca > 80) {
+                const sell_amt = post_q - (post_total * 0.70);
+                
+                let temp_adj = sell_amt;
+                if (post_val_qld > post_val_qqqm) {
+                    const extra_qld = post_val_qld - post_val_qqqm;
+                    const qld_to_sell = Math.min(temp_adj, extra_qld);
+                    s2_sell_qld = qld_to_sell;
+                    temp_adj -= qld_to_sell;
+                }
+                if (temp_adj > 0) { 
+                    s2_sell_qld += temp_adj * 0.5; 
+                    s2_sell_qqqm += temp_adj * 0.5; 
+                }
+
+                s2_buy_sgov = sell_amt * (2/3);
+                s2_buy_iau = sell_amt * (1/3);
+
+                final_weight = ((post_q - sell_amt) / post_total) * 100;
+
+                let extra_warning = "";
+                if (currentAlphaScore >= 2) {
+                    extra_warning = `<div class="bg-red-950/50 p-2 sm:p-3 rounded-lg mt-2 sm:mt-3 border border-red-900/50 text-[8px] sm:text-[10px] text-red-500 shadow-sm break-keep"><b>💡 AI 경고:</b> 공포 신호가 떴지만, 계좌의 나스닥 비중이 너무 높은 상태이므로 알파 매수를 차단하고 기계적 익절을 우선 실행합니다.</div>`;
+                }
+
+                step2_msg = `
+                <div class="bg-zinc-900 border border-emerald-900/40 rounded-xl p-4 sm:p-5 shadow-sm">
+                    <div class="flex items-center mb-2"><i class="fa-solid fa-wheat-awn text-emerald-500 text-lg sm:text-xl mr-2"></i><h5 class="text-xs sm:text-sm font-black text-white">Case B: 수익 수확 (상단 80% 돌파)</h5></div>
+                    <p class="text-[10px] sm:text-[11px] text-zinc-400 mb-3 leading-relaxed break-keep">비중 80%를 초과한 과열 구간입니다. 초과된 주식 평가액 <b>전량</b>을 매도하여 <b>정확히 70% 타겟 비중으로 복귀</b>합니다. <span class="text-[8px] sm:text-[9px] text-zinc-600">(확보된 현금은 SGOV와 IAU에 2:1 비율로 비축, 내부 밸런싱을 위해 QLD 우선 매도)</span></p>
+                    
+                    <div class="bg-emerald-950/30 border border-emerald-900/50 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
+                        <span class="font-bold text-emerald-500 text-[10px] sm:text-[11px] shrink-0">주식(Q) 매도 ➔ 현금 비중 매수</span>
+                        <span class="font-black text-emerald-500 text-sm sm:text-lg num-font break-all text-right">${window.formatKRW(sell_amt)}</span>
+                    </div>
+
+                    <div class="flex items-center justify-center p-2 bg-black border border-zinc-800 rounded-md">
+                        <span class="text-[9px] sm:text-[10px] font-bold text-zinc-400">💡 매도 후 예상 나스닥 비중: <span class="text-white num-font">${actual_w_post_dca.toFixed(1)}%</span> ➔ <b class="text-emerald-500 num-font">${final_weight.toFixed(1)}%</b></span>
+                    </div>
+
+                    ${extra_warning}
+                </div>`;
+                step2_class = "border-none p-0";
+            } else {
+                step2_msg = `<div class="flex items-center p-4 bg-zinc-900 border border-zinc-800 rounded-xl"><i class="fa-solid fa-mug-hot text-emerald-500 text-xl sm:text-2xl mr-3"></i><div><p class="text-white font-black text-[11px] sm:text-sm mb-0.5">관망 유지 (안전 지대)</p><p class="text-[9px] sm:text-[10px] text-zinc-500 break-keep">현재 비중이 안전 밴드(65~80%) 내에 있습니다. 추가 매매를 삼가십시오.</p></div></div>`;
+                step2_class = "border-none p-0";
+                final_weight = actual_w_post_dca;
+            }
+            
+            document.getElementById('plan_step2').innerHTML = step2_msg;
+            document.getElementById('plan_step2').className = `transition-colors ${step2_class}`;
+            
+            document.getElementById('disp_weight_final').innerText = "Q " + final_weight.toFixed(1) + "%";
+            const final_safe_weight = 100 - final_weight;
+            if(document.getElementById('disp_safe_final')) document.getElementById('disp_safe_final').innerText = "현금 " + final_safe_weight.toFixed(1) + "%";
+            document.getElementById('q_bar').style.width = final_weight + "%";
+
+            let s2_alpha_sell_sgov = 0, s2_alpha_sell_iau = 0;
+            if (globalAlphaAmt > 0) {
+                 const current_sgov_rem = post_val_sgov - s2_sell_sgov;
+                 s2_alpha_sell_sgov = Math.min(globalAlphaAmt, current_sgov_rem);
+                 const alpha_rem = globalAlphaAmt - s2_alpha_sell_sgov;
+                 if(alpha_rem > 0) s2_alpha_sell_iau = Math.min(alpha_rem, post_val_iau - s2_sell_iau);
+            }
+
+            const orders = [
+                { t: 'QQQM', net: s1_buy_qqqm - s2_sell_qqqm, p: p_qqqm * fx, c: 'text-indigo-400' },
+                { t: 'QLD', net: s1_buy_qld + s2_buy_qld - s2_sell_qld, p: p_qld * fx, c: 'text-blue-500' },
+                { t: 'SGOV', net: s1_buy_sgov + s2_buy_sgov - s2_sell_sgov, p: p_sgov * fx, c: 'text-emerald-500' },
+                { t: 'IAU', net: s1_buy_iau + s2_buy_iau - s2_sell_iau, p: p_iau * fx, c: 'text-yellow-500' }
+            ];
+
+            let html = "";
+            orders.forEach(o => {
+                if (Math.abs(o.net) > 500 && o.p > 0) {
+                    const isBuy = o.net > 0;
+                    const shares = (Math.abs(o.net) / o.p).toFixed(2);
+                    html += `<div class="bg-black border border-zinc-800 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between hover:border-zinc-700 transition-colors gap-2">
+                        <div class="flex items-center min-w-max shrink-0"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg ${isBuy?'bg-red-950/50 text-red-500':'bg-blue-950/50 text-blue-500'} flex items-center justify-center mr-3 text-sm sm:text-base border ${isBuy?'border-red-900/50':'border-blue-900/50'}"><i class="fa-solid ${isBuy?'fa-cart-arrow-down':'fa-hand-holding-dollar'}"></i></div>
+                        <div class="text-left"><p class="text-[8px] sm:text-[9px] font-black uppercase tracking-widest ${isBuy?'text-red-500':'text-blue-500'} mb-0.5">${isBuy?'Buy 매수':'Sell 매도'}</p><p class="text-sm sm:text-lg font-black ${o.c} num-font">${o.t}</p></div></div>
+                        <div class="text-right flex-grow"><p class="text-base sm:text-2xl font-black ${isBuy?'text-red-500':'text-blue-500'} num-font break-all">${shares}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-50 font-bold text-zinc-400 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-600 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(Math.abs(o.net))}</p></div></div>`;
+                }
+            });
+
+            if (globalAlphaAmt > 0) {
+                 const alpha_qld_sh = (globalAlphaAmt / (p_qld * fx)).toFixed(2);
+                 const alpha_sgov_sh = (s2_alpha_sell_sgov / (p_sgov * fx)).toFixed(2);
+                 const alpha_iau_sh = (s2_alpha_sell_iau / (p_iau * fx)).toFixed(2);
+                 
+                 html += `<div class="mt-4 sm:mt-6 pt-4 sm:pt-5 border-t border-dashed border-red-900/50">
+                    <h5 class="text-red-500 font-black mb-2 sm:mb-3 text-left text-[10px] sm:text-xs"><i class="fa-solid fa-plus-circle mr-1.5"></i>[선택] 알파(α) 투자 추가 주문</h5>
+                    <div class="space-y-2">
+                        <div class="bg-red-950/20 border border-red-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-red-500 border border-zinc-800"><i class="fa-solid fa-cart-plus"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-red-500 bg-red-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Buy 추가 매수</p><p class="text-sm sm:text-lg font-black text-zinc-200 num-font">QLD</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-red-500 num-font break-all">${alpha_qld_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(globalAlphaAmt)}</p></div></div>`;
+                 
+                 if (s2_alpha_sell_sgov > 0) {
+                    html += `<div class="bg-blue-950/20 border border-blue-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-blue-500 border border-zinc-800"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-blue-500 bg-blue-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Sell 추가 매도</p><p class="text-sm sm:text-lg font-black text-zinc-200 num-font">SGOV</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-blue-500 num-font break-all">${alpha_sgov_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(s2_alpha_sell_sgov)}</p></div></div>`;
+                 }
+                 if (s2_alpha_sell_iau > 0) {
+                    html += `<div class="bg-blue-950/20 border border-blue-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-blue-500 border border-zinc-800"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-blue-500 bg-blue-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Sell 추가 매도</p><p class="text-sm sm:text-lg font-black text-zinc-200 num-font">IAU</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-blue-500 num-font break-all">${alpha_iau_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(s2_alpha_sell_iau)}</p></div></div>`;
+                 }
+                 html += `</div></div>`;
+            }
+
+            document.getElementById('final_order_list').innerHTML = html || '<div class="p-4 sm:p-6 bg-black rounded-xl border border-zinc-800 text-center"><i class="fa-solid fa-mug-hot text-xl sm:text-2xl text-zinc-700 mb-2"></i><p class="text-[10px] sm:text-[11px] text-zinc-500 font-bold">이번 달은 매매 지시가 없습니다.</p></div>';
+            document.getElementById('plan_section').classList.remove('hidden');
+            setTimeout(() => { document.getElementById('plan_section').scrollIntoView({ behavior: 'smooth' }); }, 100);
+            
+            if(shouldSave) {
+                const currentDca = window.getVal('dca_amount');
+                let finalPrincipal = currentPrincipal; 
+                if (currentDca > 0) {
+                    finalPrincipal = currentPrincipal + currentDca;
+                    window.setVal('total_principal', finalPrincipal, true);
+                    window.setVal('dca_amount', 0, true);
+                    window.calculateAssets(); 
+                }
+
+                await saveAssetToDB(post_total, w_current, actual_w_post_dca, final_weight, globalAlphaWeight, finalPrincipal);
+                window.showToast("매매 가이드 확정 및 DB 저장 완료");
+            } else {
+                window.showToast("시뮬레이션 완료 (DB 미저장)", false, true);
+            }
+        };
+
+        window.onload = () => {
+            const str = localStorage.getItem('q7s3_v2_core');
+            if(str) {
+                const d = JSON.parse(str);
+                window.setVal('h_qqqm', d.h_qqqm); window.setVal('h_qld', d.h_qld); 
+                window.setVal('h_sgov', d.h_sgov); window.setVal('h_iau', d.h_iau !== undefined ? d.h_iau : d.h_gld); 
+                window.setVal('dca_amount', d.dca, true); 
+                window.setVal('total_principal', d.total_principal || 0, true);
+                
+                window.setVal('api_fx', d.fx);
+                window.setVal('api_qqqm', d.p_qqqm);
+                window.setVal('api_qld', d.p_qld);
+                window.setVal('api_sgov', d.p_sgov);
+                window.setVal('api_iau', d.p_iau);
+                
+                if(document.getElementById('api_fg')) document.getElementById('api_fg').value = d.fg || '';
+                if(document.getElementById('api_vix')) document.getElementById('api_vix').value = d.vix || '';
+                if(document.getElementById('api_rsi')) document.getElementById('api_rsi').value = d.rsi || '';
+                if(document.getElementById('start_date') && d.start_date) document.getElementById('start_date').value = d.start_date;
+                if(d.last_sync && document.getElementById('last_sync_time')) document.getElementById('last_sync_time').innerHTML = d.last_sync;
+            }
+            window.updateTrophyRoom(); 
+            loadHistoryFromDB();
+            window.calculateAssets(); 
+            window.updateIndicators(); 
+        };
+    </script>
+</body>
+</html>
