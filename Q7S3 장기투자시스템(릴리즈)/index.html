@@ -75,7 +75,7 @@
 
     <div class="max-w-[1400px] mx-auto px-4 pt-6 md:pt-8 relative">
         <div class="absolute top-2 right-4 md:top-6 md:right-8 text-[10px] sm:text-xs font-bold text-zinc-500 bg-zinc-900/80 px-3 py-1.5 rounded-full border border-zinc-800 shadow-sm z-50 backdrop-blur-md">
-            by에이미, ver2.2 (UI Hotfix)
+            by에이미, ver2.3 (Date Sort Fix)
         </div>
 
         <header class="mb-6 text-center mt-4 md:mt-0">
@@ -113,6 +113,7 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-5 items-stretch">
+                    <!-- VIX 눈금 개선 -->
                     <div class="bg-black border border-zinc-800 p-4 rounded-xl shadow-inner flex flex-col justify-between relative">
                         <div class="flex justify-between items-center mb-1">
                             <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">VIX 공포지수</p>
@@ -131,6 +132,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- F&G 5구간 세분화 -->
                     <div class="bg-black border border-zinc-800 p-4 rounded-xl shadow-inner flex flex-col justify-between relative">
                         <div class="flex justify-between items-center mb-1">
                             <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Fear & Greed</p>
@@ -151,6 +153,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- RSI 눈금 개선 -->
                     <div class="bg-black border border-zinc-800 p-4 rounded-xl shadow-inner flex flex-col justify-between relative">
                         <div class="flex justify-between items-center mb-1">
                             <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">QQQ RSI (14)</p>
@@ -181,6 +184,7 @@
             </section>
 
             <section class="card p-4 sm:p-6">
+                <!-- 동기화 버튼 및 최근 동기화 시간 표시 -->
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
                     <div class="flex flex-col">
                         <h2 class="text-base sm:text-lg font-extrabold text-white flex items-center">
@@ -335,7 +339,7 @@
                                             <span class="text-[9px] font-bold text-zinc-600 whitespace-nowrap shrink-0">SPY 목표: 10%</span>
                                         </div>
                                         
-                                        <!-- 🌟 줄바꿈 방어 및 수익금 실시간 표시 -->
+                                        <!-- 줄바꿈 방어 및 수익금 실시간 표시 -->
                                         <div class="flex flex-wrap items-baseline gap-x-1.5 gap-y-1 mb-2 w-full overflow-hidden">
                                             <span class="text-[10px] font-bold text-zinc-500 pb-0.5 shrink-0">내 연평균(CAGR)</span>
                                             <span class="text-xl sm:text-2xl md:text-3xl font-black num-font text-zinc-300 leading-none shrink-0" id="disp_cagr">대기중</span>
@@ -600,6 +604,16 @@
         
         window.formatKRW = (n) => Math.round(n).toLocaleString('ko-KR') + "원";
         
+        // 🌟 날짜 정규화 함수 (모든 데이터를 YYYY-MM-DD 로 통일)
+        window.normalizeDate = (dateStr) => {
+            if (!dateStr) return dateStr;
+            const parts = dateStr.split('-');
+            if (parts.length === 3) {
+                return `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
+            }
+            return dateStr;
+        };
+
         window.showToast = (m, e=false, neutral=false) => { 
             const c=document.getElementById('toast_container'), t=document.createElement('div'); 
             let styles = neutral ? 'bg-zinc-800 border-zinc-700' : (e ? 'bg-red-950 border-red-900' : 'bg-zinc-900 border-zinc-800');
@@ -782,8 +796,15 @@
             container.innerHTML = progressHtml + badgesHtml;
         };
 
+        // 🌟 수정: 무조건 YYYY-MM-DD 형태로 저장하여 정렬 오류 완벽 차단
         async function saveAssetToDB(totalAsset, wCurrent, wPostDca, wFinal, wAlpha, principal) {
-            const today = new Date().toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }).replace(/\. /g, '-').replace('.', '');
+            const now = new Date();
+            const krTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3600000 * 9));
+            const y = krTime.getFullYear();
+            const m = String(krTime.getMonth() + 1).padStart(2, '0');
+            const dStr = String(krTime.getDate()).padStart(2, '0');
+            const today = `${y}-${m}-${dStr}`; // 무조건 2026-03-10 형태 유지
+
             const isManual = document.getElementById('is_manual_trade') ? document.getElementById('is_manual_trade').checked : false;
             const data = { 
                 date: today, total: totalAsset, 
@@ -793,12 +814,18 @@
                 principal: principal,
                 timestamp: Date.now() 
             };
+            
             let localHist = JSON.parse(localStorage.getItem('q7s3_v2_history') || '[]');
-            const idx = localHist.findIndex(h => h.date === today);
-            if (idx >= 0) localHist[idx] = data; else localHist.push(data);
-            localHist.sort((a,b) => a.date.localeCompare(b.date));
+            let histMap = {};
+            // 과거 데이터(예: 2026-3-10)가 있다면 여기서 모두 2026-03-10 으로 청소됨
+            localHist.forEach(h => { histMap[window.normalizeDate(h.date)] = h; });
+            histMap[today] = data; // 오늘 데이터 덮어쓰기/추가
+            
+            localHist = Object.values(histMap);
+            localHist.sort((a,b) => a.date.localeCompare(b.date)); // 자릿수가 같으므로 localeCompare가 완벽하게 작동
             localStorage.setItem('q7s3_v2_history', JSON.stringify(localHist));
             historyData = localHist;
+            
             if (db && currentUser) {
                 try {
                     const ref = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'asset_history_v2');
@@ -809,20 +836,28 @@
             window.renderChart(30); 
         }
 
+        // 🌟 로드 시에도 더티 데이터 자동 청소 및 재정렬
         async function loadHistoryFromDB() {
-            historyData = JSON.parse(localStorage.getItem('q7s3_v2_history') || '[]');
+            let localHist = JSON.parse(localStorage.getItem('q7s3_v2_history') || '[]');
+            let histMap = {};
+            localHist.forEach(h => { histMap[window.normalizeDate(h.date)] = h; });
+            
             if (db && currentUser) {
                 try {
                     const ref = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'asset_history_v2');
                     const snapshot = await getDocs(ref);
-                    let fbData = [];
-                    snapshot.forEach(doc => fbData.push(doc.data()));
-                    if(fbData.length > 0) {
-                        fbData.sort((a,b) => a.date.localeCompare(b.date));
-                        historyData = fbData;
-                        localStorage.setItem('q7s3_v2_history', JSON.stringify(fbData));
-                    }
+                    snapshot.forEach(doc => {
+                        let d = doc.data();
+                        histMap[window.normalizeDate(d.date)] = d;
+                    });
                 } catch(e) {}
+            }
+            
+            historyData = Object.values(histMap);
+            historyData.sort((a,b) => a.date.localeCompare(b.date)); // 완벽 정렬
+            
+            if(historyData.length > 0) {
+                localStorage.setItem('q7s3_v2_history', JSON.stringify(historyData));
             }
             window.renderChart(30);
         }
@@ -841,9 +876,8 @@
             const ctxAsset = document.getElementById('assetHistoryChart').getContext('2d');
             const ctxWeight = document.getElementById('weightHistoryChart').getContext('2d');
             const filteredData = historyData.slice(-daysLimit);
-            const labels = filteredData.map(d => d.date.substring(5)); 
+            const labels = filteredData.map(d => d.date.substring(5)); // 이제 무조건 03-10 처럼 예쁘게 나옴
             
-            // 🌟 수정 포인트 1: 과거 데이터에 원금이 없을 경우 현재 입력된 원금을 대체값(Fallback)으로 사용하여 선이 끊기거나 안 보이는 현상 방지
             const currentP = window.getVal('total_principal') || 0;
             const principalData = filteredData.map(d => d.principal !== undefined ? d.principal : currentP);
 
@@ -896,12 +930,6 @@
             const wGhosts = filteredData.map(d => d.w_post_dca !== undefined ? d.w_post_dca : d.w_current);
             const wFinals = filteredData.map(d => d.w_final !== undefined ? d.w_final : d.w_current);
             const wAlphas = filteredData.map(d => d.w_alpha ? d.w_alpha : null);
-            
-            const validGhosts = wGhosts.filter(x => x !== null && x !== undefined && !isNaN(x));
-            const validFinals = wFinals.filter(x => x !== null && x !== undefined && !isNaN(x));
-            const validAlphas = wAlphas.filter(x => x !== null && x !== undefined && !isNaN(x));
-            
-            let yMin = 30; let yMax = 90;
             
             const pointColors = filteredData.map(d => {
                 if (d.is_manual) return '#a855f7';
@@ -1081,7 +1109,6 @@
 
             let fgPct = Math.min(Math.max(fg, 0), 100);
             setGauge('fg_marker', fgPct);
-            // 🌟 5구간 세분화 반영
             if (fg <= 24) setStatus('sig_fg_status', '극단적 공포 (0~24)', 'text-red-500', 'bg-red-950/50');
             else if (fg <= 44) setStatus('sig_fg_status', '공포 (25~44)', 'text-orange-500', 'bg-orange-950/50');
             else if (fg <= 55) setStatus('sig_fg_status', '중립 (45~55)', 'text-yellow-500', 'bg-yellow-950/30');
@@ -1114,38 +1141,6 @@
                 }
             }
         };
-
-        async function safeFetch(url, timeoutMs = 3500) {
-            const fetchWithTimeout = async (targetUrl) => {
-                const controller = new AbortController();
-                const id = setTimeout(() => controller.abort(), timeoutMs);
-                const response = await fetch(targetUrl, { signal: controller.signal });
-                clearTimeout(id);
-                if (!response.ok) throw new Error("HTTP " + response.status);
-                return response;
-            };
-
-            const proxies = [
-                `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-                `https://corsproxy.io/?url=${encodeURIComponent(url)}`
-            ];
-
-            for (let p of proxies) {
-                try { 
-                    let res = await fetchWithTimeout(p); 
-                    let json = await res.json(); 
-                    if(p.includes('allorigins')) {
-                        if(json.contents) return JSON.parse(json.contents);
-                    } else {
-                        return json;
-                    }
-                } catch(e) {
-                    continue; 
-                }
-            }
-            throw new Error("Proxy failed");
-        }
 
         window.fetchMarketData = async () => {
             const btn = document.getElementById('fetch_btn');
@@ -1295,7 +1290,6 @@
                     
                     const totalReturnAmt = total - total_principal;
                     const sign = totalReturnAmt >= 0 ? '+' : '';
-                    // 🌟 한국식 수익금/수익률 색상 통일 (수익=빨강, 손실=파랑)
                     const colorClass = totalReturnAmt >= 0 ? 'text-red-500' : 'text-blue-500';
                     
                     returnDisp.innerHTML = `(누적 <span class="${colorClass}">${totalReturn > 0 ? '+' : ''}${totalReturn.toFixed(1)}%</span> <span class="text-zinc-600 mx-0.5">|</span> <span class="${colorClass}">${sign}${window.formatKRW(totalReturnAmt)}</span>)`;
@@ -1305,10 +1299,8 @@
                     if(barPct > 100) barPct = 100;
                     
                     cagrBar.style.width = `${barPct}%`;
-                    // 🌟 메인 CAGR 텍스트 컬러도 일괄 적용
                     cagrDisp.className = `text-xl sm:text-2xl md:text-3xl font-black num-font ${colorClass} shrink-0`;
 
-                    // 🌟 하단 진행바 및 메시지 박스 색상도 한국식 색상 룰에 맞춰 정돈
                     if (cagr >= 10) {
                         cagrBar.className = "h-full bg-gradient-to-r from-red-600 to-red-400 transition-all duration-1000 ease-out";
                         cagrMsg.innerHTML = "🔥 <b>SPY(10%)를 압도하고 있습니다!</b> 시장을 이기는 위대한 투자자입니다.";
@@ -1377,7 +1369,6 @@
             const w_current = total_before > 0 ? (val_q / total_before) * 100 : 0;
             const w_post_dca = expected_total > 0 ? (val_q / expected_total) * 100 : 0; 
             
-            // 🌟 수정 포인트 2: 모바일에서 비중 변화 텍스트가 줄바꿈으로 깨지는 현상을 막기 위해 위/아래(flex-col) 배치로 변경
             step1_msg = `<div class="flex flex-col gap-3">
                             <div class="flex items-center justify-center bg-black border border-zinc-800 p-3 sm:p-4 rounded-xl shadow-inner">
                                 <div class="text-center w-full">
