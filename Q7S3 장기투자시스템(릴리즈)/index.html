@@ -29,10 +29,10 @@
         body { font-family: 'Pretendard', sans-serif; background-color: #000000; color: #f4f4f5; background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 24px 24px; -webkit-tap-highlight-color: transparent; }
         
         .num-font { font-family: 'Verdana', 'Arial', sans-serif !important; letter-spacing: 0.5px; }
-        .card { background: #09090b; border-radius: 1.25rem; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.8); border: 1px solid #27272a; transition: all 0.3s ease; }
+        .card { background: #09090b; border-radius: 1.25rem; border: 1px solid #27272a; transition: all 0.3s ease; }
         
         .input-group { display: flex; align-items: stretch; border: 1px solid #27272a; border-radius: 0.75rem; background-color: #000000; overflow: hidden; transition: all 0.2s ease; }
-        .input-group:focus-within { border-color: #3b82f6; box-shadow: 0 0 0 1px #3b82f6, 0 0 15px -3px rgba(59, 130, 246, 0.3); }
+        .input-group:focus-within { border-color: #71717a; box-shadow: 0 0 0 1px #71717a, 0 0 15px -3px rgba(113, 113, 122, 0.3); }
         .input-group input { flex: 1; min-width: 0; background: transparent; text-align: right; padding: 0.5rem 0.5rem; outline: none; font-size: 0.9rem; font-weight: 700; color: #f4f4f5; }
         .input-group .unit { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 0 0.5rem; background-color: #09090b; color: #71717a; font-size: 0.75rem; font-weight: 800; border-left: 1px solid #27272a; }
         
@@ -74,9 +74,6 @@
     <div id="toast_container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center space-y-2 pointer-events-none w-11/12 max-w-md"></div>
 
     <div class="max-w-[1400px] mx-auto px-4 pt-6 md:pt-8 relative">
-        <div class="absolute top-2 right-4 md:top-6 md:right-8 text-[10px] sm:text-xs font-bold text-zinc-500 bg-zinc-900/80 px-3 py-1.5 rounded-full border border-zinc-800 shadow-sm z-50 backdrop-blur-md">
-            by에이미, ver2.4 (Data Cleaner)
-        </div>
 
         <header class="mb-6 text-center mt-4 md:mt-0">
             <div class="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 mb-3 rounded-2xl bg-zinc-900 text-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.15)] border border-zinc-800">
@@ -90,13 +87,13 @@
         <!-- 탭 1: 시장 & 업적 -->
         <!-- ========================================== -->
         <div id="tab1" class="tab-content block animate-fade-in-up space-y-4 sm:space-y-6">
-            <section class="card p-4 sm:p-6 md:p-8 border-t-2 border-yellow-500/50 shadow-[0_-4px_25px_-10px_rgba(234,179,8,0.15)] relative overflow-hidden">
+            <section class="card p-4 sm:p-6 md:p-8 shadow-lg relative overflow-hidden">
                 <div class="absolute -top-32 -left-32 w-80 h-80 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 relative z-10 gap-3">
                     <h2 class="text-lg sm:text-xl font-extrabold text-white flex items-center whitespace-nowrap">
-                        <i class="fa-solid fa-trophy text-yellow-500 mr-2 text-xl drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]"></i> 명예의 전당
+                        <i class="fa-solid fa-trophy text-zinc-500 mr-2 text-xl"></i> 명예의 전당
                     </h2>
-                    <div class="flex items-center w-full sm:w-auto bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden focus-within:border-yellow-500/50 transition-all shadow-inner">
+                    <div class="flex items-center w-full sm:w-auto bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden focus-within:border-zinc-500 transition-all shadow-inner">
                         <div class="bg-zinc-950 text-zinc-400 px-3 py-2 text-[10px] sm:text-xs font-bold border-r border-zinc-800 uppercase tracking-widest whitespace-nowrap">나의 시작일</div>
                         <input type="date" id="start_date" class="bg-transparent text-white px-3 py-2 w-full outline-none text-[11px] sm:text-sm cursor-pointer font-bold" onchange="window.updateTrophyRoom(); window.calculateAssets(); window.saveLocalState();">
                     </div>
@@ -104,16 +101,15 @@
                 <div id="trophy_content" class="relative z-10"></div>
             </section>
 
-            <section class="card p-4 sm:p-6 border-t-2 border-indigo-500/50 shadow-[0_-4px_25px_-10px_rgba(99,102,241,0.15)]">
+            <section class="card p-4 sm:p-6 shadow-lg">
                 <div class="flex justify-between items-center mb-4 sm:mb-5">
                     <h2 class="text-base sm:text-lg font-extrabold text-white flex items-center">
-                        <i class="fa-solid fa-traffic-light text-indigo-400 mr-2"></i> 알파 타점 신호등
+                        <i class="fa-solid fa-traffic-light text-zinc-500 mr-2"></i> 알파 타점 신호등
                     </h2>
                     <div class="bg-zinc-800 text-zinc-300 px-2 py-1 sm:px-3 sm:py-1 rounded-md text-[9px] sm:text-xs font-black transition-all border border-zinc-700 uppercase tracking-wider" id="signal_score_badge">대기중</div>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-5 items-stretch">
-                    <!-- VIX 눈금 개선 -->
                     <div class="bg-black border border-zinc-800 p-4 rounded-xl shadow-inner flex flex-col justify-between relative">
                         <div class="flex justify-between items-center mb-1">
                             <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">VIX 공포지수</p>
@@ -121,18 +117,17 @@
                         </div>
                         <input type="number" step="0.1" id="api_vix" class="signal-input num-font my-2" placeholder="-" oninput="updateIndicators(); saveLocalState(); removeManualStatus(this);">
                         <div class="w-full mt-3 relative">
-                            <div class="flex justify-between text-[8px] sm:text-[9px] font-bold mb-1.5 px-0.5 tracking-tighter">
-                                <span class="text-emerald-500 w-1/3 text-left">안정(~19)</span>
-                                <span class="text-orange-500 w-1/3 text-center">경계(20~29)</span>
-                                <span class="text-red-500 w-1/3 text-right">패닉(30+)</span>
+                            <div class="flex justify-between text-[8px] sm:text-[9px] font-bold mb-1.5 px-0.5 tracking-tighter text-zinc-500">
+                                <span class="w-1/3 text-left">안정(~19)</span>
+                                <span class="w-1/3 text-center">경계(20~29)</span>
+                                <span class="w-1/3 text-right">패닉(30+)</span>
                             </div>
                             <div class="relative w-full h-1.5 bg-zinc-800 rounded-full">
-                                <div class="absolute inset-0 bg-gradient-to-r from-emerald-500 via-orange-500 to-red-500 rounded-full opacity-80"></div>
+                                <div class="absolute inset-0 rounded-full" style="background: linear-gradient(to right, rgba(59,130,246,0.1) 0%, rgba(59,130,246,0.1) 33.33%, rgba(59,130,246,0.5) 33.33%, rgba(59,130,246,0.5) 66.66%, rgba(59,130,246,0.9) 66.66%, rgba(59,130,246,0.9) 100%);"></div>
                                 <div id="vix_marker" class="absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,1)] transition-all duration-500" style="left: 0%;"></div>
                             </div>
                         </div>
                     </div>
-                    <!-- F&G 5구간 세분화 -->
                     <div class="bg-black border border-zinc-800 p-4 rounded-xl shadow-inner flex flex-col justify-between relative">
                         <div class="flex justify-between items-center mb-1">
                             <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Fear & Greed</p>
@@ -140,20 +135,19 @@
                         </div>
                         <input type="number" id="api_fg" class="signal-input num-font my-2" placeholder="-" oninput="updateIndicators(); saveLocalState(); removeManualStatus(this);">
                         <div class="w-full mt-3 relative">
-                            <div class="flex justify-between text-[7px] sm:text-[8px] font-bold mb-1.5 px-0.5 tracking-tighter">
-                                <span class="text-red-500 w-1/5 text-left truncate">극.공포</span>
-                                <span class="text-orange-500 w-1/5 text-center truncate">공포</span>
-                                <span class="text-yellow-500 w-1/5 text-center truncate">중립</span>
-                                <span class="text-emerald-400 w-1/5 text-center truncate">탐욕</span>
-                                <span class="text-emerald-600 w-1/5 text-right truncate">극.탐욕</span>
+                            <div class="flex justify-between text-[7px] sm:text-[8px] font-bold mb-1.5 px-0.5 tracking-tighter text-zinc-500">
+                                <span class="w-1/5 text-left truncate">극.공포</span>
+                                <span class="w-1/5 text-center truncate">공포</span>
+                                <span class="w-1/5 text-center truncate">중립</span>
+                                <span class="w-1/5 text-center truncate">탐욕</span>
+                                <span class="w-1/5 text-right truncate">극.탐욕</span>
                             </div>
                             <div class="relative w-full h-1.5 bg-zinc-800 rounded-full">
-                                <div class="absolute inset-0 bg-gradient-to-r from-red-600 via-orange-500 via-yellow-500 via-emerald-400 to-emerald-600 rounded-full opacity-80"></div>
+                                <div class="absolute inset-0 rounded-full" style="background: linear-gradient(to right, rgba(59,130,246,0.9) 0%, rgba(59,130,246,0.9) 20%, rgba(59,130,246,0.7) 20%, rgba(59,130,246,0.7) 40%, rgba(59,130,246,0.4) 40%, rgba(59,130,246,0.4) 60%, rgba(59,130,246,0.2) 60%, rgba(59,130,246,0.2) 80%, rgba(59,130,246,0.1) 80%, rgba(59,130,246,0.1) 100%);"></div>
                                 <div id="fg_marker" class="absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,1)] transition-all duration-500" style="left: 50%;"></div>
                             </div>
                         </div>
                     </div>
-                    <!-- RSI 눈금 개선 -->
                     <div class="bg-black border border-zinc-800 p-4 rounded-xl shadow-inner flex flex-col justify-between relative">
                         <div class="flex justify-between items-center mb-1">
                             <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">QQQ RSI (14)</p>
@@ -161,13 +155,13 @@
                         </div>
                         <input type="number" step="0.1" id="api_rsi" class="signal-input num-font my-2" placeholder="-" oninput="updateIndicators(); saveLocalState(); removeManualStatus(this);">
                         <div class="w-full mt-3 relative">
-                            <div class="flex justify-between text-[8px] sm:text-[9px] font-bold mb-1.5 px-0.5 tracking-tighter">
-                                <span class="text-red-500 w-1/3 text-left">과매도(~30)</span>
-                                <span class="text-zinc-400 w-1/3 text-center">안정(31~69)</span>
-                                <span class="text-blue-500 w-1/3 text-right">과매수(70+)</span>
+                            <div class="flex justify-between text-[8px] sm:text-[9px] font-bold mb-1.5 px-0.5 tracking-tighter text-zinc-500">
+                                <span class="w-1/3 text-left">과매도(~30)</span>
+                                <span class="w-1/3 text-center">안정(31~69)</span>
+                                <span class="w-1/3 text-right">과매수(70+)</span>
                             </div>
                             <div class="relative w-full h-1.5 bg-zinc-800 rounded-full">
-                                <div class="absolute inset-0 bg-gradient-to-r from-red-500 via-zinc-500 to-blue-500 rounded-full opacity-80"></div>
+                                <div class="absolute inset-0 rounded-full" style="background: linear-gradient(to right, rgba(59,130,246,0.9) 0%, rgba(59,130,246,0.9) 33.33%, rgba(59,130,246,0.4) 33.33%, rgba(59,130,246,0.4) 66.66%, rgba(59,130,246,0.1) 66.66%, rgba(59,130,246,0.1) 100%);"></div>
                                 <div id="rsi_marker" class="absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,1)] transition-all duration-500" style="left: 50%;"></div>
                             </div>
                         </div>
@@ -183,8 +177,7 @@
                 </div>
             </section>
 
-            <section class="card p-4 sm:p-6">
-                <!-- 동기화 버튼 및 최근 동기화 시간 표시 -->
+            <section class="card p-4 sm:p-6 shadow-lg">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
                     <div class="flex flex-col">
                         <h2 class="text-base sm:text-lg font-extrabold text-white flex items-center">
@@ -198,29 +191,30 @@
                 </div>
                 
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-3 pb-3">
+                    <!-- 🌟 시장 지표 컬러 모두 화이트로 통일 -->
                     <div class="space-y-1 relative">
                         <label class="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">환율 (KRW)</label>
-                        <div class="input-group"><input type="text" inputmode="decimal" id="api_fx" class="market-input-target num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit">원</div></div>
+                        <div class="input-group focus-within:border-zinc-500"><input type="text" inputmode="decimal" id="api_fx" class="market-input-target text-white num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit text-zinc-500">원</div></div>
                     </div>
                     <div class="space-y-1 relative">
                         <label class="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">QQQM (1x)</label>
-                        <div class="input-group"><input type="text" inputmode="decimal" id="api_qqqm" class="market-input-target text-indigo-400 num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit">$</div></div>
-                        <div id="krw_qqqm" class="text-[8px] sm:text-[9px] font-bold text-zinc-500 text-right pr-1 absolute -bottom-3.5 right-0 w-full truncate"></div>
+                        <div class="input-group focus-within:border-zinc-500"><input type="text" inputmode="decimal" id="api_qqqm" class="market-input-target text-white num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit text-zinc-500">$</div></div>
+                        <div id="krw_qqqm" class="text-[8px] sm:text-[9px] font-bold text-zinc-400 text-right pr-1 absolute -bottom-3.5 right-0 w-full truncate"></div>
                     </div>
                     <div class="space-y-1 relative">
                         <label class="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">QLD (2x)</label>
-                        <div class="input-group"><input type="text" inputmode="decimal" id="api_qld" class="market-input-target text-blue-400 num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit">$</div></div>
-                        <div id="krw_qld" class="text-[8px] sm:text-[9px] font-bold text-zinc-500 text-right pr-1 absolute -bottom-3.5 right-0 w-full truncate"></div>
+                        <div class="input-group focus-within:border-zinc-500"><input type="text" inputmode="decimal" id="api_qld" class="market-input-target text-white num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit text-zinc-500">$</div></div>
+                        <div id="krw_qld" class="text-[8px] sm:text-[9px] font-bold text-zinc-400 text-right pr-1 absolute -bottom-3.5 right-0 w-full truncate"></div>
                     </div>
                     <div class="space-y-1 relative">
                         <label class="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">SGOV (20%)</label>
-                        <div class="input-group"><input type="text" inputmode="decimal" id="api_sgov" class="market-input-target text-emerald-400 num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit">$</div></div>
-                        <div id="krw_sgov" class="text-[8px] sm:text-[9px] font-bold text-zinc-500 text-right pr-1 absolute -bottom-3.5 right-0 w-full truncate"></div>
+                        <div class="input-group focus-within:border-zinc-500"><input type="text" inputmode="decimal" id="api_sgov" class="market-input-target text-white num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit text-zinc-500">$</div></div>
+                        <div id="krw_sgov" class="text-[8px] sm:text-[9px] font-bold text-zinc-400 text-right pr-1 absolute -bottom-3.5 right-0 w-full truncate"></div>
                     </div>
                     <div class="space-y-1 relative">
                         <label class="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">IAU (10%)</label>
-                        <div class="input-group"><input type="text" inputmode="decimal" id="api_iau" class="market-input-target text-yellow-500 num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit">$</div></div>
-                        <div id="krw_iau" class="text-[8px] sm:text-[9px] font-bold text-zinc-500 text-right pr-1 absolute -bottom-3.5 right-0 w-full truncate"></div>
+                        <div class="input-group focus-within:border-zinc-500"><input type="text" inputmode="decimal" id="api_iau" class="market-input-target text-white num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit text-zinc-500">$</div></div>
+                        <div id="krw_iau" class="text-[8px] sm:text-[9px] font-bold text-zinc-400 text-right pr-1 absolute -bottom-3.5 right-0 w-full truncate"></div>
                     </div>
                 </div>
             </section>
@@ -240,9 +234,9 @@
                 
                 <!-- 좌측: 입력 패널 -->
                 <div class="lg:col-span-4 flex flex-col gap-5 sm:gap-6">
-                    <section class="card p-4 sm:p-6 border-t-2 border-emerald-500/50 shadow-[0_-4px_25px_-10px_rgba(16,185,129,0.15)]">
+                    <section class="card p-4 sm:p-6 shadow-lg">
                         <div class="flex justify-between items-center mb-4 sm:mb-5">
-                            <h2 class="text-base font-black text-white"><i class="fa-solid fa-wallet text-emerald-500 mr-2"></i>내 보유 수량</h2>
+                            <h2 class="text-base font-black text-white"><i class="fa-solid fa-wallet text-zinc-500 mr-2"></i>내 보유 수량</h2>
                             <div class="flex gap-2">
                                 <button onclick="exportData()" class="text-[9px] text-zinc-400 hover:text-white font-black uppercase transition-colors bg-zinc-800 px-2 py-1 rounded border border-zinc-700"><i class="fa-solid fa-download mr-1"></i>백업</button>
                                 <button onclick="document.getElementById('import_file').click()" class="text-[9px] text-zinc-400 hover:text-white font-black uppercase transition-colors bg-zinc-800 px-2 py-1 rounded border border-zinc-700"><i class="fa-solid fa-upload mr-1"></i>복원</button>
@@ -251,64 +245,85 @@
                             </div>
                         </div>
                         <div class="space-y-3 sm:space-y-4">
+                            <!-- 🌟 종목별 보유 수량 텍스트 색상 화이트로 통일 -->
                             <div class="space-y-0.5">
                                 <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest ml-1">QQQM 수량</label>
-                                <div class="input-group focus-within:border-indigo-500"><input type="text" inputmode="decimal" id="h_qqqm" class="text-indigo-400 num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit">주</div></div>
-                                <p id="val_qqqm_krw" class="text-[10px] text-indigo-400/70 font-bold text-right pr-1 num-font">0원</p>
+                                <div class="input-group focus-within:border-zinc-500"><input type="text" inputmode="decimal" id="h_qqqm" class="text-white num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit text-zinc-500">주</div></div>
+                                <div class="flex justify-between items-center px-1 pt-0.5">
+                                    <p id="pct_qqqm" class="text-[10px] text-zinc-400 font-bold num-font">0.0%</p>
+                                    <p id="val_qqqm_krw" class="text-[10px] text-zinc-400 font-bold text-right num-font">0원</p>
+                                </div>
                             </div>
                             <div class="space-y-0.5">
                                 <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest ml-1">QLD 수량</label>
-                                <div class="input-group focus-within:border-blue-500"><input type="text" inputmode="decimal" id="h_qld" class="text-blue-400 num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit">주</div></div>
-                                <p id="val_qld_krw" class="text-[10px] text-blue-400/70 font-bold text-right pr-1 num-font">0원</p>
+                                <div class="input-group focus-within:border-zinc-500"><input type="text" inputmode="decimal" id="h_qld" class="text-white num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit text-zinc-500">주</div></div>
+                                <div class="flex justify-between items-center px-1 pt-0.5">
+                                    <p id="pct_qld" class="text-[10px] text-zinc-400 font-bold num-font">0.0%</p>
+                                    <p id="val_qld_krw" class="text-[10px] text-zinc-400 font-bold text-right num-font">0원</p>
+                                </div>
                             </div>
                             <div class="space-y-0.5">
                                 <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest ml-1">SGOV 수량</label>
-                                <div class="input-group focus-within:border-emerald-500"><input type="text" inputmode="decimal" id="h_sgov" class="text-emerald-400 num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit">주</div></div>
-                                <p id="val_sgov_krw" class="text-[10px] text-emerald-400/70 font-bold text-right pr-1 num-font">0원</p>
+                                <div class="input-group focus-within:border-zinc-500"><input type="text" inputmode="decimal" id="h_sgov" class="text-white num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit text-zinc-500">주</div></div>
+                                <div class="flex justify-between items-center px-1 pt-0.5">
+                                    <p id="pct_sgov" class="text-[10px] text-zinc-400 font-bold num-font">0.0%</p>
+                                    <p id="val_sgov_krw" class="text-[10px] text-zinc-400 font-bold text-right num-font">0원</p>
+                                </div>
                             </div>
                             <div class="space-y-0.5">
                                 <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest ml-1">IAU 수량</label>
-                                <div class="input-group focus-within:border-yellow-500"><input type="text" inputmode="decimal" id="h_iau" class="text-yellow-500 num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit">주</div></div>
-                                <p id="val_iau_krw" class="text-[10px] text-yellow-500/70 font-bold text-right pr-1 num-font">0원</p>
+                                <div class="input-group focus-within:border-zinc-500"><input type="text" inputmode="decimal" id="h_iau" class="text-white num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit text-zinc-500">주</div></div>
+                                <div class="flex justify-between items-center px-1 pt-0.5">
+                                    <p id="pct_iau" class="text-[10px] text-zinc-400 font-bold num-font">0.0%</p>
+                                    <p id="val_iau_krw" class="text-[10px] text-zinc-400 font-bold text-right num-font">0원</p>
+                                </div>
                             </div>
                         </div>
 
                         <div class="pt-3 mt-3 border-t border-zinc-800 space-y-2">
+                            <!-- 그룹 합계 비중(%) 표시 -->
                             <div class="flex justify-between items-center bg-black px-3 py-2 rounded-lg border border-zinc-800/50">
-                                <span class="text-[10px] font-bold text-zinc-400">주식 합계 (Q)</span>
-                                <span class="text-xs sm:text-sm font-black text-blue-500 num-font" id="val_risk_total">0원</span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-[10px] font-bold text-zinc-400">주식 합계 (Q)</span>
+                                    <span class="text-[9px] font-bold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded num-font" id="pct_risk_total">0.0%</span>
+                                </div>
+                                <span class="text-xs sm:text-sm font-black text-white num-font" id="val_risk_total">0원</span>
                             </div>
                             <div class="flex justify-between items-center bg-black px-3 py-2 rounded-lg border border-zinc-800/50">
-                                <span class="text-[10px] font-bold text-zinc-400">현금 합계 (SGOV+IAU)</span>
-                                <span class="text-xs sm:text-sm font-black text-emerald-500 num-font" id="val_safe_total">0원</span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-[10px] font-bold text-zinc-400">현금 합계 (SGOV+IAU)</span>
+                                    <span class="text-[9px] font-bold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded num-font" id="pct_safe_total">0.0%</span>
+                                </div>
+                                <span class="text-xs sm:text-sm font-black text-white num-font" id="val_safe_total">0원</span>
                             </div>
                         </div>
                     </section>
                     
-                    <section class="card p-4 sm:p-6 border-t-2 border-purple-500/50 shadow-[0_-4px_25px_-10px_rgba(168,85,247,0.15)] flex flex-col justify-center">
+                    <section class="card p-4 sm:p-6 shadow-lg flex flex-col justify-center">
                         <div class="flex justify-between items-center mb-3 sm:mb-4">
-                            <h2 class="text-base font-black text-white"><i class="fa-solid fa-piggy-bank text-purple-500 mr-2"></i>투자금 관리</h2>
+                            <h2 class="text-base font-black text-white"><i class="fa-solid fa-piggy-bank text-zinc-500 mr-2"></i>투자금 관리</h2>
                         </div>
                         
                         <div class="space-y-4 sm:space-y-5">
+                            <!-- 🌟 투자금 관리도 화이트 톤 통일 -->
                             <div>
                                 <div class="flex justify-between items-end mb-1 ml-1">
                                     <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">누적 투입 원금</label>
-                                    <span class="text-[8px] text-purple-400/80 font-bold tracking-wider">* 확정 시 합산</span>
+                                    <span class="text-[8px] text-zinc-500 font-bold tracking-wider">* 확정 시 합산</span>
                                 </div>
-                                <div class="input-group border-purple-900/30 focus-within:border-purple-500">
-                                    <input type="text" inputmode="numeric" id="total_principal" class="text-purple-400 !text-base sm:!text-lg py-2 num-font" oninput="formatNumber(this); calculateAssets();" value="0">
-                                    <div class="unit text-purple-500/50 text-xs">원</div>
+                                <div class="input-group focus-within:border-zinc-500">
+                                    <input type="text" inputmode="numeric" id="total_principal" class="text-white !text-base sm:!text-lg py-2 num-font" oninput="formatNumber(this); calculateAssets();" value="0">
+                                    <div class="unit text-zinc-500 text-xs">원</div>
                                 </div>
                             </div>
                             <div>
                                 <div class="flex justify-between items-end mb-1 ml-1">
                                     <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">이번 달 적립금 (DCA)</label>
-                                    <span class="text-[8px] text-indigo-400/80 font-bold tracking-wider">* 확정 후 0원</span>
+                                    <span class="text-[8px] text-zinc-500 font-bold tracking-wider">* 확정 후 0원</span>
                                 </div>
-                                <div class="input-group border-indigo-900/30 focus-within:border-indigo-500">
-                                    <input type="text" inputmode="numeric" id="dca_amount" class="text-indigo-400 !text-base sm:!text-lg py-2 num-font" oninput="formatNumber(this); calculateAssets();" value="0">
-                                    <div class="unit text-indigo-500/50 text-xs">원</div>
+                                <div class="input-group focus-within:border-zinc-500">
+                                    <input type="text" inputmode="numeric" id="dca_amount" class="text-white !text-base sm:!text-lg py-2 num-font" oninput="formatNumber(this); calculateAssets();" value="0">
+                                    <div class="unit text-zinc-500 text-xs">원</div>
                                 </div>
                             </div>
                         </div>
@@ -335,11 +350,11 @@
                                     
                                     <div class="mt-auto bg-black rounded-xl p-3 sm:p-4 border border-zinc-800 shadow-inner">
                                         <div class="flex justify-between items-center mb-2">
-                                            <h3 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest whitespace-nowrap"><i class="fa-solid fa-trophy text-yellow-500/80 mr-1"></i> VS SPY 수익률 레이싱</h3>
+                                            <h3 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest whitespace-nowrap"><i class="fa-solid fa-trophy text-zinc-600 mr-1"></i> VS SPY 수익률 레이싱</h3>
                                             <span class="text-[9px] font-bold text-zinc-600 whitespace-nowrap shrink-0">SPY 목표: 10%</span>
                                         </div>
                                         
-                                        <!-- 🌟 수익금 실시간 표시 -->
+                                        <!-- 수익금 실시간 표시 -->
                                         <div class="flex flex-wrap items-baseline gap-x-1.5 gap-y-1 mb-2 w-full overflow-hidden">
                                             <span class="text-[10px] font-bold text-zinc-500 pb-0.5 shrink-0">내 연평균(CAGR)</span>
                                             <span class="text-xl sm:text-2xl md:text-3xl font-black num-font text-zinc-300 leading-none shrink-0" id="disp_cagr">대기중</span>
@@ -463,8 +478,8 @@
                         </div>
                         
                         <div class="flex items-center justify-end mt-2 mb-1 pr-1">
-                            <label class="text-[10px] sm:text-xs text-zinc-400 font-bold flex items-center cursor-pointer hover:text-purple-400 transition-colors select-none">
-                                <input type="checkbox" id="is_manual_trade" class="mr-1.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded bg-zinc-900 border-zinc-700 text-purple-500 focus:ring-purple-500 focus:ring-offset-zinc-950">
+                            <label class="text-[10px] sm:text-xs text-zinc-400 font-bold flex items-center cursor-pointer hover:text-blue-400 transition-colors select-none">
+                                <input type="checkbox" id="is_manual_trade" class="mr-1.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded bg-zinc-900 border-zinc-700 text-blue-500 focus:ring-blue-500 focus:ring-offset-zinc-950">
                                 ⚡ 수동 매매(원칙 외 개입) 기록
                             </label>
                         </div>
@@ -604,7 +619,6 @@
         
         window.formatKRW = (n) => Math.round(n).toLocaleString('ko-KR') + "원";
 
-        // 🌟 수정 포인트 1: 과거 데이터를 YYYY-MM-DD 형식으로 무조건 통일해주는 함수
         window.normalizeDate = (dateStr) => {
             if (!dateStr) return dateStr;
             const parts = dateStr.split('-');
@@ -736,15 +750,15 @@
                 progressHtml = `
                     <div class="mb-5 sm:mb-6 mt-2">
                         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-1.5">
-                            <div class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-200 tracking-tighter num-font leading-none mb-1 sm:mb-0">
+                            <div class="text-3xl sm:text-5xl font-black text-white drop-shadow-md tracking-tighter num-font leading-none mb-1 sm:mb-0">
                                 D+${actualDays.toLocaleString()}
                             </div>
                             <div class="text-[9px] sm:text-xs font-bold text-zinc-400 pb-0.5">
-                                다음 목표: <span class="text-yellow-500">${nextMilestone.icon} ${nextMilestone.title}</span> <span class="ml-1 text-zinc-500 num-font">(${nextMilestone.days - actualDays}일 남음)</span>
+                                다음 목표: <span class="text-zinc-300">${nextMilestone.icon} ${nextMilestone.title}</span> <span class="ml-1 text-zinc-500 num-font">(${nextMilestone.days - actualDays}일 남음)</span>
                             </div>
                         </div>
                         <div class="w-full h-1.5 sm:h-2 bg-black rounded-full overflow-hidden border border-zinc-800">
-                            <div class="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 rounded-full transition-all duration-1000 ease-out relative" style="width: ${percent}%">
+                            <div class="h-full bg-gradient-to-r from-zinc-600 to-zinc-400 rounded-full transition-all duration-1000 ease-out relative" style="width: ${percent}%">
                                 <div class="absolute inset-0 bg-white/20 w-full animate-pulse"></div>
                             </div>
                         </div>
@@ -753,10 +767,10 @@
             } else {
                 progressHtml = `
                     <div class="mb-5 sm:mb-6 mt-2 text-center">
-                        <div class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-200 tracking-tighter mb-1 drop-shadow-[0_0_10px_rgba(234,179,8,0.3)] num-font">
+                        <div class="text-3xl sm:text-5xl font-black text-white tracking-tighter mb-1 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] num-font">
                             D+${actualDays.toLocaleString()}
                         </div>
-                        <div class="text-[10px] sm:text-sm font-black text-yellow-500">모든 위대한 여정을 완수하셨습니다!</div>
+                        <div class="text-[10px] sm:text-sm font-black text-zinc-300">모든 위대한 여정을 완수하셨습니다!</div>
                     </div>
                 `;
             }
@@ -773,7 +787,7 @@
                             </div>
                             <h4 class="relative z-10 font-black ${m.text} text-[8px] sm:text-[11px] mb-0.5 whitespace-nowrap hidden sm:block">${m.title}</h4>
                             <p class="relative z-10 text-[7px] sm:text-[9px] font-bold text-zinc-500 tracking-widest num-font">${m.days}D</p>
-                            <div class="absolute top-1 right-1 text-yellow-500 text-[8px] sm:text-[10px] drop-shadow-[0_0_5px_rgba(234,179,8,0.8)]"><i class="fa-solid fa-star"></i></div>
+                            <div class="absolute top-1 right-1 text-zinc-500 text-[8px] sm:text-[10px]"><i class="fa-solid fa-star"></i></div>
                         </div>
                     `;
                 } else {
@@ -802,7 +816,7 @@
             const y = krTime.getFullYear();
             const m = String(krTime.getMonth() + 1).padStart(2, '0');
             const dStr = String(krTime.getDate()).padStart(2, '0');
-            const today = `${y}-${m}-${dStr}`; // 무조건 2026-03-10 형태 유지 (정렬 꼬임 방지)
+            const today = `${y}-${m}-${dStr}`; 
 
             const isManual = document.getElementById('is_manual_trade') ? document.getElementById('is_manual_trade').checked : false;
             const data = { 
@@ -816,7 +830,6 @@
             
             let localHist = JSON.parse(localStorage.getItem('q7s3_v2_history') || '[]');
             let histMap = {};
-            // 기존 데이터도 강제로 YYYY-MM-DD 포맷으로 청소 (Auto-Cleaner)
             localHist.forEach(h => { 
                 h.date = window.normalizeDate(h.date);
                 histMap[h.date] = h; 
@@ -824,7 +837,7 @@
             histMap[today] = data; 
             
             localHist = Object.values(histMap);
-            localHist.sort((a,b) => a.date.localeCompare(b.date)); // 자릿수가 같아졌으므로 정렬 완벽
+            localHist.sort((a,b) => a.date.localeCompare(b.date)); 
             localStorage.setItem('q7s3_v2_history', JSON.stringify(localHist));
             historyData = localHist;
             
@@ -841,7 +854,6 @@
         async function loadHistoryFromDB() {
             let localHist = JSON.parse(localStorage.getItem('q7s3_v2_history') || '[]');
             let histMap = {};
-            // 로컬 데이터도 강제 정규화 청소
             localHist.forEach(h => { 
                 h.date = window.normalizeDate(h.date);
                 histMap[h.date] = h; 
@@ -853,7 +865,7 @@
                     const snapshot = await getDocs(ref);
                     snapshot.forEach(doc => {
                         let d = doc.data();
-                        d.date = window.normalizeDate(d.date); // DB 데이터도 강제 정규화 청소
+                        d.date = window.normalizeDate(d.date); 
                         histMap[d.date] = d;
                     });
                 } catch(e) {}
@@ -882,9 +894,8 @@
             const ctxAsset = document.getElementById('assetHistoryChart').getContext('2d');
             const ctxWeight = document.getElementById('weightHistoryChart').getContext('2d');
             const filteredData = historyData.slice(-daysLimit);
-            const labels = filteredData.map(d => d.date.substring(5)); // 이제 무조건 03-10 처럼 예쁘게 나옴
+            const labels = filteredData.map(d => d.date.substring(5)); 
             
-            // 🌟 과거 데이터에 원금이 없을 경우 현재 원금으로 채워주는 Fallback 처리
             const currentP = window.getVal('total_principal') || 0;
             const principalData = filteredData.map(d => (d.principal !== undefined && d.principal > 0) ? d.principal : currentP);
 
@@ -937,12 +948,6 @@
             const wGhosts = filteredData.map(d => d.w_post_dca !== undefined ? d.w_post_dca : d.w_current);
             const wFinals = filteredData.map(d => d.w_final !== undefined ? d.w_final : d.w_current);
             const wAlphas = filteredData.map(d => d.w_alpha ? d.w_alpha : null);
-            
-            const validGhosts = wGhosts.filter(x => x !== null && x !== undefined && !isNaN(x));
-            const validFinals = wFinals.filter(x => x !== null && x !== undefined && !isNaN(x));
-            const validAlphas = wAlphas.filter(x => x !== null && x !== undefined && !isNaN(x));
-            
-            let yMin = 30; let yMax = 90;
             
             const pointColors = filteredData.map(d => {
                 if (d.is_manual) return '#a855f7';
@@ -1135,22 +1140,22 @@
             else setStatus('sig_rsi_status', '안정 (31~69)', 'text-zinc-400', 'bg-zinc-800/50');
 
             if (score >= 2) {
-                if(badge) { badge.className = "bg-red-950 text-red-500 px-2 py-1 rounded-md text-[9px] sm:text-xs font-black border border-red-900 shadow-[0_0_10px_rgba(239,68,68,0.3)] uppercase tracking-wider"; badge.innerText = `공포 (Score: ${score}/3)`; }
+                if(badge) { badge.className = "bg-red-950/60 text-red-500 px-2 py-1 rounded-md text-[9px] sm:text-xs font-black border border-red-800/50 shadow-[0_0_10px_rgba(239,68,68,0.3)] uppercase tracking-wider"; badge.innerText = `공포 (Score: ${score}/3)`; }
                 if(rec) {
-                    rec.className = "bg-red-950/40 text-white p-3 sm:p-4 rounded-xl flex items-center shadow-[0_0_20px_rgba(239,68,68,0.15)] transition-all border border-red-900/50";
-                    rec.innerHTML = `<i class="fa-solid fa-fire-flame-curved text-2xl mr-3 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]"></i><div><h4 class="font-black text-sm sm:text-base text-red-100">강력 매수 (Extreme Fear)</h4><p class="text-[10px] sm:text-xs mt-0.5 text-red-400 break-keep">시장에 극도의 공포가 퍼졌습니다. 알파 전략(더블 매수)을 고려해 볼 만한 완벽한 타점입니다.</p></div>`;
+                    rec.className = "bg-red-950/30 text-white p-3 sm:p-4 rounded-xl flex items-center shadow-[0_0_20px_rgba(239,68,68,0.15)] transition-all border border-red-900/40";
+                    rec.innerHTML = `<i class="fa-solid fa-bolt text-2xl mr-3 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]"></i><div><h4 class="font-black text-sm sm:text-base text-red-100">강력 매수 (Extreme Fear)</h4><p class="text-[10px] sm:text-xs mt-0.5 text-red-300/80 break-keep">시장에 극도의 공포가 퍼졌습니다. 알파 전략(더블 매수)을 고려해 볼 만한 완벽한 타점입니다.</p></div>`;
                 }
             } else if (score >= 1) {
-                if(badge) { badge.className = "bg-orange-950 text-orange-500 px-2 py-1 rounded-md text-[9px] sm:text-xs font-black border border-orange-900 uppercase tracking-wider"; badge.innerText = `경계 (Score: ${score}/3)`; }
+                if(badge) { badge.className = "bg-orange-950/50 text-orange-500 px-2 py-1 rounded-md text-[9px] sm:text-xs font-black border border-orange-800/50 uppercase tracking-wider"; badge.innerText = `경계 (Score: ${score}/3)`; }
                 if(rec) {
-                    rec.className = "bg-orange-950/40 text-white p-3 sm:p-4 rounded-xl flex items-center shadow-md transition-all border border-orange-900/50";
-                    rec.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-2xl mr-3 text-orange-500"></i><div><h4 class="font-black text-sm sm:text-base text-orange-100">분할 매수 (Caution)</h4><p class="text-[10px] sm:text-xs mt-0.5 text-orange-400 break-keep">조정장이 진행 중입니다. 기계적 리밸런싱 룰에 따라 하단 밴드 이탈 시 매수를 집행하세요.</p></div>`;
+                    rec.className = "bg-orange-950/20 text-white p-3 sm:p-4 rounded-xl flex items-center shadow-md transition-all border border-orange-900/30";
+                    rec.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-2xl mr-3 text-orange-500"></i><div><h4 class="font-black text-sm sm:text-base text-orange-100">분할 매수 (Caution)</h4><p class="text-[10px] sm:text-xs mt-0.5 text-orange-300/80 break-keep">조정장이 진행 중입니다. 기계적 리밸런싱 룰에 따라 하단 밴드 이탈 시 매수를 집행하세요.</p></div>`;
                 }
             } else {
-                if(badge) { badge.className = "bg-emerald-950 text-emerald-500 px-2 py-1 rounded-md text-[9px] sm:text-xs font-black border border-emerald-900 uppercase tracking-wider"; badge.innerText = `안정 (Score: ${score}/3)`; }
+                if(badge) { badge.className = "bg-zinc-800/50 text-zinc-400 px-2 py-1 rounded-md text-[9px] sm:text-xs font-black border border-zinc-700/50 uppercase tracking-wider"; badge.innerText = `안정 (Score: ${score}/3)`; }
                 if(rec) {
-                    rec.className = "bg-emerald-950/40 text-white p-3 sm:p-4 rounded-xl flex items-center shadow-md transition-all border border-emerald-900/50";
-                    rec.innerHTML = `<i class="fa-solid fa-mug-hot text-2xl mr-3 text-emerald-500"></i><div><h4 class="font-black text-sm sm:text-base text-emerald-100">관망 유지 (Stable)</h4><p class="text-[10px] sm:text-xs mt-0.5 text-emerald-400 break-keep">시장이 평온합니다. 기존 65~80% 밴드 룰을 유지하며 추가 개입은 삼가세요.</p></div>`;
+                    rec.className = "bg-zinc-900/50 text-white p-3 sm:p-4 rounded-xl flex items-center shadow-md transition-all border border-zinc-800/50";
+                    rec.innerHTML = `<i class="fa-solid fa-mug-hot text-2xl mr-3 text-zinc-500"></i><div><h4 class="font-black text-sm sm:text-base text-zinc-300">관망 유지 (Stable)</h4><p class="text-[10px] sm:text-xs mt-0.5 text-zinc-500 break-keep">시장이 평온합니다. 기존 65~80% 밴드 룰을 유지하며 추가 개입은 삼가세요.</p></div>`;
                 }
             }
         };
@@ -1211,9 +1216,14 @@
 
         window.calculateAssets = () => {
             const fx = window.getVal('api_fx');
-            const val_q = (window.getVal('h_qqqm') * window.getVal('api_qqqm') + window.getVal('h_qld') * window.getVal('api_qld')) * fx;
-            const val_s = window.getVal('h_sgov') * window.getVal('api_sgov') * fx;
-            const val_iau = window.getVal('h_iau') * window.getVal('api_iau') * fx;
+            const v_qqqm = window.getVal('h_qqqm') * window.getVal('api_qqqm') * fx;
+            const v_qld = window.getVal('h_qld') * window.getVal('api_qld') * fx;
+            const v_sgov = window.getVal('h_sgov') * window.getVal('api_sgov') * fx;
+            const v_iau = window.getVal('h_iau') * window.getVal('api_iau') * fx;
+            
+            const val_q = v_qqqm + v_qld;
+            const val_s = v_sgov;
+            const val_iau = v_iau;
             const total = val_q + val_s + val_iau;
             
             const total_post_dca = total + window.getVal('dca_amount');
@@ -1223,13 +1233,21 @@
             if(document.getElementById('krw_sgov')) document.getElementById('krw_sgov').innerText = `≈ ${window.formatKRW(window.getVal('api_sgov') * fx)}`;
             if(document.getElementById('krw_iau')) document.getElementById('krw_iau').innerText = `≈ ${window.formatKRW(window.getVal('api_iau') * fx)}`;
             
-            if(document.getElementById('val_qqqm_krw')) document.getElementById('val_qqqm_krw').innerText = `${window.formatKRW(window.getVal('h_qqqm') * window.getVal('api_qqqm') * fx)}`;
-            if(document.getElementById('val_qld_krw')) document.getElementById('val_qld_krw').innerText = `${window.formatKRW(window.getVal('h_qld') * window.getVal('api_qld') * fx)}`;
+            if(document.getElementById('val_qqqm_krw')) document.getElementById('val_qqqm_krw').innerText = `${window.formatKRW(v_qqqm)}`;
+            if(document.getElementById('val_qld_krw')) document.getElementById('val_qld_krw').innerText = `${window.formatKRW(v_qld)}`;
             if(document.getElementById('val_sgov_krw')) document.getElementById('val_sgov_krw').innerText = `${window.formatKRW(val_s)}`;
             if(document.getElementById('val_iau_krw')) document.getElementById('val_iau_krw').innerText = `${window.formatKRW(val_iau)}`;
 
+            if(document.getElementById('pct_qqqm')) document.getElementById('pct_qqqm').innerText = `${total > 0 ? (v_qqqm / total * 100).toFixed(1) : 0.0}%`;
+            if(document.getElementById('pct_qld')) document.getElementById('pct_qld').innerText = `${total > 0 ? (v_qld / total * 100).toFixed(1) : 0.0}%`;
+            if(document.getElementById('pct_sgov')) document.getElementById('pct_sgov').innerText = `${total > 0 ? (val_s / total * 100).toFixed(1) : 0.0}%`;
+            if(document.getElementById('pct_iau')) document.getElementById('pct_iau').innerText = `${total > 0 ? (val_iau / total * 100).toFixed(1) : 0.0}%`;
+
             if(document.getElementById('val_risk_total')) document.getElementById('val_risk_total').innerText = window.formatKRW(val_q);
             if(document.getElementById('val_safe_total')) document.getElementById('val_safe_total').innerText = window.formatKRW(val_s + val_iau);
+
+            if(document.getElementById('pct_risk_total')) document.getElementById('pct_risk_total').innerText = `${total > 0 ? (val_q / total * 100).toFixed(1) : 0.0}%`;
+            if(document.getElementById('pct_safe_total')) document.getElementById('pct_safe_total').innerText = `${total > 0 ? ((val_s + val_iau) / total * 100).toFixed(1) : 0.0}%`;
 
             document.getElementById('total_val_disp').innerHTML = Math.round(total).toLocaleString('ko-KR') + '<span class="text-[14px] sm:text-lg font-medium ml-1 text-zinc-600 inline-block" style="font-family:\'Pretendard\',sans-serif;">원</span>';
             
@@ -1303,17 +1321,16 @@
                     
                     const totalReturnAmt = total - total_principal;
                     const sign = totalReturnAmt >= 0 ? '+' : '';
-                    // 🌟 한국식 수익/손실 컬러 통일: 수익이면 빨강, 손실이면 파랑
                     const colorClass = totalReturnAmt >= 0 ? 'text-red-500' : 'text-blue-500';
                     
-                    returnDisp.innerHTML = `(누적 <span class="${colorClass}">${totalReturn > 0 ? '+' : ''}${totalReturn.toFixed(1)}%</span> <span class="text-zinc-600 mx-0.5">|</span> <span class="${colorClass}">${sign}${window.formatKRW(totalReturnAmt)}</span>)`;
+                    returnDisp.innerHTML = `(누적 <span class="${colorClass}">${totalReturn > 0 ? '+' : ''}${totalReturn.toFixed(1)}%</span> <span class="text-zinc-600 mx-0.5">|</span> <span class="${colorClass}">${sign}${window.formatKRW(Math.abs(totalReturnAmt))}</span>)`;
                     
                     let barPct = (cagr / 20) * 100;
                     if(cagr < 0) barPct = 0;
                     if(barPct > 100) barPct = 100;
                     
                     cagrBar.style.width = `${barPct}%`;
-                    cagrDisp.className = `text-xl sm:text-2xl md:text-3xl font-black num-font ${colorClass} shrink-0`; // 🌟 메인 텍스트 컬러 일괄 적용
+                    cagrDisp.className = `text-xl sm:text-2xl md:text-3xl font-black num-font ${colorClass} shrink-0`; 
 
                     if (cagr >= 10) {
                         cagrBar.className = "h-full bg-gradient-to-r from-red-600 to-red-400 transition-all duration-1000 ease-out";
@@ -1389,15 +1406,15 @@
                                     <p class="text-[9px] text-zinc-500 font-bold mb-2 uppercase tracking-widest">DCA 투입 후 포트폴리오 비중 예상</p>
                                     <div class="flex flex-col sm:flex-row items-center justify-center text-[12px] sm:text-sm font-black num-font gap-1.5 sm:gap-0">
                                         <div class="flex items-center">
-                                            <span class="text-blue-500/50 line-through mr-1.5">Q ${w_current.toFixed(1)}%</span>
+                                            <span class="text-zinc-500 line-through mr-1.5">Q ${w_current.toFixed(1)}%</span>
                                             <i class="fa-solid fa-arrow-right text-zinc-600 mx-1 text-[10px]"></i>
-                                            <span class="text-blue-400 ml-1.5">Q <span id="summary_q_post">0.0</span>%</span>
+                                            <span class="text-zinc-300 ml-1.5">Q <span id="summary_q_post">0.0</span>%</span>
                                         </div>
                                         <span class="text-zinc-700 hidden sm:inline-block mx-4">|</span>
                                         <div class="flex items-center">
-                                            <span class="text-emerald-500/50 line-through mr-1.5">S ${(100 - w_current).toFixed(1)}%</span>
+                                            <span class="text-zinc-500 line-through mr-1.5">S ${(100 - w_current).toFixed(1)}%</span>
                                             <i class="fa-solid fa-arrow-right text-zinc-600 mx-1 text-[10px]"></i>
-                                            <span class="text-emerald-400 ml-1.5">S <span id="summary_s_post">0.0</span>%</span>
+                                            <span class="text-zinc-300 ml-1.5">S <span id="summary_s_post">0.0</span>%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1409,10 +1426,10 @@
                     s1_buy_qld = dca * (def_qld / total_def);
                     s1_buy_sgov = dca * (def_sgov / total_def);
                     s1_buy_iau = dca * (def_iau / total_def);
-                    step1_msg += `<div class="flex items-start px-1"><i class="fa-solid fa-scale-balanced text-blue-500 mt-0.5 mr-2 sm:mr-3 text-sm sm:text-lg"></i><div class="w-full break-keep text-[10px] sm:text-xs text-zinc-300">목표 비중(주식 70% : 현금 30%)에 맞추어 적립금 <span class="font-black text-blue-400 num-font">${window.formatKRW(dca)}</span>을 분할 배정합니다.</div></div>`;
+                    step1_msg += `<div class="flex items-start px-1"><i class="fa-solid fa-scale-balanced text-zinc-500 mt-0.5 mr-2 sm:mr-3 text-sm sm:text-lg"></i><div class="w-full break-keep text-[10px] sm:text-xs text-zinc-300">목표 비중(주식 70% : 현금 30%)에 맞추어 적립금 <span class="font-black text-white num-font">${window.formatKRW(dca)}</span>을 분할 배정합니다.</div></div>`;
                 } else {
                     s1_buy_sgov = dca;
-                    step1_msg += `<div class="flex items-start px-1"><i class="fa-solid fa-shield-halved text-emerald-500 mt-0.5 mr-2 sm:mr-3 text-sm sm:text-lg"></i><div class="w-full break-keep text-[10px] sm:text-xs text-zinc-300">모든 자산이 목표치를 초과하여, 적립금 전액을 현금 비중인 <b>SGOV</b>에 비축합니다.</div></div>`;
+                    step1_msg += `<div class="flex items-start px-1"><i class="fa-solid fa-shield-halved text-zinc-500 mt-0.5 mr-2 sm:mr-3 text-sm sm:text-lg"></i><div class="w-full break-keep text-[10px] sm:text-xs text-zinc-300">모든 자산이 목표치를 초과하여, 적립금 전액을 현금 비중인 <b>SGOV</b>에 비축합니다.</div></div>`;
                 }
 
                 const w_qqqm_curr = total_before > 0 ? (val_qqqm / total_before) * 100 : 0;
@@ -1426,19 +1443,19 @@
                 const w_iau_post = expected_total > 0 ? ((val_iau + s1_buy_iau) / expected_total) * 100 : 0;
 
                 let details = [];
-                const pushDetail = (name, amt, colorClass, wCurr, wPost) => {
+                const pushDetail = (name, amt, wCurr, wPost) => {
                     let wChangeHtml = `<div class="text-[8px] sm:text-[9px] text-zinc-500 font-normal mt-0.5 num-font">비중: <span class="line-through opacity-70 mr-0.5">${wCurr.toFixed(1)}%</span>➔<span class="font-bold text-zinc-300 ml-0.5">${wPost.toFixed(1)}%</span></div>`;
                     if (amt > 0) {
-                        details.push(`<div class="flex justify-between items-center bg-zinc-950 p-2 sm:p-2.5 rounded-lg border border-zinc-800 gap-2"><div class="flex flex-col shrink-0"><span class="${colorClass} font-bold text-[9px] sm:text-[10px] num-font">${name}</span>${wChangeHtml}</div> <span class="font-black text-white text-[11px] sm:text-xs num-font break-all text-right">${window.formatKRW(amt)}</span></div>`);
+                        details.push(`<div class="flex justify-between items-center bg-zinc-950 p-2 sm:p-2.5 rounded-lg border border-zinc-800 gap-2"><div class="flex flex-col shrink-0"><span class="text-zinc-300 font-bold text-[9px] sm:text-[10px] num-font">${name}</span>${wChangeHtml}</div> <span class="font-black text-white text-[11px] sm:text-xs num-font break-all text-right">${window.formatKRW(amt)}</span></div>`);
                     } else {
                         details.push(`<div class="flex justify-between items-center bg-zinc-950/40 p-2 sm:p-2.5 rounded-lg border border-zinc-900 opacity-70 gap-2"><div class="flex flex-col shrink-0"><span class="text-zinc-600 font-bold text-[9px] sm:text-[10px] num-font">${name}</span>${wChangeHtml}</div> <span class="text-zinc-700 text-[8px] sm:text-[9px] font-bold text-right break-all shrink-0">목표 초과 (0원)</span></div>`);
                     }
                 };
 
-                pushDetail('QQQM (목표 35%)', s1_buy_qqqm, 'text-indigo-400', w_qqqm_curr, w_qqqm_post);
-                pushDetail('QLD (목표 35%)', s1_buy_qld, 'text-blue-500', w_qld_curr, w_qld_post);
-                pushDetail('SGOV (목표 20%)', s1_buy_sgov, 'text-emerald-500', w_sgov_curr, w_sgov_post);
-                pushDetail('IAU (목표 10%)', s1_buy_iau, 'text-yellow-500', w_iau_curr, w_iau_post);
+                pushDetail('QQQM (목표 35%)', s1_buy_qqqm, w_qqqm_curr, w_qqqm_post);
+                pushDetail('QLD (목표 35%)', s1_buy_qld, w_qld_curr, w_qld_post);
+                pushDetail('SGOV (목표 20%)', s1_buy_sgov, w_sgov_curr, w_sgov_post);
+                pushDetail('IAU (목표 10%)', s1_buy_iau, w_iau_curr, w_iau_post);
                 
                 step1_msg += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 w-full">${details.join('')}</div></div>`;
             } else {
@@ -1496,7 +1513,7 @@
 
                     if (alpha_amt > 0) {
                         panelB_html = `
-                        <div class="bg-red-950/30 border border-red-900/80 rounded-xl p-4 sm:p-5 shadow-[0_0_20px_rgba(239,68,68,0.1)] relative overflow-hidden transition-all mt-4">
+                        <div class="bg-red-950/30 border border-red-900/50 rounded-xl p-4 sm:p-5 shadow-[0_0_20px_rgba(239,68,68,0.15)] relative overflow-hidden transition-all mt-4">
                             <div class="absolute top-0 right-0 bg-red-600 text-white text-[8px] sm:text-[9px] font-black px-2 py-1 rounded-bl-lg uppercase shadow-sm">선택 사항</div>
                             <div class="flex items-center mb-2 sm:mb-3"><i class="fa-solid fa-bolt text-red-500 text-lg sm:text-xl mr-2 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]"></i><h5 class="text-xs sm:text-sm font-black text-red-100">Panel B: 🚨 알파(α) 투자 권고</h5></div>
                             <p class="text-[10px] sm:text-[11px] text-red-200/80 mb-2 sm:mb-3 leading-relaxed break-keep">극도의 공포 구간입니다. 반등 화력을 높이기 위해 아래 금액을 <b class="underline decoration-red-500 text-red-400">'추가로'</b> 매수하실 것을 제안합니다.</p>
@@ -1533,9 +1550,9 @@
                 step2_msg = `
                 <div class="bg-zinc-900 border border-red-900/40 rounded-xl p-4 sm:p-5 shadow-sm">
                     <div class="flex items-center mb-2"><i class="fa-solid fa-triangle-exclamation text-red-500 text-lg sm:text-xl mr-2"></i><h5 class="text-xs sm:text-sm font-black text-white">Case A: 위기 대응 (하단 이탈)</h5></div>
-                    <p class="text-[10px] sm:text-[11px] text-zinc-400 mb-3 leading-relaxed break-keep">주식 비중이 65% 미만으로 하락했습니다. 70%와의 격차 중 <b>딱 절반</b>만 복구하도록 <span class="text-blue-500 font-bold">QLD를 집중 매수</span>합니다. <span class="text-[8px] sm:text-[9px] text-zinc-600">(1순위 SGOV 소진, 부족 시 2순위 IAU 매도)</span></p>
+                    <p class="text-[10px] sm:text-[11px] text-zinc-400 mb-3 leading-relaxed break-keep">주식 비중이 65% 미만으로 하락했습니다. 70%와의 격차 중 <b>딱 절반</b>만 복구하도록 <span class="text-red-500 font-bold">QLD를 집중 매수</span>합니다. <span class="text-[8px] sm:text-[9px] text-zinc-600">(1순위 SGOV 소진, 부족 시 2순위 IAU 매도)</span></p>
                     
-                    <div class="bg-red-950/50 border border-red-900/50 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
+                    <div class="bg-red-950/30 border border-red-900/50 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
                         <span class="font-bold text-red-400 text-[10px] sm:text-[11px] shrink-0">현금 비중 매도 ➔ QLD 매수</span>
                         <span class="font-black text-red-500 text-sm sm:text-lg num-font break-all text-right">${window.formatKRW(actual_buy_amt)}</span>
                     </div>
@@ -1570,28 +1587,28 @@
 
                 let extra_warning = "";
                 if (currentAlphaScore >= 2) {
-                    extra_warning = `<div class="bg-red-950/50 p-2 sm:p-3 rounded-lg mt-2 sm:mt-3 border border-red-900/50 text-[8px] sm:text-[10px] text-red-500 shadow-sm break-keep"><b>💡 AI 경고:</b> 공포 신호가 떴지만, 계좌의 나스닥 비중이 너무 높은 상태이므로 알파 매수를 차단하고 기계적 익절을 우선 실행합니다.</div>`;
+                    extra_warning = `<div class="bg-blue-950/30 p-2 sm:p-3 rounded-lg mt-2 sm:mt-3 border border-blue-900/50 text-[8px] sm:text-[10px] text-blue-400 shadow-sm break-keep"><b>🚨 AI 경고:</b> 공포 신호가 떴지만, 계좌의 나스닥 비중이 너무 높은 상태이므로 알파 매수를 차단하고 기계적 익절을 우선 실행합니다.</div>`;
                 }
 
                 step2_msg = `
-                <div class="bg-zinc-900 border border-emerald-900/40 rounded-xl p-4 sm:p-5 shadow-sm">
-                    <div class="flex items-center mb-2"><i class="fa-solid fa-wheat-awn text-emerald-500 text-lg sm:text-xl mr-2"></i><h5 class="text-xs sm:text-sm font-black text-white">Case B: 수익 수확 (상단 80% 돌파)</h5></div>
+                <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 sm:p-5 shadow-sm">
+                    <div class="flex items-center mb-2"><i class="fa-solid fa-wheat-awn text-blue-400 text-lg sm:text-xl mr-2"></i><h5 class="text-xs sm:text-sm font-black text-white">Case B: 수익 수확 (상단 80% 돌파)</h5></div>
                     <p class="text-[10px] sm:text-[11px] text-zinc-400 mb-3 leading-relaxed break-keep">비중 80%를 초과한 과열 구간입니다. 초과된 주식 평가액 <b>전량</b>을 매도하여 <b>정확히 70% 타겟 비중으로 복귀</b>합니다. <span class="text-[8px] sm:text-[9px] text-zinc-600">(확보된 현금은 SGOV와 IAU에 2:1 비율로 비축, 내부 밸런싱을 위해 QLD 우선 매도)</span></p>
                     
-                    <div class="bg-emerald-950/30 border border-emerald-900/50 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
-                        <span class="font-bold text-emerald-500 text-[10px] sm:text-[11px] shrink-0">주식(Q) 매도 ➔ 현금 비중 매수</span>
-                        <span class="font-black text-emerald-500 text-sm sm:text-lg num-font break-all text-right">${window.formatKRW(sell_amt)}</span>
+                    <div class="bg-blue-950/20 border border-blue-900/40 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
+                        <span class="font-bold text-blue-400 text-[10px] sm:text-[11px] shrink-0">주식(Q) 매도 ➔ 현금 비중 매수</span>
+                        <span class="font-black text-blue-500 text-sm sm:text-lg num-font break-all text-right">${window.formatKRW(sell_amt)}</span>
                     </div>
 
                     <div class="flex items-center justify-center p-2 bg-black border border-zinc-800 rounded-md">
-                        <span class="text-[9px] sm:text-[10px] font-bold text-zinc-400">💡 매도 후 예상 나스닥 비중: <span class="text-white num-font">${actual_w_post_dca.toFixed(1)}%</span> ➔ <b class="text-emerald-500 num-font">${final_weight.toFixed(1)}%</b></span>
+                        <span class="text-[9px] sm:text-[10px] font-bold text-zinc-400">💡 매도 후 예상 나스닥 비중: <span class="text-white num-font">${actual_w_post_dca.toFixed(1)}%</span> ➔ <b class="text-blue-500 num-font">${final_weight.toFixed(1)}%</b></span>
                     </div>
 
                     ${extra_warning}
                 </div>`;
                 step2_class = "border-none p-0";
             } else {
-                step2_msg = `<div class="flex items-center p-4 bg-zinc-900 border border-zinc-800 rounded-xl"><i class="fa-solid fa-mug-hot text-emerald-500 text-xl sm:text-2xl mr-3"></i><div><p class="text-white font-black text-[11px] sm:text-sm mb-0.5">관망 유지 (안전 지대)</p><p class="text-[9px] sm:text-[10px] text-zinc-500 break-keep">현재 비중이 안전 밴드(65~80%) 내에 있습니다. 추가 매매를 삼가십시오.</p></div></div>`;
+                step2_msg = `<div class="flex items-center p-4 bg-zinc-900 border border-zinc-800 rounded-xl"><i class="fa-solid fa-mug-hot text-zinc-500 text-xl sm:text-2xl mr-3"></i><div><p class="text-white font-black text-[11px] sm:text-sm mb-0.5">관망 유지 (안전 지대)</p><p class="text-[9px] sm:text-[10px] text-zinc-500 break-keep">현재 비중이 안전 밴드(65~80%) 내에 있습니다. 추가 매매를 삼가십시오.</p></div></div>`;
                 step2_class = "border-none p-0";
                 final_weight = actual_w_post_dca;
             }
@@ -1624,10 +1641,15 @@
                 if (Math.abs(o.net) > 500 && o.p > 0) {
                     const isBuy = o.net > 0;
                     const shares = (Math.abs(o.net) / o.p).toFixed(2);
+                    const colorClass = isBuy ? 'text-red-500' : 'text-blue-500';
+                    const bgClass = isBuy ? 'bg-red-950/50' : 'bg-blue-950/50';
+                    const borderClass = isBuy ? 'border-red-900/50' : 'border-blue-900/50';
+                    const textLabel = isBuy ? 'Buy 매수' : 'Sell 매도';
+
                     html += `<div class="bg-black border border-zinc-800 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between hover:border-zinc-700 transition-colors gap-2">
-                        <div class="flex items-center min-w-max shrink-0"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg ${isBuy?'bg-red-950/50 text-red-500':'bg-blue-950/50 text-blue-500'} flex items-center justify-center mr-3 text-sm sm:text-base border ${isBuy?'border-red-900/50':'border-blue-900/50'}"><i class="fa-solid ${isBuy?'fa-cart-arrow-down':'fa-hand-holding-dollar'}"></i></div>
-                        <div class="text-left"><p class="text-[8px] sm:text-[9px] font-black uppercase tracking-widest ${isBuy?'text-red-500':'text-blue-500'} mb-0.5">${isBuy?'Buy 매수':'Sell 매도'}</p><p class="text-sm sm:text-lg font-black ${o.c} num-font">${o.t}</p></div></div>
-                        <div class="text-right flex-grow"><p class="text-base sm:text-2xl font-black ${isBuy?'text-red-500':'text-blue-500'} num-font break-all">${shares}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-50 font-bold text-zinc-400 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-600 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(Math.abs(o.net))}</p></div></div>`;
+                        <div class="flex items-center min-w-max shrink-0"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg ${bgClass} ${colorClass} flex items-center justify-center mr-3 text-sm sm:text-base border ${borderClass}"><i class="fa-solid ${isBuy?'fa-cart-arrow-down':'fa-hand-holding-dollar'}"></i></div>
+                        <div class="text-left"><p class="text-[8px] sm:text-[9px] font-black uppercase tracking-widest ${colorClass} mb-0.5">${textLabel}</p><p class="text-sm sm:text-lg font-black text-white num-font">${o.t}</p></div></div>
+                        <div class="text-right flex-grow"><p class="text-base sm:text-2xl font-black ${colorClass} num-font break-all">${shares}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-50 font-bold text-zinc-400 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-600 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(Math.abs(o.net))}</p></div></div>`;
                 }
             });
 
@@ -1639,13 +1661,13 @@
                  html += `<div class="mt-4 sm:mt-6 pt-4 sm:pt-5 border-t border-dashed border-red-900/50">
                     <h5 class="text-red-500 font-black mb-2 sm:mb-3 text-left text-[10px] sm:text-xs"><i class="fa-solid fa-plus-circle mr-1.5"></i>[선택] 알파(α) 투자 추가 주문</h5>
                     <div class="space-y-2">
-                        <div class="bg-red-950/20 border border-red-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-red-500 border border-zinc-800"><i class="fa-solid fa-cart-plus"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-red-500 bg-red-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Buy 추가 매수</p><p class="text-sm sm:text-lg font-black text-zinc-200 num-font">QLD</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-red-500 num-font break-all">${alpha_qld_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(globalAlphaAmt)}</p></div></div>`;
+                        <div class="bg-red-950/20 border border-red-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-red-500 border border-zinc-800"><i class="fa-solid fa-cart-plus"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-red-500 bg-red-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Buy 추가 매수</p><p class="text-sm sm:text-lg font-black text-white num-font">QLD</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-red-500 num-font break-all">${alpha_qld_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(globalAlphaAmt)}</p></div></div>`;
                  
                  if (s2_alpha_sell_sgov > 0) {
-                    html += `<div class="bg-blue-950/20 border border-blue-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-blue-500 border border-zinc-800"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-blue-500 bg-blue-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Sell 추가 매도</p><p class="text-sm sm:text-lg font-black text-zinc-200 num-font">SGOV</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-blue-500 num-font break-all">${alpha_sgov_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(s2_alpha_sell_sgov)}</p></div></div>`;
+                    html += `<div class="bg-blue-950/20 border border-blue-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-blue-500 border border-zinc-800"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-blue-500 bg-blue-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Sell 추가 매도</p><p class="text-sm sm:text-lg font-black text-white num-font">SGOV</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-blue-500 num-font break-all">${alpha_sgov_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(s2_alpha_sell_sgov)}</p></div></div>`;
                  }
                  if (s2_alpha_sell_iau > 0) {
-                    html += `<div class="bg-blue-950/20 border border-blue-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-blue-500 border border-zinc-800"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-blue-500 bg-blue-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Sell 추가 매도</p><p class="text-sm sm:text-lg font-black text-zinc-200 num-font">IAU</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-blue-500 num-font break-all">${alpha_iau_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(s2_alpha_sell_iau)}</p></div></div>`;
+                    html += `<div class="bg-blue-950/20 border border-blue-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-blue-500 border border-zinc-800"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-blue-500 bg-blue-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Sell 추가 매도</p><p class="text-sm sm:text-lg font-black text-white num-font">IAU</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-blue-500 num-font break-all">${alpha_iau_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(s2_alpha_sell_iau)}</p></div></div>`;
                  }
                  html += `</div></div>`;
             }
