@@ -74,6 +74,9 @@
     <div id="toast_container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center space-y-2 pointer-events-none w-11/12 max-w-md"></div>
 
     <div class="max-w-[1400px] mx-auto px-4 pt-6 md:pt-8 relative">
+        <div class="absolute top-2 right-4 md:top-6 md:right-8 text-[10px] sm:text-xs font-bold text-zinc-500 bg-zinc-900/80 px-3 py-1.5 rounded-full border border-zinc-800 shadow-sm z-50 backdrop-blur-md">
+            by에이미, ver2.7 (Dynamic Chart Zoom)
+        </div>
 
         <header class="mb-6 text-center mt-4 md:mt-0">
             <div class="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 mb-3 rounded-2xl bg-zinc-900 text-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.15)] border border-zinc-800">
@@ -191,7 +194,6 @@
                 </div>
                 
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-3 pb-3">
-                    <!-- 🌟 시장 지표 컬러 모두 화이트로 통일 -->
                     <div class="space-y-1 relative">
                         <label class="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">환율 (KRW)</label>
                         <div class="input-group focus-within:border-zinc-500"><input type="text" inputmode="decimal" id="api_fx" class="market-input-target text-white num-font" onchange="calculateAssets();" oninput="formatDecimal(this); removeManualStatus(this);"><div class="unit text-zinc-500">원</div></div>
@@ -245,7 +247,6 @@
                             </div>
                         </div>
                         <div class="space-y-3 sm:space-y-4">
-                            <!-- 🌟 종목별 보유 수량 텍스트 색상 화이트로 통일 -->
                             <div class="space-y-0.5">
                                 <label class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest ml-1">QQQM 수량</label>
                                 <div class="input-group focus-within:border-zinc-500"><input type="text" inputmode="decimal" id="h_qqqm" class="text-white num-font" oninput="formatDecimal(this); calculateAssets();" placeholder="0"><div class="unit text-zinc-500">주</div></div>
@@ -281,7 +282,6 @@
                         </div>
 
                         <div class="pt-3 mt-3 border-t border-zinc-800 space-y-2">
-                            <!-- 그룹 합계 비중(%) 표시 -->
                             <div class="flex justify-between items-center bg-black px-3 py-2 rounded-lg border border-zinc-800/50">
                                 <div class="flex items-center gap-1.5">
                                     <span class="text-[10px] font-bold text-zinc-400">주식 합계 (Q)</span>
@@ -305,7 +305,6 @@
                         </div>
                         
                         <div class="space-y-4 sm:space-y-5">
-                            <!-- 🌟 투자금 관리도 화이트 톤 통일 -->
                             <div>
                                 <div class="flex justify-between items-end mb-1 ml-1">
                                     <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">누적 투입 원금</label>
@@ -372,7 +371,7 @@
                                     </div>
                                 </div>
                                 
-                                <!-- 3단계 시뮬레이션 패널 (하단 정렬 및 비율 교정 적용) -->
+                                <!-- 3단계 시뮬레이션 패널 -->
                                 <div class="flex flex-col justify-end space-y-2 sm:space-y-2.5 mt-4 md:mt-0 h-full">
                                     <div class="flex flex-row justify-between items-center px-3 py-2.5 rounded-lg bg-black border border-zinc-800 overflow-hidden">
                                         <span class="text-[9px] sm:text-[10px] font-bold text-zinc-500 shrink-0">① 현재 비중 현황</span>
@@ -407,12 +406,12 @@
                             <div class="mb-4 px-1">
                                 <div class="w-full h-1.5 bg-black rounded-full overflow-hidden flex relative border border-zinc-800">
                                     <div class="absolute left-[65%] top-0 bottom-0 w-0.5 bg-red-500/80 z-20"></div>
-                                    <div class="absolute left-[80%] top-0 bottom-0 w-0.5 bg-red-500/80 z-20"></div>
+                                    <div class="absolute left-[80%] top-0 bottom-0 w-0.5 bg-blue-500/80 z-20"></div>
                                     <div class="absolute left-[70%] top-0 bottom-0 w-1 bg-white/20 z-20"></div>
                                     <div id="q_bar" class="h-full bg-gradient-to-r from-blue-600 to-indigo-500 transition-all duration-1000 ease-out" style="width: 0%"></div>
                                 </div>
                                 <div class="flex justify-between text-[8px] sm:text-[9px] font-black text-zinc-600 mt-1.5 uppercase num-font tracking-widest">
-                                    <span>0%</span><span class="text-red-500/60">Low(65)</span><span class="text-white/30">Target(70)</span><span class="text-red-500/60">High(80)</span><span>100%</span>
+                                    <span>0%</span><span class="text-red-500/60">Low(65)</span><span class="text-white/30">Target(70)</span><span class="text-blue-500/60">High(80)</span><span>100%</span>
                                 </div>
                             </div>
 
@@ -478,8 +477,8 @@
                         </div>
                         
                         <div class="flex items-center justify-end mt-2 mb-1 pr-1">
-                            <label class="text-[10px] sm:text-xs text-zinc-400 font-bold flex items-center cursor-pointer hover:text-blue-400 transition-colors select-none">
-                                <input type="checkbox" id="is_manual_trade" class="mr-1.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded bg-zinc-900 border-zinc-700 text-blue-500 focus:ring-blue-500 focus:ring-offset-zinc-950">
+                            <label class="text-[10px] sm:text-xs text-zinc-400 font-bold flex items-center cursor-pointer hover:text-zinc-200 transition-colors select-none">
+                                <input type="checkbox" id="is_manual_trade" class="mr-1.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded bg-zinc-900 border-zinc-700 text-zinc-500 focus:ring-zinc-500 focus:ring-offset-zinc-950">
                                 ⚡ 수동 매매(원칙 외 개입) 기록
                             </label>
                         </div>
@@ -750,15 +749,15 @@
                 progressHtml = `
                     <div class="mb-5 sm:mb-6 mt-2">
                         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-1.5">
-                            <div class="text-3xl sm:text-5xl font-black text-white drop-shadow-md tracking-tighter num-font leading-none mb-1 sm:mb-0">
+                            <div class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-200 tracking-tighter num-font leading-none mb-1 sm:mb-0">
                                 D+${actualDays.toLocaleString()}
                             </div>
                             <div class="text-[9px] sm:text-xs font-bold text-zinc-400 pb-0.5">
-                                다음 목표: <span class="text-zinc-300">${nextMilestone.icon} ${nextMilestone.title}</span> <span class="ml-1 text-zinc-500 num-font">(${nextMilestone.days - actualDays}일 남음)</span>
+                                다음 목표: <span class="text-yellow-500">${nextMilestone.icon} ${nextMilestone.title}</span> <span class="ml-1 text-zinc-500 num-font">(${nextMilestone.days - actualDays}일 남음)</span>
                             </div>
                         </div>
                         <div class="w-full h-1.5 sm:h-2 bg-black rounded-full overflow-hidden border border-zinc-800">
-                            <div class="h-full bg-gradient-to-r from-zinc-600 to-zinc-400 rounded-full transition-all duration-1000 ease-out relative" style="width: ${percent}%">
+                            <div class="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 rounded-full transition-all duration-1000 ease-out relative" style="width: ${percent}%">
                                 <div class="absolute inset-0 bg-white/20 w-full animate-pulse"></div>
                             </div>
                         </div>
@@ -767,10 +766,10 @@
             } else {
                 progressHtml = `
                     <div class="mb-5 sm:mb-6 mt-2 text-center">
-                        <div class="text-3xl sm:text-5xl font-black text-white tracking-tighter mb-1 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] num-font">
+                        <div class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-200 tracking-tighter mb-1 drop-shadow-[0_0_10px_rgba(234,179,8,0.3)] num-font">
                             D+${actualDays.toLocaleString()}
                         </div>
-                        <div class="text-[10px] sm:text-sm font-black text-zinc-300">모든 위대한 여정을 완수하셨습니다!</div>
+                        <div class="text-[10px] sm:text-sm font-black text-yellow-500">모든 위대한 여정을 완수하셨습니다!</div>
                     </div>
                 `;
             }
@@ -787,7 +786,7 @@
                             </div>
                             <h4 class="relative z-10 font-black ${m.text} text-[8px] sm:text-[11px] mb-0.5 whitespace-nowrap hidden sm:block">${m.title}</h4>
                             <p class="relative z-10 text-[7px] sm:text-[9px] font-bold text-zinc-500 tracking-widest num-font">${m.days}D</p>
-                            <div class="absolute top-1 right-1 text-zinc-500 text-[8px] sm:text-[10px]"><i class="fa-solid fa-star"></i></div>
+                            <div class="absolute top-1 right-1 text-yellow-500 text-[8px] sm:text-[10px] drop-shadow-[0_0_5px_rgba(234,179,8,0.8)]"><i class="fa-solid fa-star"></i></div>
                         </div>
                     `;
                 } else {
@@ -949,6 +948,22 @@
             const wFinals = filteredData.map(d => d.w_final !== undefined ? d.w_final : d.w_current);
             const wAlphas = filteredData.map(d => d.w_alpha ? d.w_alpha : null);
             
+            const validGhosts = wGhosts.filter(x => x !== null && x !== undefined && !isNaN(x));
+            const validFinals = wFinals.filter(x => x !== null && x !== undefined && !isNaN(x));
+            const validAlphas = wAlphas.filter(x => x !== null && x !== undefined && !isNaN(x));
+            
+            // 🌟 동적 줌인 로직 적용 (기본 60~85, 이탈 시 상하 5% 여유)
+            let allWeights = [...validGhosts, ...validFinals, ...validAlphas];
+            let yMin = 60;
+            let yMax = 85;
+            
+            if (allWeights.length > 0) {
+                const actualMin = Math.min(...allWeights);
+                const actualMax = Math.max(...allWeights);
+                if (actualMin < 65) yMin = Math.floor(actualMin) - 5;
+                if (actualMax > 80) yMax = Math.ceil(actualMax) + 5;
+            }
+            
             const pointColors = filteredData.map(d => {
                 if (d.is_manual) return '#a855f7';
                 const wP = d.w_post_dca; const wF = d.w_final;
@@ -1015,9 +1030,9 @@
                     }, 
                     scales: { 
                         y: { 
-                            min: 30, 
-                            max: 90, 
-                            ticks: { font:{size:9}, stepSize: 10, callback: v => v + '%' }, 
+                            min: yMin, 
+                            max: yMax, 
+                            ticks: { font:{size:9}, stepSize: 5, callback: v => v + '%' }, 
                             grid: { color: 'rgba(255,255,255,0.03)' } 
                         },
                         x: { display: true, ticks: {display: false}, grid: {display: false} } 
@@ -1406,15 +1421,15 @@
                                     <p class="text-[9px] text-zinc-500 font-bold mb-2 uppercase tracking-widest">DCA 투입 후 포트폴리오 비중 예상</p>
                                     <div class="flex flex-col sm:flex-row items-center justify-center text-[12px] sm:text-sm font-black num-font gap-1.5 sm:gap-0">
                                         <div class="flex items-center">
-                                            <span class="text-zinc-500 line-through mr-1.5">Q ${w_current.toFixed(1)}%</span>
+                                            <span class="text-[10px] sm:text-[11px] text-zinc-500 line-through mr-1.5">Q ${w_current.toFixed(1)}%</span>
                                             <i class="fa-solid fa-arrow-right text-zinc-600 mx-1 text-[10px]"></i>
-                                            <span class="text-zinc-300 ml-1.5">Q <span id="summary_q_post">0.0</span>%</span>
+                                            <span class="text-[12px] sm:text-[14px] text-blue-400 ml-1.5">Q <span id="summary_q_post">0.0</span>%</span>
                                         </div>
                                         <span class="text-zinc-700 hidden sm:inline-block mx-4">|</span>
-                                        <div class="flex items-center">
-                                            <span class="text-zinc-500 line-through mr-1.5">S ${(100 - w_current).toFixed(1)}%</span>
+                                        <div class="flex items-center mt-1.5 sm:mt-0">
+                                            <span class="text-[10px] sm:text-[11px] text-zinc-500 line-through mr-1.5">S ${(100 - w_current).toFixed(1)}%</span>
                                             <i class="fa-solid fa-arrow-right text-zinc-600 mx-1 text-[10px]"></i>
-                                            <span class="text-zinc-300 ml-1.5">S <span id="summary_s_post">0.0</span>%</span>
+                                            <span class="text-[12px] sm:text-[14px] text-emerald-400 ml-1.5">S <span id="summary_s_post">0.0</span>%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1426,7 +1441,7 @@
                     s1_buy_qld = dca * (def_qld / total_def);
                     s1_buy_sgov = dca * (def_sgov / total_def);
                     s1_buy_iau = dca * (def_iau / total_def);
-                    step1_msg += `<div class="flex items-start px-1"><i class="fa-solid fa-scale-balanced text-zinc-500 mt-0.5 mr-2 sm:mr-3 text-sm sm:text-lg"></i><div class="w-full break-keep text-[10px] sm:text-xs text-zinc-300">목표 비중(주식 70% : 현금 30%)에 맞추어 적립금 <span class="font-black text-white num-font">${window.formatKRW(dca)}</span>을 분할 배정합니다.</div></div>`;
+                    step1_msg += `<div class="flex items-start px-1"><i class="fa-solid fa-scale-balanced text-blue-500 mt-0.5 mr-2 sm:mr-3 text-sm sm:text-lg"></i><div class="w-full break-keep text-[10px] sm:text-xs text-zinc-300">목표 비중(주식 70% : 현금 30%)에 맞추어 적립금 <span class="font-black text-white num-font">${window.formatKRW(dca)}</span>을 분할 배정합니다.</div></div>`;
                 } else {
                     s1_buy_sgov = dca;
                     step1_msg += `<div class="flex items-start px-1"><i class="fa-solid fa-shield-halved text-zinc-500 mt-0.5 mr-2 sm:mr-3 text-sm sm:text-lg"></i><div class="w-full break-keep text-[10px] sm:text-xs text-zinc-300">모든 자산이 목표치를 초과하여, 적립금 전액을 현금 비중인 <b>SGOV</b>에 비축합니다.</div></div>`;
@@ -1443,19 +1458,19 @@
                 const w_iau_post = expected_total > 0 ? ((val_iau + s1_buy_iau) / expected_total) * 100 : 0;
 
                 let details = [];
-                const pushDetail = (name, amt, wCurr, wPost) => {
+                const pushDetail = (name, amt, colorClass, wCurr, wPost) => {
                     let wChangeHtml = `<div class="text-[8px] sm:text-[9px] text-zinc-500 font-normal mt-0.5 num-font">비중: <span class="line-through opacity-70 mr-0.5">${wCurr.toFixed(1)}%</span>➔<span class="font-bold text-zinc-300 ml-0.5">${wPost.toFixed(1)}%</span></div>`;
                     if (amt > 0) {
-                        details.push(`<div class="flex justify-between items-center bg-zinc-950 p-2 sm:p-2.5 rounded-lg border border-zinc-800 gap-2"><div class="flex flex-col shrink-0"><span class="text-zinc-300 font-bold text-[9px] sm:text-[10px] num-font">${name}</span>${wChangeHtml}</div> <span class="font-black text-white text-[11px] sm:text-xs num-font break-all text-right">${window.formatKRW(amt)}</span></div>`);
+                        details.push(`<div class="flex justify-between items-center bg-zinc-950 p-2 sm:p-2.5 rounded-lg border border-zinc-800 gap-2"><div class="flex flex-col shrink-0"><span class="${colorClass} font-bold text-[9px] sm:text-[10px] num-font">${name}</span>${wChangeHtml}</div> <span class="font-black text-white text-[11px] sm:text-xs num-font break-all text-right">${window.formatKRW(amt)}</span></div>`);
                     } else {
                         details.push(`<div class="flex justify-between items-center bg-zinc-950/40 p-2 sm:p-2.5 rounded-lg border border-zinc-900 opacity-70 gap-2"><div class="flex flex-col shrink-0"><span class="text-zinc-600 font-bold text-[9px] sm:text-[10px] num-font">${name}</span>${wChangeHtml}</div> <span class="text-zinc-700 text-[8px] sm:text-[9px] font-bold text-right break-all shrink-0">목표 초과 (0원)</span></div>`);
                     }
                 };
 
-                pushDetail('QQQM (목표 35%)', s1_buy_qqqm, w_qqqm_curr, w_qqqm_post);
-                pushDetail('QLD (목표 35%)', s1_buy_qld, w_qld_curr, w_qld_post);
-                pushDetail('SGOV (목표 20%)', s1_buy_sgov, w_sgov_curr, w_sgov_post);
-                pushDetail('IAU (목표 10%)', s1_buy_iau, w_iau_curr, w_iau_post);
+                pushDetail('QQQM (목표 35%)', s1_buy_qqqm, 'text-indigo-400', w_qqqm_curr, w_qqqm_post);
+                pushDetail('QLD (목표 35%)', s1_buy_qld, 'text-blue-500', w_qld_curr, w_qld_post);
+                pushDetail('SGOV (목표 20%)', s1_buy_sgov, 'text-emerald-500', w_sgov_curr, w_sgov_post);
+                pushDetail('IAU (목표 10%)', s1_buy_iau, 'text-yellow-500', w_iau_curr, w_iau_post);
                 
                 step1_msg += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 w-full">${details.join('')}</div></div>`;
             } else {
@@ -1513,13 +1528,13 @@
 
                     if (alpha_amt > 0) {
                         panelB_html = `
-                        <div class="bg-red-950/30 border border-red-900/50 rounded-xl p-4 sm:p-5 shadow-[0_0_20px_rgba(239,68,68,0.15)] relative overflow-hidden transition-all mt-4">
+                        <div class="bg-red-950/30 border border-red-900/80 rounded-xl p-4 sm:p-5 shadow-[0_0_20px_rgba(239,68,68,0.15)] relative overflow-hidden transition-all mt-4">
                             <div class="absolute top-0 right-0 bg-red-600 text-white text-[8px] sm:text-[9px] font-black px-2 py-1 rounded-bl-lg uppercase shadow-sm">선택 사항</div>
                             <div class="flex items-center mb-2 sm:mb-3"><i class="fa-solid fa-bolt text-red-500 text-lg sm:text-xl mr-2 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]"></i><h5 class="text-xs sm:text-sm font-black text-red-100">Panel B: 🚨 알파(α) 투자 권고</h5></div>
                             <p class="text-[10px] sm:text-[11px] text-red-200/80 mb-2 sm:mb-3 leading-relaxed break-keep">극도의 공포 구간입니다. 반등 화력을 높이기 위해 아래 금액을 <b class="underline decoration-red-500 text-red-400">'추가로'</b> 매수하실 것을 제안합니다.</p>
                             
                             <div class="bg-black/50 border border-red-900/50 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
-                                <span class="font-bold text-red-400 text-[10px] sm:text-xs shrink-0">안전자산 매도 ➔ QLD 매수</span>
+                                <span class="font-bold text-red-400 text-[10px] sm:text-xs shrink-0">안전자산 매도 ➔ QLD 추가 매수</span>
                                 <span class="font-black text-red-500 text-sm sm:text-lg num-font break-all text-right">${window.formatKRW(alpha_amt)}</span>
                             </div>
                             
@@ -1587,15 +1602,15 @@
 
                 let extra_warning = "";
                 if (currentAlphaScore >= 2) {
-                    extra_warning = `<div class="bg-blue-950/30 p-2 sm:p-3 rounded-lg mt-2 sm:mt-3 border border-blue-900/50 text-[8px] sm:text-[10px] text-blue-400 shadow-sm break-keep"><b>🚨 AI 경고:</b> 공포 신호가 떴지만, 계좌의 나스닥 비중이 너무 높은 상태이므로 알파 매수를 차단하고 기계적 익절을 우선 실행합니다.</div>`;
+                    extra_warning = `<div class="bg-red-950/30 p-2 sm:p-3 rounded-lg mt-2 sm:mt-3 border border-red-900/50 text-[8px] sm:text-[10px] text-red-400 shadow-sm break-keep"><b>🚨 AI 경고:</b> 공포 신호가 떴지만, 계좌의 나스닥 비중이 너무 높은 상태이므로 알파 매수를 차단하고 기계적 익절을 우선 실행합니다.</div>`;
                 }
 
                 step2_msg = `
-                <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 sm:p-5 shadow-sm">
-                    <div class="flex items-center mb-2"><i class="fa-solid fa-wheat-awn text-blue-400 text-lg sm:text-xl mr-2"></i><h5 class="text-xs sm:text-sm font-black text-white">Case B: 수익 수확 (상단 80% 돌파)</h5></div>
+                <div class="bg-zinc-900 border border-blue-900/40 rounded-xl p-4 sm:p-5 shadow-sm">
+                    <div class="flex items-center mb-2"><i class="fa-solid fa-wheat-awn text-blue-500 text-lg sm:text-xl mr-2"></i><h5 class="text-xs sm:text-sm font-black text-white">Case B: 수익 수확 (상단 80% 돌파)</h5></div>
                     <p class="text-[10px] sm:text-[11px] text-zinc-400 mb-3 leading-relaxed break-keep">비중 80%를 초과한 과열 구간입니다. 초과된 주식 평가액 <b>전량</b>을 매도하여 <b>정확히 70% 타겟 비중으로 복귀</b>합니다. <span class="text-[8px] sm:text-[9px] text-zinc-600">(확보된 현금은 SGOV와 IAU에 2:1 비율로 비축, 내부 밸런싱을 위해 QLD 우선 매도)</span></p>
                     
-                    <div class="bg-blue-950/20 border border-blue-900/40 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
+                    <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
                         <span class="font-bold text-blue-400 text-[10px] sm:text-[11px] shrink-0">주식(Q) 매도 ➔ 현금 비중 매수</span>
                         <span class="font-black text-blue-500 text-sm sm:text-lg num-font break-all text-right">${window.formatKRW(sell_amt)}</span>
                     </div>
@@ -1608,7 +1623,7 @@
                 </div>`;
                 step2_class = "border-none p-0";
             } else {
-                step2_msg = `<div class="flex items-center p-4 bg-zinc-900 border border-zinc-800 rounded-xl"><i class="fa-solid fa-mug-hot text-zinc-500 text-xl sm:text-2xl mr-3"></i><div><p class="text-white font-black text-[11px] sm:text-sm mb-0.5">관망 유지 (안전 지대)</p><p class="text-[9px] sm:text-[10px] text-zinc-500 break-keep">현재 비중이 안전 밴드(65~80%) 내에 있습니다. 추가 매매를 삼가십시오.</p></div></div>`;
+                step2_msg = `<div class="flex items-center p-4 bg-zinc-900 border border-zinc-800 rounded-xl"><i class="fa-solid fa-mug-hot text-emerald-500 text-xl sm:text-2xl mr-3"></i><div><p class="text-white font-black text-[11px] sm:text-sm mb-0.5">관망 유지 (안전 지대)</p><p class="text-[9px] sm:text-[10px] text-zinc-500 break-keep">현재 비중이 안전 밴드(65~80%) 내에 있습니다. 추가 매매를 삼가십시오.</p></div></div>`;
                 step2_class = "border-none p-0";
                 final_weight = actual_w_post_dca;
             }
