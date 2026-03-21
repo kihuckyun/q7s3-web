@@ -75,7 +75,7 @@
 
     <div class="max-w-[1400px] mx-auto px-4 pt-6 md:pt-8 relative">
         <div class="absolute top-2 right-4 md:top-6 md:right-8 text-[10px] sm:text-xs font-bold text-zinc-500 bg-zinc-900/80 px-3 py-1.5 rounded-full border border-zinc-800 shadow-sm z-50 backdrop-blur-md">
-            by에이미, ver2.9 (Pending & Zoom Fix)
+            by에이미, ver2.9.1 (Save Bugfix)
         </div>
 
         <header class="mb-6 text-center mt-4 md:mt-0">
@@ -109,7 +109,7 @@
                     <h2 class="text-base sm:text-lg font-extrabold text-white flex items-center">
                         <i class="fa-solid fa-traffic-light text-zinc-500 mr-2"></i> 알파 타점 신호등
                     </h2>
-                    <div class="bg-zinc-800 text-zinc-300 px-2 py-1 sm:px-3 sm:py-1 rounded-md text-[9px] sm:text-xs font-black transition-all border border-zinc-700 uppercase tracking-wider" id="signal_score_badge">대기중</div>
+                    <div class="bg-zinc-800 text-zinc-300 px-2 py-1 sm:px-3 py-1 rounded-md text-[9px] sm:text-xs font-black transition-all border border-zinc-700 uppercase tracking-wider" id="signal_score_badge">대기중</div>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-5 items-stretch">
@@ -293,7 +293,7 @@
                             </div>
                         </div>
 
-                        <!-- 🌟 가확정 추매 내역 컨테이너 -->
+                        <!-- 가확정 추매 내역 컨테이너 -->
                         <div id="pending_buys_container" class="hidden mt-4 bg-blue-950/30 border border-blue-900/50 p-3 sm:p-4 rounded-xl text-white">
                             <h3 class="text-[10px] sm:text-xs font-black text-blue-400 mb-2 flex items-center"><i class="fa-solid fa-hourglass-half mr-1.5"></i>가확정 추매 내역 (저장 대기중)</h3>
                             <div id="pending_buys_list" class="space-y-1"></div>
@@ -310,19 +310,15 @@
                         </div>
 
                         <div class="pt-3 mt-3 border-t border-zinc-800 space-y-2">
-                            <div class="flex justify-between items-center bg-black px-3 py-2 rounded-lg border border-zinc-800/50">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-[10px] font-bold text-zinc-400">주식 합계 (Q)</span>
-                                    <span class="text-[9px] font-bold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded num-font" id="pct_risk_total">0.0%</span>
-                                </div>
-                                <span class="text-xs sm:text-sm font-black text-white num-font" id="val_risk_total">0원</span>
+                            <div class="flex items-center bg-black px-3 py-2.5 rounded-lg border border-zinc-800/50">
+                                <span class="text-[10px] sm:text-[11px] font-bold text-zinc-400 flex-1 truncate pr-2">주식 (QQQM+QLD)</span>
+                                <span class="text-[9px] sm:text-[10px] font-bold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded num-font w-[45px] sm:w-[50px] text-center shrink-0" id="pct_risk_total">0.0%</span>
+                                <span class="text-xs sm:text-sm font-black text-white num-font text-right w-[95px] sm:w-[130px] shrink-0 ml-2 sm:ml-3 whitespace-nowrap" id="val_risk_total">0원</span>
                             </div>
-                            <div class="flex justify-between items-center bg-black px-3 py-2 rounded-lg border border-zinc-800/50">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-[10px] font-bold text-zinc-400">현금 합계 (SGOV+IAU)</span>
-                                    <span class="text-[9px] font-bold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded num-font" id="pct_safe_total">0.0%</span>
-                                </div>
-                                <span class="text-xs sm:text-sm font-black text-white num-font" id="val_safe_total">0원</span>
+                            <div class="flex items-center bg-black px-3 py-2.5 rounded-lg border border-zinc-800/50">
+                                <span class="text-[10px] sm:text-[11px] font-bold text-zinc-400 flex-1 truncate pr-2">현금 (SGOV+IAU)</span>
+                                <span class="text-[9px] sm:text-[10px] font-bold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded num-font w-[45px] sm:w-[50px] text-center shrink-0" id="pct_safe_total">0.0%</span>
+                                <span class="text-xs sm:text-sm font-black text-white num-font text-right w-[95px] sm:w-[130px] shrink-0 ml-2 sm:ml-3 whitespace-nowrap" id="val_safe_total">0원</span>
                             </div>
                         </div>
                     </section>
@@ -749,7 +745,6 @@
             document.getElementById('buy_modal_total').innerText = window.formatKRW(total);
         };
 
-        // 🌟 수정: 모달 확정 시 바로 적용 안 하고 가확정(Pending) 상태로 유지
         window.executeBuy = () => {
             const target = document.getElementById('buy_modal_target').value;
             const qty = parseFloat(document.getElementById('buy_modal_qty').value.replace(/,/g, '')) || 0;
@@ -771,7 +766,6 @@
             window.showToast(`${target.toUpperCase()} ${qty.toLocaleString('ko-KR')}주 임시 저장 완료! (DB저장 시 확정)`, false, true);
         };
 
-        // 🌟 신규: 가확정 UI 렌더링 함수
         window.renderPendingBuys = () => {
             const container = document.getElementById('pending_buys_container');
             const list = document.getElementById('pending_buys_list');
@@ -796,7 +790,6 @@
             total.innerText = window.formatKRW(window.totalPendingCost);
         };
 
-        // 🌟 신규: 가확정 상태 초기화 함수
         window.clearPendingBuys = (updateUI = true) => {
             window.pendingBuys = { qqqm: { qty: 0, cost: 0 }, qld: { qty: 0, cost: 0 }, sgov: { qty: 0, cost: 0 }, iau: { qty: 0, cost: 0 } };
             window.totalPendingCost = 0;
@@ -1060,6 +1053,28 @@
             const currentP = window.getVal('total_principal') || 0;
             const principalData = filteredData.map(d => (d.principal !== undefined && d.principal > 0) ? d.principal : currentP);
 
+            // 🌟 자산 차트 동적 줌인 (Auto-Scaling) 로직 추가
+            const assetTotals = filteredData.map(d => d.total);
+            const allAssetValues = [...assetTotals, ...principalData];
+            let assetYMin = 0;
+            let assetYMax = 100;
+
+            if (allAssetValues.length > 0) {
+                const actualMin = Math.min(...allAssetValues);
+                const actualMax = Math.max(...allAssetValues);
+                // 표시되는 데이터의 최솟값/최댓값 기준 위아래 10% 여유 버퍼 생성
+                const buffer = (actualMax - actualMin) * 0.1;
+                
+                assetYMin = Math.max(0, actualMin - buffer); // 0원 밑으로는 안 내려가게 방어
+                assetYMax = actualMax + buffer;
+
+                // 최댓값과 최솟값이 같을 경우(데이터가 1개이거나 변동이 없을 때) 예외 처리
+                if (assetYMin === assetYMax) {
+                    assetYMin = actualMin * 0.9;
+                    assetYMax = actualMax * 1.1;
+                }
+            }
+
             if(assetChartInstance) assetChartInstance.destroy();
             assetChartInstance = new window.Chart(ctxAsset, {
                 type: 'line',
@@ -1085,10 +1100,10 @@
                     plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${Math.round(ctx.raw).toLocaleString()} 원` } } }, 
                     scales: { 
                         y: { 
-                            beginAtZero: false, 
+                            suggestedMin: assetYMin,  // 🌟 min 대신 suggestedMin 사용: 지저분한 숫자 방지 및 깔끔한 눈금 자동 생성
+                            suggestedMax: assetYMax,  // 🌟 max 대신 suggestedMax 사용
                             ticks: { 
                                 font: {size: 9}, 
-                                stepSize: 500000, 
                                 callback: v => {
                                     if (v >= 100000000) return (v/100000000).toFixed(2) + '억';
                                     if (v >= 10000) return Math.round(v/10000).toLocaleString() + '만';
@@ -1538,8 +1553,8 @@
                         window.setVal('h_' + t, currentQty + window.pendingBuys[t].qty);
                     }
                 });
-                const currentPrincipal = window.getVal('total_principal');
-                window.setVal('total_principal', currentPrincipal + window.totalPendingCost, true);
+                const cp = window.getVal('total_principal');
+                window.setVal('total_principal', cp + window.totalPendingCost, true);
                 window.clearPendingBuys();
                 window.calculateAssets(); // 수량과 원금이 증가했으므로 자산 재계산
             }
@@ -1552,7 +1567,6 @@
             const dca = window.getVal('dca_amount');
             const rsi_val = window.getVal('api_rsi');
             const fg_val = window.getVal('api_fg');
-            let currentPrincipal = window.getVal('total_principal'); 
 
             if(!fx || !p_qqqm || !p_qld || !p_sgov || !p_iau) {
                 window.showToast("시장 지표를 모두 입력해야 계산이 가능합니다.", true);
@@ -1867,8 +1881,18 @@
             document.getElementById('plan_section').classList.remove('hidden');
             setTimeout(() => { document.getElementById('plan_section').scrollIntoView({ behavior: 'smooth' }); }, 100);
             
+            // 🌟 픽스: 확정 및 DB 저장 로직 복구
             if(shouldSave) {
-                // (shouldSave 로직은 위의 가확정 반영부에서 선행 처리 후 최종 스냅샷만 저장합니다)
+                const currentDca = window.getVal('dca_amount');
+                let finalPrincipal = window.getVal('total_principal'); // 가확정이 선반영된 값
+                if (currentDca > 0) {
+                    finalPrincipal += currentDca;
+                    window.setVal('total_principal', finalPrincipal, true);
+                    window.setVal('dca_amount', 0, true);
+                    window.calculateAssets(); 
+                }
+
+                await saveAssetToDB(post_total, w_current, actual_w_post_dca, final_weight, globalAlphaWeight, finalPrincipal);
                 window.showToast("매매 가이드 확정 및 DB 저장 완료");
             } else {
                 window.showToast("시뮬레이션 완료 (DB 미저장)", false, true);
