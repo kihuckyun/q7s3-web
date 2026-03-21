@@ -1050,12 +1050,20 @@
             const filteredData = historyData.slice(-daysLimit);
             const labels = filteredData.map(d => d.date.substring(5)); 
             
-            const currentP = window.getVal('total_principal') || 0;
-            const principalData = filteredData.map(d => (d.principal !== undefined && d.principal > 0) ? d.principal : currentP);
+            // 🌟 수정: 과거 데이터 억지로 채우지 않고, 기록이 시작된 시점부터 점선 렌더링
+            let lastValidP = null;
+            const principalData = filteredData.map(d => {
+                if (d.principal !== undefined && d.principal > 0) {
+                    lastValidP = d.principal;
+                    return d.principal;
+                }
+                return lastValidP; // 처음 유효값이 나오기 전까지는 계속 null을 반환하여 차트에서 숨김
+            });
 
             // 🌟 자산 차트 동적 줌인 (Auto-Scaling) 로직 추가
             const assetTotals = filteredData.map(d => d.total);
-            const allAssetValues = [...assetTotals, ...principalData];
+            const validPrincipals = principalData.filter(p => p !== null);
+            const allAssetValues = [...assetTotals, ...validPrincipals];
             let assetYMin = 0;
             let assetYMax = 100;
 
