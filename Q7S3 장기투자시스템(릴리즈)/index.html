@@ -75,7 +75,7 @@
 
     <div class="max-w-[1400px] mx-auto px-4 pt-6 md:pt-8 relative">
         <div class="absolute top-2 right-4 md:top-6 md:right-8 text-[10px] sm:text-xs font-bold text-zinc-500 bg-zinc-900/80 px-3 py-1.5 rounded-full border border-zinc-800 shadow-sm z-50 backdrop-blur-md">
-            by에이미, ver2.9.1 (Save Bugfix)
+            by에이미, ver3.4 (Progress Math Fix)
         </div>
 
         <header class="mb-6 text-center mt-4 md:mt-0">
@@ -220,12 +220,6 @@
                     </div>
                 </div>
             </section>
-            
-            <div class="text-center pt-2">
-                <button onclick="switchTab(2)" class="bg-zinc-900 hover:bg-zinc-800 text-blue-400 border border-zinc-800 font-bold py-3 px-8 rounded-full shadow-sm transition-all active:scale-95 text-xs sm:text-sm">
-                    내 자산 및 매매 탭으로 이동 <i class="fa-solid fa-arrow-right ml-2"></i>
-                </button>
-            </div>
         </div>
 
         <!-- ========================================== -->
@@ -293,7 +287,6 @@
                             </div>
                         </div>
 
-                        <!-- 가확정 추매 내역 컨테이너 -->
                         <div id="pending_buys_container" class="hidden mt-4 bg-blue-950/30 border border-blue-900/50 p-3 sm:p-4 rounded-xl text-white">
                             <h3 class="text-[10px] sm:text-xs font-black text-blue-400 mb-2 flex items-center"><i class="fa-solid fa-hourglass-half mr-1.5"></i>가확정 추매 내역 (저장 대기중)</h3>
                             <div id="pending_buys_list" class="space-y-1"></div>
@@ -311,14 +304,18 @@
 
                         <div class="pt-3 mt-3 border-t border-zinc-800 space-y-2">
                             <div class="flex items-center bg-black px-3 py-2.5 rounded-lg border border-zinc-800/50">
-                                <span class="text-[10px] sm:text-[11px] font-bold text-zinc-400 flex-1 truncate pr-2">주식 (QQQM+QLD)</span>
-                                <span class="text-[9px] sm:text-[10px] font-bold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded num-font w-[45px] sm:w-[50px] text-center shrink-0" id="pct_risk_total">0.0%</span>
-                                <span class="text-xs sm:text-sm font-black text-white num-font text-right w-[95px] sm:w-[130px] shrink-0 ml-2 sm:ml-3 whitespace-nowrap" id="val_risk_total">0원</span>
+                                <span class="text-[10px] sm:text-[11px] font-bold text-zinc-400 flex-1 min-w-0 truncate pr-2">주식 (QQQM+QLD)</span>
+                                <div class="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0">
+                                    <span class="text-[9px] sm:text-[10px] font-bold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded num-font w-[45px] sm:w-[50px] text-center" id="pct_risk_total">0.0%</span>
+                                    <span class="text-[11px] sm:text-sm font-black text-white num-font text-right min-w-[70px] sm:min-w-[100px] tracking-tighter" id="val_risk_total">0원</span>
+                                </div>
                             </div>
                             <div class="flex items-center bg-black px-3 py-2.5 rounded-lg border border-zinc-800/50">
-                                <span class="text-[10px] sm:text-[11px] font-bold text-zinc-400 flex-1 truncate pr-2">현금 (SGOV+IAU)</span>
-                                <span class="text-[9px] sm:text-[10px] font-bold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded num-font w-[45px] sm:w-[50px] text-center shrink-0" id="pct_safe_total">0.0%</span>
-                                <span class="text-xs sm:text-sm font-black text-white num-font text-right w-[95px] sm:w-[130px] shrink-0 ml-2 sm:ml-3 whitespace-nowrap" id="val_safe_total">0원</span>
+                                <span class="text-[10px] sm:text-[11px] font-bold text-zinc-400 flex-1 min-w-0 truncate pr-2">현금 (SGOV+IAU)</span>
+                                <div class="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0">
+                                    <span class="text-[9px] sm:text-[10px] font-bold text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded num-font w-[45px] sm:w-[50px] text-center" id="pct_safe_total">0.0%</span>
+                                    <span class="text-[11px] sm:text-sm font-black text-white num-font text-right min-w-[70px] sm:min-w-[100px] tracking-tighter" id="val_safe_total">0원</span>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -550,6 +547,160 @@
                 </div>
             </section>
         </div>
+
+        <!-- 🌟 탭 3: 장기투자 20년 시뮬레이터 -->
+        <div id="tab3" class="tab-content hidden animate-fade-in-up pb-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-stretch">
+                
+                <!-- 좌측: 시뮬레이션 설정 패널 -->
+                <div class="lg:col-span-4 flex flex-col gap-5 sm:gap-6">
+                    <section class="card p-4 sm:p-6 shadow-lg">
+                        <div class="flex justify-between items-center mb-4 sm:mb-5">
+                            <h2 class="text-base font-black text-white"><i class="fa-solid fa-flask text-zinc-500 mr-2"></i>시뮬레이션 설정</h2>
+                        </div>
+                        
+                        <div class="bg-blue-950/30 border border-blue-900/50 p-3 rounded-lg mb-5 text-[10px] sm:text-xs text-blue-300 break-keep leading-relaxed shadow-inner">
+                            <i class="fa-solid fa-link mr-1"></i> 현재 계좌의 <b class="text-blue-400">실제 총 자산</b>과 <b class="text-blue-400">보유 비중</b>이 시뮬레이션의 시작점으로 자동 연동됩니다.
+                        </div>
+
+                        <div class="space-y-5">
+                            <div>
+                                <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest ml-1 mb-1.5 block">향후 월 평균 적립금 (DCA)</label>
+                                <div class="input-group focus-within:border-blue-500">
+                                    <input type="number" id="sim_monthly_dca" class="text-white num-font" oninput="runSimulation()" value="100">
+                                    <div class="unit text-zinc-500">만원</div>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-3 border-t border-zinc-800">
+                                <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest ml-1 mb-3 block">ETF별 예상 연평균 수익률 (CAGR)</label>
+                                <div class="grid grid-cols-2 gap-3 sm:gap-4">
+                                    <div>
+                                        <span class="text-[9px] text-zinc-500 font-bold block mb-1 ml-1">QQQM (%)</span>
+                                        <div class="input-group focus-within:border-zinc-500">
+                                            <input type="number" step="0.1" id="sim_cagr_qqqm" class="text-indigo-400 num-font" oninput="runSimulation()" value="13.8">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="text-[9px] text-zinc-500 font-bold block mb-1 ml-1">QLD (%)</span>
+                                        <div class="input-group focus-within:border-zinc-500">
+                                            <input type="number" step="0.1" id="sim_cagr_qld" class="text-blue-400 num-font" oninput="runSimulation()" value="24.6">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="text-[9px] text-zinc-500 font-bold block mb-1 ml-1">SGOV (%)</span>
+                                        <div class="input-group focus-within:border-zinc-500">
+                                            <input type="number" step="0.1" id="sim_cagr_sgov" class="text-emerald-400 num-font" oninput="runSimulation()" value="2.1">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="text-[9px] text-zinc-500 font-bold block mb-1 ml-1">IAU (%)</span>
+                                        <div class="input-group focus-within:border-zinc-500">
+                                            <input type="number" step="0.1" id="sim_cagr_iau" class="text-yellow-500 num-font" oninput="runSimulation()" value="7.5">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <div class="bg-zinc-900/50 p-4 rounded-xl text-[10px] text-zinc-500 leading-relaxed border border-zinc-800/50">
+                        <strong class="text-zinc-400 mb-1.5 block"><i class="fa-solid fa-circle-info mr-1"></i> 시뮬레이션 안내</strong>
+                        • 시작일과 현재 자산을 기준으로 과거와 20년 뒤 미래를 연결합니다.<br>
+                        • 기본 수익률은 상장일 기준 과거 실제 CAGR 근사치입니다.<br>
+                        • 과거 수익이 미래를 보장하지 않으며, 단순 연복리 계산입니다.
+                    </div>
+                </div>
+
+                <!-- 우측: 시뮬레이션 결과 차트 패널 -->
+                <div class="lg:col-span-8 flex flex-col h-full gap-5 sm:gap-6">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                        <div class="card p-4 sm:p-5 bg-zinc-900 border border-zinc-800 shadow-inner flex flex-col justify-center">
+                            <p class="text-[10px] sm:text-[11px] text-zinc-500 font-bold mb-1">포트폴리오 예상 수익률</p>
+                            <p class="text-xl sm:text-2xl font-black text-blue-400 num-font" id="sim_exp_cagr">0.00%</p>
+                        </div>
+                        <div class="card p-4 sm:p-5 bg-zinc-900 border border-zinc-800 shadow-inner flex flex-col justify-center hidden sm:flex">
+                            <p class="text-[10px] sm:text-[11px] text-zinc-500 font-bold mb-1" id="sim_invested_label">목표연도 누적 투입원금</p>
+                            <p class="text-lg sm:text-xl font-black text-zinc-300 num-font" id="sim_final_invested">0.00억 원</p>
+                        </div>
+                        <div class="card p-4 sm:p-5 bg-blue-950/20 border border-blue-900/50 shadow-[0_0_20px_rgba(59,130,246,0.15)] col-span-2 sm:col-span-1 flex flex-col justify-center">
+                            <p class="text-[10px] sm:text-[11px] text-blue-500 font-bold mb-1" id="sim_asset_label">목표연도 최종 예상 자산</p>
+                            <p class="text-xl sm:text-2xl font-black text-white num-font" id="sim_final_asset">0.00억 원</p>
+                        </div>
+                    </div>
+
+                    <section class="card bg-zinc-950 p-4 sm:p-6 shadow-2xl flex flex-col flex-grow border-zinc-800">
+                        <div class="flex justify-between items-end mb-4">
+                            <h3 class="text-xs sm:text-sm font-bold text-zinc-300 pb-1"><i class="fa-solid fa-chart-area text-blue-500 mr-2"></i>20년 자산 성장 그래프</h3>
+                            <div class="text-right">
+                                <span class="text-[9px] sm:text-[10px] text-zinc-500 font-bold block mb-0.5">현재 내 누적 수익금</span>
+                                <span id="sim_current_profit" class="font-black text-xs sm:text-sm num-font">0.00억 원</span>
+                            </div>
+                        </div>
+                        <div class="relative flex-grow w-full min-h-[300px] sm:min-h-[400px]">
+                            <canvas id="simulationChart"></canvas>
+                            
+                            <!-- 🌟 신규 추가: 그래프 내부 듀얼 플로팅 박스 -->
+                            <div id="sim_floating_box" class="absolute top-2 sm:top-6 left-12 sm:left-20 z-10 bg-zinc-900/90 backdrop-blur-md border border-zinc-700/50 p-3 sm:p-4 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] pointer-events-none hidden w-[200px] sm:w-[240px] space-y-3">
+                                
+                                <!-- 올해 목표 섹션 -->
+                                <div>
+                                    <div class="flex justify-between items-end mb-1.5">
+                                        <span class="text-[10px] sm:text-[11px] font-bold text-emerald-400" id="sim_float_year_title">🎯 올해 목표 달성률</span>
+                                        <span class="text-xs sm:text-sm font-black text-emerald-400 num-font" id="sim_float_year_pct">0.0%</span>
+                                    </div>
+                                    <div class="w-full h-1.5 bg-zinc-800 rounded-full mb-2 overflow-hidden">
+                                        <div id="sim_float_year_bar" class="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-1000 ease-out" style="width: 0%"></div>
+                                    </div>
+                                    <div class="space-y-1 text-[9px] sm:text-[10px]">
+                                        <div class="flex justify-between">
+                                            <span class="text-zinc-500 font-bold">올해 시작</span>
+                                            <span class="font-bold text-zinc-400 num-font" id="sim_float_year_start">0원</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-zinc-500 font-bold">현재 자산</span>
+                                            <span class="font-black text-white num-font" id="sim_float_current">0원</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-zinc-500 font-bold">올해 목표</span>
+                                            <span class="font-black text-emerald-400 num-font" id="sim_float_year_target">0원</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 20년 뒤 목표 섹션 -->
+                                <div class="pt-3 border-t border-zinc-800/80 mt-3">
+                                    <div class="flex justify-between items-end mb-1.5">
+                                        <span class="text-[10px] sm:text-[11px] font-bold text-blue-400">🚀 최종 목표 달성률</span>
+                                        <span class="text-xs sm:text-sm font-black text-blue-400 num-font" id="sim_float_final_pct">0.0%</span>
+                                    </div>
+                                    <div class="w-full h-1.5 bg-zinc-800 rounded-full mb-2 overflow-hidden">
+                                        <div id="sim_float_final_bar" class="h-full bg-gradient-to-r from-blue-600 to-blue-400 transition-all duration-1000 ease-out" style="width: 0%"></div>
+                                    </div>
+                                    <div class="space-y-1 text-[9px] sm:text-[10px]">
+                                        <div class="flex justify-between">
+                                            <span class="text-zinc-500 font-bold">장투 시작</span>
+                                            <span class="font-bold text-zinc-400 num-font" id="sim_float_final_start">0원</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-zinc-500 font-bold">현재 자산</span>
+                                            <span class="font-black text-white num-font" id="sim_float_current_final">0원</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-zinc-500 font-bold">최종 자산</span>
+                                            <span class="font-black text-blue-400 num-font" id="sim_float_final_target">0원</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 🌟 추가 끝 -->
+                            
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- 🌟 추매 입력 모달 (팝업) -->
@@ -604,6 +755,11 @@
             <i class="fa-solid fa-wallet text-lg"></i>
             <span class="text-[9px] tracking-wider">자산/매매</span>
         </button>
+        <!-- 🌟 시뮬레이터 탭 추가 -->
+        <button onclick="switchTab(3)" id="nav_tab3" class="flex-1 py-3 text-zinc-600 font-bold flex flex-col items-center justify-center gap-1 transition-colors">
+            <i class="fa-solid fa-rocket text-lg"></i>
+            <span class="text-[9px] tracking-wider">시뮬레이터</span>
+        </button>
     </nav>
 
     <script type="module">
@@ -622,7 +778,8 @@
         let weightChartInstance = null;
         let historyData = [];
         
-        // 🌟 가확정 추매 상태 관리
+        window.simChartInstance = null; // 🌟 시뮬레이터 차트 인스턴스
+        
         window.pendingBuys = { qqqm: { qty: 0, cost: 0 }, qld: { qty: 0, cost: 0 }, sgov: { qty: 0, cost: 0 }, iau: { qty: 0, cost: 0 } };
         window.totalPendingCost = 0;
 
@@ -642,16 +799,26 @@
             }
         } catch(e) {}
 
+        // 🌟 탭 스위치 로직 업데이트 (3번 탭 연동)
         window.switchTab = (tabIndex) => {
             document.getElementById('tab1').classList.toggle('hidden', tabIndex !== 1);
             document.getElementById('tab2').classList.toggle('hidden', tabIndex !== 2);
+            document.getElementById('tab3').classList.toggle('hidden', tabIndex !== 3);
+            
             document.getElementById('nav_tab1').className = `flex-1 py-3 font-bold flex flex-col items-center justify-center gap-1 transition-colors ${tabIndex === 1 ? 'text-zinc-200' : 'text-zinc-600'}`;
             document.getElementById('nav_tab2').className = `flex-1 py-3 font-bold flex flex-col items-center justify-center gap-1 transition-colors ${tabIndex === 2 ? 'text-zinc-200' : 'text-zinc-600'}`;
+            document.getElementById('nav_tab3').className = `flex-1 py-3 font-bold flex flex-col items-center justify-center gap-1 transition-colors ${tabIndex === 3 ? 'text-zinc-200' : 'text-zinc-600'}`;
             
             if (tabIndex === 2) {
                 setTimeout(() => {
                     if (assetChartInstance) assetChartInstance.resize();
                     if (weightChartInstance) weightChartInstance.resize();
+                }, 50);
+            }
+            if (tabIndex === 3) {
+                setTimeout(() => {
+                    if (typeof window.runSimulation === 'function') window.runSimulation();
+                    if (window.simChartInstance) window.simChartInstance.resize();
                 }, 50);
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -807,7 +974,13 @@
                 vix: document.getElementById('api_vix') ? document.getElementById('api_vix').value : "",
                 rsi: document.getElementById('api_rsi') ? document.getElementById('api_rsi').value : "",
                 start_date: document.getElementById('start_date') ? document.getElementById('start_date').value : "",
-                last_sync: document.getElementById('last_sync_time') ? document.getElementById('last_sync_time').innerHTML : ""
+                last_sync: document.getElementById('last_sync_time') ? document.getElementById('last_sync_time').innerHTML : "",
+                // 🌟 시뮬레이터 저장값 추가
+                sim_monthly: window.getVal('sim_monthly_dca') || 100,
+                sim_cagr_qqqm: document.getElementById('sim_cagr_qqqm')?.value || "13.8",
+                sim_cagr_qld: document.getElementById('sim_cagr_qld')?.value || "24.6",
+                sim_cagr_sgov: document.getElementById('sim_cagr_sgov')?.value || "2.1",
+                sim_cagr_iau: document.getElementById('sim_cagr_iau')?.value || "7.5"
             };
             localStorage.setItem('q7s3_v2_core', JSON.stringify(d));
         };
@@ -1050,17 +1223,15 @@
             const filteredData = historyData.slice(-daysLimit);
             const labels = filteredData.map(d => d.date.substring(5)); 
             
-            // 🌟 수정: 과거 데이터 억지로 채우지 않고, 기록이 시작된 시점부터 점선 렌더링
             let lastValidP = null;
             const principalData = filteredData.map(d => {
                 if (d.principal !== undefined && d.principal > 0) {
                     lastValidP = d.principal;
                     return d.principal;
                 }
-                return lastValidP; // 처음 유효값이 나오기 전까지는 계속 null을 반환하여 차트에서 숨김
+                return lastValidP; 
             });
 
-            // 🌟 자산 차트 동적 줌인 (Auto-Scaling) 로직 추가
             const assetTotals = filteredData.map(d => d.total);
             const validPrincipals = principalData.filter(p => p !== null);
             const allAssetValues = [...assetTotals, ...validPrincipals];
@@ -1070,13 +1241,11 @@
             if (allAssetValues.length > 0) {
                 const actualMin = Math.min(...allAssetValues);
                 const actualMax = Math.max(...allAssetValues);
-                // 표시되는 데이터의 최솟값/최댓값 기준 위아래 10% 여유 버퍼 생성
                 const buffer = (actualMax - actualMin) * 0.1;
                 
-                assetYMin = Math.max(0, actualMin - buffer); // 0원 밑으로는 안 내려가게 방어
+                assetYMin = Math.max(0, actualMin - buffer);
                 assetYMax = actualMax + buffer;
 
-                // 최댓값과 최솟값이 같을 경우(데이터가 1개이거나 변동이 없을 때) 예외 처리
                 if (assetYMin === assetYMax) {
                     assetYMin = actualMin * 0.9;
                     assetYMax = actualMax * 1.1;
@@ -1108,8 +1277,8 @@
                     plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${Math.round(ctx.raw).toLocaleString()} 원` } } }, 
                     scales: { 
                         y: { 
-                            suggestedMin: assetYMin,  // 🌟 min 대신 suggestedMin 사용: 지저분한 숫자 방지 및 깔끔한 눈금 자동 생성
-                            suggestedMax: assetYMax,  // 🌟 max 대신 suggestedMax 사용
+                            suggestedMin: assetYMin,
+                            suggestedMax: assetYMax,
                             ticks: { 
                                 font: {size: 9}, 
                                 callback: v => {
@@ -1129,7 +1298,6 @@
                 }
             });
 
-            // 🌟 버그 수정 및 동적 줌인 적용
             const wGhosts = filteredData.map(d => d.w_post_dca !== undefined ? d.w_post_dca : d.w_current);
             const wFinals = filteredData.map(d => d.w_final !== undefined ? d.w_final : d.w_current);
             const wAlphas = filteredData.map(d => d.w_alpha ? d.w_alpha : null);
@@ -1548,12 +1716,281 @@
                 }
             }
 
+            // 🌟 자산 재계산 후 시뮬레이터 차트 연동
+            if (typeof window.runSimulation === 'function') {
+                window.runSimulation();
+            }
+
             window.saveLocalState();
             return total_post_dca;
         };
 
+        // 🌟 탭 3: 시뮬레이터 구동 로직 (시간 동기화 적용)
+        window.runSimulation = () => {
+            const fx = window.getVal('api_fx') || 1;
+            const v_qqqm = window.getVal('h_qqqm') * window.getVal('api_qqqm') * fx;
+            const v_qld = window.getVal('h_qld') * window.getVal('api_qld') * fx;
+            const v_sgov = window.getVal('h_sgov') * window.getVal('api_sgov') * fx;
+            const v_iau = window.getVal('h_iau') * window.getVal('api_iau') * fx;
+
+            const currentTotalAsset = v_qqqm + v_qld + v_sgov + v_iau;
+            let totalPrincipal = window.getVal('total_principal');
+            if(totalPrincipal <= 0) totalPrincipal = currentTotalAsset;
+
+            const w_qqqm = currentTotalAsset > 0 ? (v_qqqm / currentTotalAsset) : 0;
+            const w_qld = currentTotalAsset > 0 ? (v_qld / currentTotalAsset) : 0;
+            const w_sgov = currentTotalAsset > 0 ? (v_sgov / currentTotalAsset) : 0;
+            const w_iau = currentTotalAsset > 0 ? (v_iau / currentTotalAsset) : 0;
+
+            const simCagrQqqm = parseFloat(document.getElementById('sim_cagr_qqqm')?.value) || 0;
+            const simCagrQld = parseFloat(document.getElementById('sim_cagr_qld')?.value) || 0;
+            const simCagrSgov = parseFloat(document.getElementById('sim_cagr_sgov')?.value) || 0;
+            const simCagrIau = parseFloat(document.getElementById('sim_cagr_iau')?.value) || 0;
+
+            // 가중 평균 기대 수익률 계산
+            const expectedCagr = (w_qqqm * simCagrQqqm) + (w_qld * simCagrQld) + (w_sgov * simCagrSgov) + (w_iau * simCagrIau);
+            
+            if (document.getElementById('sim_exp_cagr')) {
+                document.getElementById('sim_exp_cagr').innerText = expectedCagr.toFixed(2) + '%';
+            }
+
+            const monthlyAdditionRaw = document.getElementById('sim_monthly_dca');
+            let monthlyAddition = 1000000;
+            if(monthlyAdditionRaw) {
+                monthlyAddition = parseFloat(monthlyAdditionRaw.value) * 10000 || 0;
+            }
+            const yearlyAddition = monthlyAddition * 12;
+
+            // 🌟 시작일 연동 로직
+            const startDateStr = document.getElementById('start_date').value;
+            const startDate = startDateStr ? new Date(startDateStr) : new Date();
+            const startYear = startDate.getFullYear();
+            const currentYear = new Date().getFullYear();
+            const today = new Date();
+            
+            let elapsedYears = (today - startDate) / (1000 * 60 * 60 * 24 * 365.25);
+            if (elapsedYears < 0) elapsedYears = 0;
+            if (elapsedYears > 20) elapsedYears = 20;
+
+            // 시작 당시의 대략적인 초기 원금 역산
+            const initialPrin = Math.max(0, totalPrincipal - (elapsedYears * yearlyAddition));
+            
+            let expectedBalance = initialPrin > 0 ? initialPrin : currentTotalAsset; 
+            let expectedInvested = initialPrin > 0 ? initialPrin : totalPrincipal;
+
+            const labels = [];
+            const dataBalance = [];
+            const dataInvested = [];
+            const expectedCagrDec = expectedCagr / 100;
+
+            for (let i = 0; i <= 20; i++) {
+                labels.push((startYear + i) + '년');
+                if (i === 0) {
+                    dataBalance.push(expectedBalance);
+                    dataInvested.push(expectedInvested);
+                } else {
+                    expectedBalance = (expectedBalance * (1 + expectedCagrDec)) + (yearlyAddition * (1 + expectedCagrDec / 2));
+                    expectedInvested += yearlyAddition;
+                    dataBalance.push(expectedBalance);
+                    dataInvested.push(expectedInvested);
+                }
+            }
+
+            // 🌟 올해(현재 연도)의 목표치 계산
+            const targetIndex = currentYear - startYear;
+            let targetValue = null;
+            if (targetIndex >= 0 && targetIndex <= 20) {
+                targetValue = dataBalance[targetIndex];
+            } else if (targetIndex < 0) {
+                targetValue = dataBalance[0];
+            } else {
+                targetValue = dataBalance[20];
+            }
+
+            // 🌟 억 단위 자동 변환 포맷팅 함수
+            const formatForceBillion = (val) => {
+                return (val / 100000000).toFixed(2) + '억 원';
+            };
+            
+            const formatBillion = (val) => {
+                if (Math.abs(val) >= 10000000) return (val / 100000000).toFixed(2) + '억 원';
+                return Math.round(val / 10000).toLocaleString('ko-KR') + '만 원';
+            };
+
+            if (document.getElementById('sim_final_asset')) {
+                document.getElementById('sim_final_asset').innerText = formatForceBillion(dataBalance[20]);
+                document.getElementById('sim_final_invested').innerText = formatForceBillion(dataInvested[20]);
+                
+                // 🌟 타이틀 연도 연동
+                document.getElementById('sim_asset_label').innerText = `${startYear + 20}년 최종 예상 자산`;
+                document.getElementById('sim_invested_label').innerText = `${startYear + 20}년 누적 투입원금`;
+                
+                // 🌟 현재 내 수익금 표시 연동
+                const currentProfit = currentTotalAsset - totalPrincipal;
+                const profitColor = currentProfit >= 0 ? 'text-red-500' : 'text-blue-500';
+                const profitSign = currentProfit > 0 ? '+' : '';
+                const profitEl = document.getElementById('sim_current_profit');
+                if (profitEl) {
+                    profitEl.className = `font-black text-xs sm:text-sm num-font ${profitColor}`;
+                    profitEl.innerText = profitSign + formatBillion(currentProfit);
+                }
+                
+                // 🌟 신규 수정: 플로팅 박스(말풍선) 2개로 분류 및 찐 진행률(Progress %)로 개선
+                if (document.getElementById('sim_float_year_pct')) {
+                    const finalAsset = dataBalance[20];
+                    const currentYearStr = currentYear.toString();
+                    
+                    // 1. 올해 시작 자산 구하기
+                    let yearStartAsset = initialPrin;
+                    const thisYearData = historyData.filter(d => d.date.startsWith(currentYearStr));
+                    if (thisYearData.length > 0) {
+                        yearStartAsset = thisYearData[0].total; // 올해의 첫 기록
+                    } else if (historyData.length > 0) {
+                        yearStartAsset = historyData[0].total; // 올해 기록이 없으면 전체 중 첫 기록
+                    }
+
+                    // 2. 전체 시작 자산 구하기
+                    let finalStartAsset = historyData.length > 0 ? historyData[0].total : initialPrin;
+                    
+                    // 당년 목표
+                    let currentYearTarget = targetValue || finalAsset;
+                    
+                    // 달성률 계산 (구간 내 진짜 진행률)
+                    let yearDenom = currentYearTarget - yearStartAsset;
+                    let achievePct = 0;
+                    if (yearDenom > 0) {
+                        achievePct = ((currentTotalAsset - yearStartAsset) / yearDenom) * 100;
+                    } else {
+                        achievePct = currentTotalAsset >= currentYearTarget ? 100 : 0;
+                    }
+                    
+                    document.getElementById('sim_float_year_title').innerText = `🎯 ${currentYear}년 목표 달성률`;
+                    document.getElementById('sim_float_year_pct').innerText = achievePct.toFixed(1) + '%';
+                    document.getElementById('sim_float_year_bar').style.width = Math.max(0, Math.min(achievePct, 100)) + '%';
+                    
+                    document.getElementById('sim_float_year_start').innerText = formatBillion(yearStartAsset);
+                    document.getElementById('sim_float_current').innerText = formatBillion(currentTotalAsset);
+                    document.getElementById('sim_float_year_target').innerText = formatForceBillion(currentYearTarget);
+                    
+                    // 20년 뒤 목표 연동 로직 (구간 내 진짜 진행률)
+                    let finalDenom = finalAsset - finalStartAsset;
+                    let finalAchievePct = 0;
+                    if (finalDenom > 0) {
+                        finalAchievePct = ((currentTotalAsset - finalStartAsset) / finalDenom) * 100;
+                    } else {
+                        finalAchievePct = currentTotalAsset >= finalAsset ? 100 : 0;
+                    }
+                    
+                    document.getElementById('sim_float_final_pct').innerText = finalAchievePct.toFixed(1) + '%';
+                    document.getElementById('sim_float_final_bar').style.width = Math.max(0, Math.min(finalAchievePct, 100)) + '%';
+                    
+                    document.getElementById('sim_float_final_start').innerText = formatBillion(finalStartAsset);
+                    document.getElementById('sim_float_current_final').innerText = formatBillion(currentTotalAsset);
+                    document.getElementById('sim_float_final_target').innerText = formatForceBillion(finalAsset);
+                    
+                    document.getElementById('sim_floating_box').classList.remove('hidden');
+                }
+            }
+
+            const ctxSim = document.getElementById('simulationChart');
+            if(!ctxSim) return;
+
+            // 🌟 수정: 수직선(현재 위치)만 남기고 초록/빨강 목표선, 점은 제거
+            const simChartPlugin = {
+                id: 'simChartPlugin',
+                afterDraw: (chart) => {
+                    const ctx = chart.ctx;
+                    const xAxis = chart.scales.x;
+                    const yAxis = chart.scales.y;
+                    
+                    const xCoord = xAxis.getPixelForValue(elapsedYears);
+
+                    // 1. 수직선 (과거/미래 경계 구분선)
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(xCoord, yAxis.top);
+                    ctx.lineTo(xCoord, yAxis.bottom);
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeStyle = 'rgba(245, 158, 11, 0.6)'; // Amber
+                    ctx.setLineDash([4, 4]);
+                    ctx.stroke();
+                    
+                    // 수직선 텍스트 뱃지 (Today)
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.fillRect(xCoord - 25, yAxis.top - 20, 50, 18);
+                    ctx.fillStyle = '#000';
+                    ctx.font = 'bold 10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Today', xCoord, yAxis.top - 7);
+                    
+                    ctx.restore();
+                }
+            };
+
+            if(window.simChartInstance) window.simChartInstance.destroy();
+            window.simChartInstance = new window.Chart(ctxSim.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { 
+                            label: '복리 시뮬레이션 자산', 
+                            data: dataBalance, 
+                            borderColor: '#3b82f6', 
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)', 
+                            fill: true, 
+                            tension: 0.4, 
+                            borderWidth: 3, 
+                            pointBackgroundColor: '#3b82f6', 
+                            pointRadius: 0, 
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: '누적 원금', 
+                            data: dataInvested,
+                            borderColor: '#71717a', 
+                            borderDash: [5, 5], 
+                            borderWidth: 2,
+                            tension: 0.4, 
+                            pointRadius: 0, 
+                            fill: false
+                        }
+                    ]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    interaction: { mode: 'index', intersect: false },
+                    layout: { padding: { top: 25, bottom: 5, left: 5 } }, 
+                    plugins: { 
+                        legend: { display: false }, 
+                        tooltip: { 
+                            callbacks: { 
+                                label: ctx => ` ${formatForceBillion(ctx.raw)}` 
+                            } 
+                        } 
+                    }, 
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { 
+                                font: {size: 9}, 
+                                callback: v => formatForceBillion(v)
+                            }, 
+                            grid: { color: 'rgba(255,255,255,0.05)' } 
+                        }, 
+                        x: { 
+                            ticks: { font: {size: 9}, color: '#71717a', maxTicksLimit: 10 }, 
+                            grid: { display: false } 
+                        } 
+                    } 
+                },
+                plugins: [simChartPlugin]
+            });
+            window.saveLocalState();
+        };
+
         window.generatePlan = async (shouldSave = true) => {
-            // 🌟 가확정 상태의 추매 내역을 실제 인풋에 확정 반영하는 로직
             if (shouldSave && window.totalPendingCost > 0) {
                 ['qqqm', 'qld', 'sgov', 'iau'].forEach(t => {
                     if(window.pendingBuys[t].qty > 0) {
@@ -1564,7 +2001,7 @@
                 const cp = window.getVal('total_principal');
                 window.setVal('total_principal', cp + window.totalPendingCost, true);
                 window.clearPendingBuys();
-                window.calculateAssets(); // 수량과 원금이 증가했으므로 자산 재계산
+                window.calculateAssets(); 
             }
 
             const fx = window.getVal('api_fx');
@@ -1927,6 +2364,13 @@
                 if(document.getElementById('api_rsi')) document.getElementById('api_rsi').value = d.rsi || '';
                 if(document.getElementById('start_date') && d.start_date) document.getElementById('start_date').value = d.start_date;
                 if(d.last_sync && document.getElementById('last_sync_time')) document.getElementById('last_sync_time').innerHTML = d.last_sync;
+                
+                // 🌟 시뮬레이터 저장값 불러오기
+                if(d.sim_monthly !== undefined && document.getElementById('sim_monthly_dca')) document.getElementById('sim_monthly_dca').value = d.sim_monthly;
+                if(d.sim_cagr_qqqm !== undefined && document.getElementById('sim_cagr_qqqm')) document.getElementById('sim_cagr_qqqm').value = d.sim_cagr_qqqm;
+                if(d.sim_cagr_qld !== undefined && document.getElementById('sim_cagr_qld')) document.getElementById('sim_cagr_qld').value = d.sim_cagr_qld;
+                if(d.sim_cagr_sgov !== undefined && document.getElementById('sim_cagr_sgov')) document.getElementById('sim_cagr_sgov').value = d.sim_cagr_sgov;
+                if(d.sim_cagr_iau !== undefined && document.getElementById('sim_cagr_iau')) document.getElementById('sim_cagr_iau').value = d.sim_cagr_iau;
             }
             window.updateTrophyRoom(); 
             loadHistoryFromDB();
