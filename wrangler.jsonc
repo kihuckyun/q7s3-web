@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "q7s3-web",
+  "compatibility_date": "2025-09-27",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "Q7S3 장기투자시스템(릴리즈)"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
