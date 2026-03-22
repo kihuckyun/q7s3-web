@@ -75,7 +75,7 @@
 
     <div class="max-w-[1400px] mx-auto px-4 pt-6 md:pt-8 relative">
         <div class="absolute top-2 right-4 md:top-6 md:right-8 text-[10px] sm:text-xs font-bold text-zinc-500 bg-zinc-900/80 px-3 py-1.5 rounded-full border border-zinc-800 shadow-sm z-50 backdrop-blur-md">
-            by에이미, ver3.6 (Progress UI Final)
+            by에이미, ver3.8 (DCA Target Patch)
         </div>
 
         <header class="mb-6 text-center mt-4 md:mt-0">
@@ -580,8 +580,8 @@
                         <div class="relative flex-grow w-full min-h-[300px] sm:min-h-[400px]">
                             <canvas id="simulationChart"></canvas>
                             
-                            <!-- 🌟 복구 및 최적화: 그래프 내부 듀얼 플로팅 박스 (시작금액 부활) -->
-                            <div id="sim_floating_box" class="absolute top-2 sm:top-6 left-2 sm:left-20 z-10 bg-zinc-900/90 backdrop-blur-md border border-zinc-700/50 p-2.5 sm:p-4 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] pointer-events-none hidden w-[160px] sm:w-[240px] space-y-2 sm:space-y-3">
+                            <!-- 🌟 복구 및 최적화: 그래프 내부 듀얼 플로팅 박스 (시작금액 부활, 터치 이벤트 추가) -->
+                            <div id="sim_floating_box" onclick="this.classList.add('hidden')" class="absolute top-2 sm:top-6 left-2 sm:left-20 z-10 bg-zinc-900/90 backdrop-blur-md border border-zinc-700/50 p-2.5 sm:p-4 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] hidden w-[160px] sm:w-[240px] space-y-2 sm:space-y-3 cursor-pointer transition-opacity">
                                 
                                 <!-- 올해 목표 섹션 -->
                                 <div>
@@ -631,6 +631,11 @@
                                             <span class="font-black text-blue-400 num-font" id="sim_float_final_target">0원</span>
                                         </div>
                                     </div>
+                                </div>
+                                
+                                <!-- 닫기 안내 텍스트 -->
+                                <div class="text-[8px] sm:text-[9px] text-zinc-500 text-center pt-1.5 border-t border-zinc-800/80 mt-1">
+                                    👆 터치하여 창 닫기
                                 </div>
                             </div>
                             <!-- 🌟 추가 끝 -->
@@ -1798,12 +1803,15 @@
             }
 
             // 🌟 올해(현재 연도)의 목표치 계산
-            const targetIndex = currentYear - startYear;
+            let targetIndex = currentYear - startYear;
+            // 💡 픽스: 올해 막 시작했더라도 목표는 "다음 1년 차"를 바라보게 설정하여 0% 고착화 방지
+            if (targetIndex === 0) targetIndex = 1; 
+
             let targetValue = null;
-            if (targetIndex >= 0 && targetIndex <= 20) {
+            if (targetIndex >= 1 && targetIndex <= 20) {
                 targetValue = dataBalance[targetIndex];
-            } else if (targetIndex < 0) {
-                targetValue = dataBalance[0];
+            } else if (targetIndex < 1) {
+                targetValue = dataBalance[1];
             } else {
                 targetValue = dataBalance[20];
             }
@@ -1888,8 +1896,6 @@
                     document.getElementById('sim_float_final_start').innerText = formatBillion(finalStartAsset);
                     document.getElementById('sim_float_current_final').innerText = formatBillion(currentTotalAsset);
                     document.getElementById('sim_float_final_target').innerText = formatForceBillion(finalAsset);
-                    
-                    document.getElementById('sim_floating_box').classList.remove('hidden');
                 }
             }
 
@@ -1916,13 +1922,13 @@
                     ctx.setLineDash([4, 4]);
                     ctx.stroke();
                     
-                    // 수직선 텍스트 뱃지 (Today)
+                    // 수직선 텍스트 뱃지 (Today) - 클릭 유도를 위한 디자인 변경
                     ctx.fillStyle = '#f59e0b';
-                    ctx.fillRect(xCoord - 25, yAxis.top - 20, 50, 18);
+                    ctx.fillRect(xCoord - 35, yAxis.top - 20, 70, 18);
                     ctx.fillStyle = '#000';
                     ctx.font = 'bold 10px sans-serif';
                     ctx.textAlign = 'center';
-                    ctx.fillText('Today', xCoord, yAxis.top - 7);
+                    ctx.fillText('👆 Today', xCoord, yAxis.top - 7);
                     
                     ctx.restore();
                 }
@@ -1963,6 +1969,30 @@
                     maintainAspectRatio: false, 
                     interaction: { mode: 'index', intersect: false },
                     layout: { padding: { top: 25, bottom: 5, left: 5 } }, 
+                    // 🌟 캔버스 터치(클릭) 이벤트 추가
+                    onClick: (e, elements, chart) => {
+                        const canvasPosition = Chart.helpers.getRelativePosition(e, chart);
+                        const xAxis = chart.scales.x;
+                        const xCoord = xAxis.getPixelForValue(elapsedYears);
+                        
+                        // Today 수직선 근처(좌우 40px 이내) 터치 시 말풍선 토글
+                        if (Math.abs(canvasPosition.x - xCoord) < 40) {
+                            const box = document.getElementById('sim_floating_box');
+                            if (box) box.classList.toggle('hidden');
+                        }
+                    },
+                    // 🌟 PC 환경을 위한 마우스 호버 커서 이벤트
+                    onHover: (e, elements, chart) => {
+                        const canvasPosition = Chart.helpers.getRelativePosition(e, chart);
+                        const xAxis = chart.scales.x;
+                        const xCoord = xAxis.getPixelForValue(elapsedYears);
+                        
+                        if (Math.abs(canvasPosition.x - xCoord) < 40) {
+                            e.native.target.style.cursor = 'pointer';
+                        } else {
+                            e.native.target.style.cursor = 'default';
+                        }
+                    },
                     plugins: { 
                         legend: { display: false }, 
                         tooltip: { 
@@ -2244,7 +2274,7 @@
                 step2_msg = `
                 <div class="bg-zinc-900 border border-blue-900/40 rounded-xl p-4 sm:p-5 shadow-sm">
                     <div class="flex items-center mb-2"><i class="fa-solid fa-wheat-awn text-blue-500 text-lg sm:text-xl mr-2"></i><h5 class="text-xs sm:text-sm font-black text-white">Case B: 수익 수확 (상단 80% 돌파)</h5></div>
-                    <p class="text-[10px] sm:text-[11px] text-zinc-400 mb-3 leading-relaxed break-keep">비중 80%를 초과한 과열 구간입니다. 초과된 주식 평가액 <b>전량</b>을 매도하여 <b>정확히 70% 타겟 비중으로 복귀</b>합니다. <span class="text-[8px] sm:text-[9px] text-zinc-600">(확보된 현금은 SGOV와 IAU에 2:1 비율로 비축, 내부 밸런싱을 위해 QLD 우선 매도)</span></p>
+                    <p class="text-[10px] sm:text-[11px] text-zinc-400 mb-3 leading-relaxed break-keep">비중 80% 초과한 과열 구간입니다. 초과된 주식 평가액 <b>전량</b>을 매도하여 <b>정확히 70% 타겟 비중으로 복귀</b>합니다. <span class="text-[8px] sm:text-[9px] text-zinc-600">(확보된 현금은 SGOV와 IAU에 2:1 비율로 비축, 내부 밸런싱을 위해 QLD 우선 매도)</span></p>
                     
                     <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
                         <span class="font-bold text-blue-400 text-[10px] sm:text-[11px] shrink-0">주식(Q) 매도 ➔ 현금 비중 매수</span>
