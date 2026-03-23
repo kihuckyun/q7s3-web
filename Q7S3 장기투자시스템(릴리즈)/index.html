@@ -75,7 +75,7 @@
 
     <div class="max-w-[1400px] mx-auto px-4 pt-6 md:pt-8 relative">
         <div class="absolute top-2 right-4 md:top-6 md:right-8 text-[10px] sm:text-xs font-bold text-zinc-500 bg-zinc-900/80 px-3 py-1.5 rounded-full border border-zinc-800 shadow-sm z-50 backdrop-blur-md">
-            by에이미, ver3.8 (DCA Target Patch)
+            by에이미, ver3.9 (DCA Separation)
         </div>
 
         <header class="mb-6 text-center mt-4 md:mt-0">
@@ -329,23 +329,14 @@
                             <div>
                                 <div class="flex justify-between items-end mb-1 ml-1">
                                     <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">누적 투입 원금</label>
-                                    <span class="text-[8px] text-zinc-500 font-bold tracking-wider">* 확정 시 합산</span>
+                                    <span class="text-[8px] text-zinc-500 font-bold tracking-wider">* 추매 기록 시 자동 합산</span>
                                 </div>
                                 <div class="input-group focus-within:border-zinc-500">
                                     <input type="text" inputmode="numeric" id="total_principal" class="text-white !text-base sm:!text-lg py-2 num-font" oninput="formatNumber(this); calculateAssets();" value="0">
                                     <div class="unit text-zinc-500 text-xs">원</div>
                                 </div>
                             </div>
-                            <div>
-                                <div class="flex justify-between items-end mb-1 ml-1">
-                                    <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">이번 달 적립금 (DCA)</label>
-                                    <span class="text-[8px] text-zinc-500 font-bold tracking-wider">* 확정 후 0원</span>
-                                </div>
-                                <div class="input-group focus-within:border-zinc-500">
-                                    <input type="text" inputmode="numeric" id="dca_amount" class="text-white !text-base sm:!text-lg py-2 num-font" oninput="formatNumber(this); calculateAssets();" value="0">
-                                    <div class="unit text-zinc-500 text-xs">원</div>
-                                </div>
-                            </div>
+                            <!-- 🌟 제거됨: 이번 달 적립금 (DCA)를 여기서 제거하고 하단 가이드 생성 버튼 위로 이동 -->
                         </div>
                     </section>
                 </div>
@@ -496,20 +487,34 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="flex items-center justify-end mt-2 mb-1 pr-1">
-                            <label class="text-[10px] sm:text-xs text-zinc-400 font-bold flex items-center cursor-pointer hover:text-zinc-200 transition-colors select-none">
-                                <input type="checkbox" id="is_manual_trade" class="mr-1.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded bg-zinc-900 border-zinc-700 text-zinc-500 focus:ring-zinc-500 focus:ring-offset-zinc-950">
-                                ⚡ 수동 매매(원칙 외 개입) 기록
-                            </label>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mt-auto pt-1">
-                            <button onclick="generatePlan(false)" class="relative z-10 w-full bg-zinc-800 hover:bg-zinc-700 text-white font-black py-3 rounded-lg shadow-sm transition-all active:scale-95 text-[11px] sm:text-xs border border-zinc-700 flex items-center justify-center break-keep">
-                                <i class="fa-solid fa-flask mr-1.5 text-zinc-400"></i>가이드 생성
-                            </button>
-                            <button onclick="generatePlan(true)" class="relative z-10 w-full bg-zinc-200 hover:bg-white text-black font-black py-3 rounded-lg shadow-[0_0_15px_rgba(255,255,255,0.2)] transition-all active:scale-95 text-[11px] sm:text-xs border border-white flex items-center justify-center break-keep">
-                                <i class="fa-solid fa-database mr-1.5"></i>확정 및 DB저장
-                            </button>
+
+                        <!-- 🌟 신규: DCA 입력란을 우측 가이드 생성 버튼 바로 위로 이동 -->
+                        <div class="mt-6 pt-5 border-t border-zinc-800/80 flex flex-col gap-3">
+                            <div class="bg-blue-950/20 border border-blue-900/50 p-3.5 sm:p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
+                                <div class="flex flex-col">
+                                    <label class="text-[10px] sm:text-[11px] font-black text-blue-400 uppercase tracking-widest flex items-center"><i class="fa-solid fa-hand-holding-dollar mr-2 text-sm"></i>이번 달 적립금 (DCA)</label>
+                                    <span class="text-[8px] sm:text-[9px] text-blue-300/60 font-bold mt-1 break-keep">* 가이드 산출 전용 (원금에 자동 합산되지 않습니다)</span>
+                                </div>
+                                <div class="input-group focus-within:border-blue-500 border-blue-900/50 w-full sm:w-56 shrink-0 bg-black shadow-[0_0_15px_rgba(59,130,246,0.1)]">
+                                    <input type="text" inputmode="numeric" id="dca_amount" class="text-white !text-base sm:!text-lg py-2 num-font font-black" oninput="formatNumber(this); calculateAssets();" value="0" placeholder="0">
+                                    <div class="unit text-blue-400 text-xs bg-blue-950/50 border-l border-blue-900/50">원</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-end mt-1 mb-1 pr-1">
+                                <label class="text-[10px] sm:text-xs text-zinc-400 font-bold flex items-center cursor-pointer hover:text-zinc-200 transition-colors select-none">
+                                    <input type="checkbox" id="is_manual_trade" class="mr-1.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded bg-zinc-900 border-zinc-700 text-zinc-500 focus:ring-zinc-500 focus:ring-offset-zinc-950">
+                                    ⚡ 수동 매매(원칙 외 개입) 기록
+                                </label>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="generatePlan(false)" class="relative z-10 w-full bg-zinc-800 hover:bg-zinc-700 text-white font-black py-3 rounded-lg shadow-sm transition-all active:scale-95 text-[11px] sm:text-xs border border-zinc-700 flex items-center justify-center break-keep">
+                                    <i class="fa-solid fa-flask mr-1.5 text-zinc-400"></i>가이드 생성
+                                </button>
+                                <button onclick="generatePlan(true)" class="relative z-10 w-full bg-zinc-200 hover:bg-white text-black font-black py-3 rounded-lg shadow-[0_0_15px_rgba(255,255,255,0.2)] transition-all active:scale-95 text-[11px] sm:text-xs border border-white flex items-center justify-center break-keep">
+                                    <i class="fa-solid fa-database mr-1.5"></i>확정 및 DB저장
+                                </button>
+                            </div>
                         </div>
                     </section>
                 </div>
@@ -1804,7 +1809,6 @@
 
             // 🌟 올해(현재 연도)의 목표치 계산
             let targetIndex = currentYear - startYear;
-            // 💡 픽스: 올해 막 시작했더라도 목표는 "다음 1년 차"를 바라보게 설정하여 0% 고착화 방지
             if (targetIndex === 0) targetIndex = 1; 
 
             let targetValue = null;
@@ -2040,6 +2044,7 @@
             const p_qld = window.getVal('api_qld');
             const p_sgov = window.getVal('api_sgov');
             const p_iau = window.getVal('api_iau');
+            // 🌟 픽스: DCA는 별도 입력란에서 가져오도록 수정
             const dca = window.getVal('dca_amount');
             const rsi_val = window.getVal('api_rsi');
             const fg_val = window.getVal('api_fg');
@@ -2359,14 +2364,11 @@
             
             // 🌟 픽스: 확정 및 DB 저장 로직 복구
             if(shouldSave) {
-                const currentDca = window.getVal('dca_amount');
                 let finalPrincipal = window.getVal('total_principal'); // 가확정이 선반영된 값
-                if (currentDca > 0) {
-                    finalPrincipal += currentDca;
-                    window.setVal('total_principal', finalPrincipal, true);
-                    window.setVal('dca_amount', 0, true);
-                    window.calculateAssets(); 
-                }
+                
+                // 🌟 DCA 합산 로직 제거 (추매 팝업에서 처리하므로 더 이상 원금에 강제 합산하지 않음)
+                window.setVal('dca_amount', 0, true); // 가이드 산출용으로만 쓰고 0으로 초기화
+                window.calculateAssets(); 
 
                 await saveAssetToDB(post_total, w_current, actual_w_post_dca, final_weight, globalAlphaWeight, finalPrincipal);
                 window.showToast("매매 가이드 확정 및 DB 저장 완료");
