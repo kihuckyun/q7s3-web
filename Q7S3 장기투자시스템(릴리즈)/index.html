@@ -336,7 +336,6 @@
                                     <div class="unit text-zinc-500 text-xs">원</div>
                                 </div>
                             </div>
-                            <!-- 🌟 제거됨: 이번 달 적립금 (DCA)를 여기서 제거하고 하단 가이드 생성 버튼 위로 이동 -->
                         </div>
                     </section>
                 </div>
@@ -582,7 +581,7 @@
                                 <span id="sim_current_profit" class="font-black text-xs sm:text-sm num-font">0.00억 원</span>
                             </div>
                         </div>
-                        <div class="relative flex-grow w-full min-h-[300px] sm:min-h-[400px]">
+                        <div class="relative w-full h-[300px] sm:h-[400px] shrink-0">
                             <canvas id="simulationChart"></canvas>
                             
                             <!-- 🌟 복구 및 최적화: 그래프 내부 듀얼 플로팅 박스 (시작금액 부활, 터치 이벤트 추가) -->
@@ -645,6 +644,12 @@
                             </div>
                             <!-- 🌟 추가 끝 -->
                             
+                        </div>
+                        
+                        <div class="flex justify-center items-center h-8 sm:h-10 bg-zinc-900/50 rounded-lg border border-zinc-800/50 gap-3 sm:gap-4 shrink-0 mt-4">
+                            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 align-middle shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span><span class="text-[9px] sm:text-[10px] text-zinc-400 font-bold">예상 시나리오</span></div>
+                            <div class="flex items-center gap-1.5"><span class="w-4 h-0.5 border-t-2 border-solid border-amber-500 align-middle"></span><span class="text-[9px] sm:text-[10px] text-zinc-400 font-bold">실제 자산 기록</span></div>
+                            <div class="flex items-center gap-1.5"><span class="w-4 h-0.5 border-t-2 border-dashed border-zinc-500 align-middle"></span><span class="text-[9px] sm:text-[10px] text-zinc-400 font-bold">누적 투입 원금</span></div>
                         </div>
                     </section>
                 </div>
@@ -724,9 +729,9 @@
             
             <div class="space-y-4 mb-6">
                 <div>
-                    <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest ml-1 mb-1.5 block">매수 수량</label>
+                    <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest ml-1 mb-1.5 block">매수 수량 (소수점 입력 가능)</label>
                     <div class="input-group focus-within:border-blue-500">
-                        <input type="text" inputmode="decimal" id="buy_modal_qty" class="text-white num-font" oninput="formatDecimal(this); calcBuyModal();" placeholder="0">
+                        <input type="text" inputmode="decimal" id="buy_modal_qty" class="text-white num-font" oninput="formatDecimal(this); calcBuyModal();" placeholder="0.0000">
                         <div class="unit text-zinc-500">주</div>
                     </div>
                 </div>
@@ -742,6 +747,12 @@
                     <span class="text-[10px] font-bold text-zinc-400">총 매수 금액 (원금 추가분)</span>
                     <span class="text-sm font-black text-blue-500 num-font" id="buy_modal_total">0원</span>
                 </div>
+                
+                <!-- 🌟 추가된 UX 안내 문구 -->
+                <p class="text-[9px] text-zinc-500 mt-3 font-bold break-keep leading-relaxed border-t border-zinc-800/50 pt-3">
+                    * 💡 <span class="text-blue-400">안내:</span> 입력하신 1주당 평단가(예: 10,000원)는 '투입 원금' 합산에만 사용됩니다.<br>
+                    추가된 수량은 <b>현재 시장가 기준</b>으로 자산 평가액에 실시간 반영됩니다.
+                </p>
             </div>
             
             <div class="grid grid-cols-2 gap-2 mt-auto">
@@ -1797,13 +1808,38 @@
             for (let i = 0; i <= 20; i++) {
                 labels.push((startYear + i) + '년');
                 if (i === 0) {
-                    dataBalance.push(expectedBalance);
-                    dataInvested.push(expectedInvested);
+                    dataBalance.push({ x: i, y: expectedBalance });
+                    dataInvested.push({ x: i, y: expectedInvested });
                 } else {
                     expectedBalance = (expectedBalance * (1 + expectedCagrDec)) + (yearlyAddition * (1 + expectedCagrDec / 2));
                     expectedInvested += yearlyAddition;
-                    dataBalance.push(expectedBalance);
-                    dataInvested.push(expectedInvested);
+                    dataBalance.push({ x: i, y: expectedBalance });
+                    dataInvested.push({ x: i, y: expectedInvested });
+                }
+            }
+
+            // 🌟 실제 자산 기록(dataActual) 데이터 생성
+            const dataActual = [];
+            if (historyData && historyData.length > 0 && startDateStr) {
+                historyData.forEach(d => {
+                    const dDate = new Date(d.date);
+                    const yrs = (dDate - startDate) / (1000 * 60 * 60 * 24 * 365.25);
+                    if (yrs >= 0 && yrs <= 20) {
+                        dataActual.push({ x: yrs, y: d.total });
+                    }
+                });
+            }
+            // 현재의 라이브 자산 기록 추가 (가장 마지막 기록과 1일 이상 차이날 경우만)
+            if (elapsedYears >= 0 && elapsedYears <= 20) {
+                if (dataActual.length > 0) {
+                    const lastX = dataActual[dataActual.length - 1].x;
+                    if (Math.abs(lastX - elapsedYears) > 0.005) { // 약 1.8일 이상 차이
+                        dataActual.push({ x: elapsedYears, y: currentTotalAsset });
+                    } else {
+                        dataActual[dataActual.length - 1].y = currentTotalAsset; // 오늘 데이터 갱신
+                    }
+                } else {
+                    dataActual.push({ x: elapsedYears, y: currentTotalAsset });
                 }
             }
 
@@ -1813,11 +1849,11 @@
 
             let targetValue = null;
             if (targetIndex >= 1 && targetIndex <= 20) {
-                targetValue = dataBalance[targetIndex];
+                targetValue = dataBalance[targetIndex].y;
             } else if (targetIndex < 1) {
-                targetValue = dataBalance[1];
+                targetValue = dataBalance[1].y;
             } else {
-                targetValue = dataBalance[20];
+                targetValue = dataBalance[20].y;
             }
 
             // 🌟 억 단위 자동 변환 포맷팅 함수
@@ -1831,8 +1867,8 @@
             };
 
             if (document.getElementById('sim_final_asset')) {
-                document.getElementById('sim_final_asset').innerText = formatForceBillion(dataBalance[20]);
-                document.getElementById('sim_final_invested').innerText = formatForceBillion(dataInvested[20]);
+                document.getElementById('sim_final_asset').innerText = formatForceBillion(dataBalance[20].y);
+                document.getElementById('sim_final_invested').innerText = formatForceBillion(dataInvested[20].y);
                 
                 // 🌟 타이틀 연도 연동
                 document.getElementById('sim_asset_label').innerText = `${startYear + 20}년 최종 예상 자산`;
@@ -1850,7 +1886,7 @@
                 
                 // 🌟 신규 수정: 시작금액 부활 및 찐 진행률(Progress %) 재적용 완료
                 if (document.getElementById('sim_float_year_pct')) {
-                    const finalAsset = dataBalance[20];
+                    const finalAsset = dataBalance[20].y;
                     const currentYearStr = currentYear.toString();
                     
                     // 1. 올해 시작 자산 구하기
@@ -1942,7 +1978,6 @@
             window.simChartInstance = new window.Chart(ctxSim.getContext('2d'), {
                 type: 'line',
                 data: {
-                    labels: labels,
                     datasets: [
                         { 
                             label: '복리 시뮬레이션 자산', 
@@ -1964,6 +1999,17 @@
                             borderWidth: 2,
                             tension: 0.4, 
                             pointRadius: 0, 
+                            fill: false
+                        },
+                        { 
+                            label: '실제 자산 기록', 
+                            data: dataActual, 
+                            borderColor: '#f59e0b', // Amber
+                            backgroundColor: 'transparent', 
+                            borderWidth: 2.5, 
+                            tension: 0.2, 
+                            pointRadius: 0, 
+                            pointHoverRadius: 5,
                             fill: false
                         }
                     ]
@@ -2001,13 +2047,20 @@
                         legend: { display: false }, 
                         tooltip: { 
                             callbacks: { 
-                                label: ctx => ` ${formatForceBillion(ctx.raw)}` 
+                                title: function(context) {
+                                    const xVal = context[0].parsed.x;
+                                    const year = startYear + Math.floor(xVal);
+                                    const month = Math.min(12, Math.floor((xVal % 1) * 12) + 1);
+                                    return `${year}년 ${month > 1 ? month + '월' : ''}`.trim();
+                                },
+                                label: ctx => ` ${formatForceBillion(ctx.raw.y !== undefined ? ctx.raw.y : ctx.raw)}` 
                             } 
                         } 
                     }, 
                     scales: { 
                         y: { 
                             beginAtZero: true, 
+                            grace: '5%',
                             ticks: { 
                                 font: {size: 9}, 
                                 callback: v => formatForceBillion(v)
@@ -2015,7 +2068,19 @@
                             grid: { color: 'rgba(255,255,255,0.05)' } 
                         }, 
                         x: { 
-                            ticks: { font: {size: 9}, color: '#71717a', maxTicksLimit: 10 }, 
+                            type: 'linear',
+                            min: 0,
+                            max: 20,
+                            ticks: { 
+                                font: {size: 9}, 
+                                color: '#71717a', 
+                                maxTicksLimit: 10,
+                                callback: function(value) {
+                                    if (Math.floor(value) === value) {
+                                        return (startYear + value) + '년';
+                                    }
+                                }
+                            }, 
                             grid: { display: false } 
                         } 
                     } 
@@ -2173,8 +2238,11 @@
             let globalAlphaWeight = null;
             const currentAlphaScore = window.getAlphaScore();
 
+            // 🌟 기계적 리밸런싱 계산 시작
+            let base_target_buy_amt = 0;
             if (actual_w_post_dca < 65) {
                 const target_buy_amt = post_total * ((70 - actual_w_post_dca)/100) * 0.5;
+                base_target_buy_amt = target_buy_amt; // Panel A 연산을 위해 저장
                 const safe_assets = post_val_sgov + post_val_iau;
                 const min_safe_req = post_total * 0.10; 
                 const max_spendable = Math.max(0, safe_assets - min_safe_req);
@@ -2186,52 +2254,8 @@
                 if (remaining_needed > 0) s2_sell_iau = Math.min(remaining_needed, post_val_iau);
 
                 final_weight = ((post_q + actual_buy_amt) / post_total) * 100;
-
-                let safety_warning = max_spendable < target_buy_amt ? `<div class="mt-2 text-[9px] sm:text-[10px] text-red-500 font-bold bg-red-950/50 p-2 rounded border border-red-900 break-keep">⚠️ 10% 안전장치 발동: 현금 고갈을 막기 위해 매수 금액이 조절되었습니다.</div>` : "";
                 
-                let panelB_html = "";
-
-                if (currentAlphaScore >= 2) {
-                    const available_for_alpha = Math.max(0, post_val_sgov + post_val_iau - actual_buy_amt - min_safe_req); 
-                    const alpha_amt = Math.min(target_buy_amt, available_for_alpha); 
-                    globalAlphaAmt = alpha_amt;
-                    globalAlphaWeight = ((post_q + actual_buy_amt + alpha_amt) / post_total) * 100;
-
-                    if (alpha_amt > 0) {
-                        panelB_html = `
-                        <div class="bg-red-950/30 border border-red-900/80 rounded-xl p-4 sm:p-5 shadow-[0_0_20px_rgba(239,68,68,0.15)] relative overflow-hidden transition-all mt-4">
-                            <div class="absolute top-0 right-0 bg-red-600 text-white text-[8px] sm:text-[9px] font-black px-2 py-1 rounded-bl-lg uppercase shadow-sm">선택 사항</div>
-                            <div class="flex items-center mb-2 sm:mb-3"><i class="fa-solid fa-bolt text-red-500 text-lg sm:text-xl mr-2 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]"></i><h5 class="text-xs sm:text-sm font-black text-red-100">Panel B: 🚨 알파(α) 투자 권고</h5></div>
-                            <p class="text-[10px] sm:text-[11px] text-red-200/80 mb-2 sm:mb-3 leading-relaxed break-keep">극도의 공포 구간입니다. 반등 화력을 높이기 위해 아래 금액을 <b class="underline decoration-red-500 text-red-400">'추가로'</b> 매수하실 것을 제안합니다.</p>
-                            
-                            <div class="bg-black/50 border border-red-900/50 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
-                                <span class="font-bold text-red-400 text-[10px] sm:text-xs shrink-0">안전자산 매도 ➔ QLD 추가 매수</span>
-                                <span class="font-black text-red-500 text-sm sm:text-lg num-font break-all text-right">${window.formatKRW(alpha_amt)}</span>
-                            </div>
-                            
-                            <div class="flex items-center justify-center p-2 bg-zinc-950/80 border border-zinc-800 rounded-md">
-                                <span class="text-yellow-500 mr-1.5 text-xs"><i class="fa-solid fa-lightbulb"></i></span>
-                                <span class="text-[8px] sm:text-[10px] font-bold text-zinc-400 break-keep">알파 매수 후 나스닥 비중: <span class="text-white num-font">${final_weight.toFixed(1)}%</span> ➔ <b class="text-red-500 num-font">${globalAlphaWeight.toFixed(1)}%</b></span>
-                            </div>
-                        </div>`;
-                    } else {
-                        panelB_html = `
-                        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 shadow-sm relative overflow-hidden transition-all opacity-90 mt-4">
-                            <div class="absolute top-0 right-0 bg-red-600 text-white text-[8px] font-black px-2 py-1 rounded-bl-lg uppercase">매수 차단</div>
-                            <div class="flex items-center mb-2"><i class="fa-solid fa-shield-halved text-red-500 text-sm mr-2"></i><h5 class="text-[11px] sm:text-xs font-black text-red-400">Panel B: 🚨 알파(α) 매수 차단</h5></div>
-                            <p class="text-[9px] sm:text-[10px] text-zinc-500 leading-relaxed break-keep">조건은 충족되었으나 <b>안전자산이 10% 방어선에 도달</b>하여, 추가 매수를 강제로 차단합니다.</p>
-                        </div>`;
-                    }
-                } else {
-                    globalAlphaAmt = 0;
-                    globalAlphaWeight = null;
-                    panelB_html = `
-                    <div class="bg-black border border-zinc-900 rounded-xl p-4 shadow-sm relative overflow-hidden transition-all opacity-80 mt-4">
-                        <div class="absolute top-0 right-0 bg-zinc-800 text-zinc-400 text-[8px] font-black px-2 py-1 rounded-bl-lg uppercase">대기 중</div>
-                        <div class="flex items-center mb-2"><i class="fa-solid fa-lock text-zinc-600 text-sm mr-2"></i><h5 class="text-[11px] sm:text-xs font-black text-zinc-500">Panel B: 알파(α) 투자 잠금</h5></div>
-                        <p class="text-[9px] sm:text-[10px] text-zinc-600 leading-relaxed break-keep">알파 스코어 미달. 기계적 필수 매수만 집행하고 관망하세요.</p>
-                    </div>`;
-                }
+                let safety_warning = max_spendable < target_buy_amt ? `<div class="mt-2 text-[9px] sm:text-[10px] text-red-500 font-bold bg-red-950/50 p-2 rounded border border-red-900 break-keep">⚠️ 10% 안전장치 발동: 현금 고갈을 막기 위해 매수 금액이 조절되었습니다.</div>` : "";
 
                 step2_msg = `
                 <div class="bg-zinc-900 border border-red-900/40 rounded-xl p-4 sm:p-5 shadow-sm">
@@ -2248,9 +2272,7 @@
                     </div>
                     
                     ${safety_warning}
-                </div>
-                ${panelB_html}`;
-                step2_class = "border-none p-0";
+                </div>`;
             } else if (actual_w_post_dca > 80) {
                 const sell_amt = post_q - (post_total * 0.70);
                 
@@ -2271,11 +2293,6 @@
 
                 final_weight = ((post_q - sell_amt) / post_total) * 100;
 
-                let extra_warning = "";
-                if (currentAlphaScore >= 2) {
-                    extra_warning = `<div class="bg-red-950/30 p-2 sm:p-3 rounded-lg mt-2 sm:mt-3 border border-red-900/50 text-[8px] sm:text-[10px] text-red-400 shadow-sm break-keep"><b>🚨 AI 경고:</b> 공포 신호가 떴지만, 계좌의 나스닥 비중이 너무 높은 상태이므로 알파 매수를 차단하고 기계적 익절을 우선 실행합니다.</div>`;
-                }
-
                 step2_msg = `
                 <div class="bg-zinc-900 border border-blue-900/40 rounded-xl p-4 sm:p-5 shadow-sm">
                     <div class="flex items-center mb-2"><i class="fa-solid fa-wheat-awn text-blue-500 text-lg sm:text-xl mr-2"></i><h5 class="text-xs sm:text-sm font-black text-white">Case B: 수익 수확 (상단 80% 돌파)</h5></div>
@@ -2289,15 +2306,100 @@
                     <div class="flex items-center justify-center p-2 bg-black border border-zinc-800 rounded-md">
                         <span class="text-[9px] sm:text-[10px] font-bold text-zinc-400">💡 매도 후 예상 나스닥 비중: <span class="text-white num-font">${actual_w_post_dca.toFixed(1)}%</span> ➔ <b class="text-blue-500 num-font">${final_weight.toFixed(1)}%</b></span>
                     </div>
-
-                    ${extra_warning}
                 </div>`;
-                step2_class = "border-none p-0";
             } else {
-                step2_msg = `<div class="flex items-center p-4 bg-zinc-900 border border-zinc-800 rounded-xl"><i class="fa-solid fa-mug-hot text-zinc-500 text-xl sm:text-2xl mr-3"></i><div><p class="text-white font-black text-[11px] sm:text-sm mb-0.5">관망 유지 (안전 지대)</p><p class="text-[9px] sm:text-[10px] text-zinc-500 break-keep">현재 비중이 안전 밴드(65~80%) 내에 있습니다. 추가 매매를 삼가십시오.</p></div></div>`;
-                step2_class = "border-none p-0";
                 final_weight = actual_w_post_dca;
+                step2_msg = `<div class="flex items-center p-4 bg-zinc-900 border border-zinc-800 rounded-xl mb-4"><i class="fa-solid fa-mug-hot text-zinc-500 text-xl sm:text-2xl mr-3"></i><div><p class="text-white font-black text-[11px] sm:text-sm mb-0.5">관망 유지 (안전 지대)</p><p class="text-[9px] sm:text-[10px] text-zinc-500 break-keep">현재 비중이 안전 밴드(65~80%) 내에 있습니다. 기계적 리밸런싱을 보류합니다.</p></div></div>`;
             }
+            
+            // 🌟 알파 투자 로직 처리 (Panel A & Panel B 분리)
+            let panelA_html = "";
+            let panelB_html = "";
+            let alpha_A_amt = 0;
+            let alpha_B_amt = 0;
+
+            // Panel A: 기존 로직 (65% 미만 & 스코어 2 이상 시 더블 매수)
+            if (actual_w_post_dca < 65 && currentAlphaScore >= 2) {
+                const min_safe_req = post_total * 0.10;
+                const safe_assets = post_val_sgov + post_val_iau;
+                const rem_safe_assets = safe_assets - s2_buy_qld; // 기계적 매수 후 남은 안전자산
+                
+                alpha_A_amt = Math.min(base_target_buy_amt, Math.max(0, rem_safe_assets - min_safe_req));
+
+                if (alpha_A_amt > 0) {
+                    const weight_A = ((post_q + s2_buy_qld + alpha_A_amt) / post_total) * 100;
+                    panelA_html = `
+                    <div class="bg-red-950/30 border border-red-900/80 rounded-xl p-4 sm:p-5 shadow-[0_0_20px_rgba(239,68,68,0.15)] relative overflow-hidden transition-all mt-4">
+                        <div class="absolute top-0 right-0 bg-red-600 text-white text-[8px] sm:text-[9px] font-black px-2 py-1 rounded-bl-lg uppercase shadow-sm">선택 사항</div>
+                        <div class="flex items-center mb-2 sm:mb-3"><i class="fa-solid fa-angles-down text-red-500 text-lg sm:text-xl mr-2 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]"></i><h5 class="text-xs sm:text-sm font-black text-red-100">Panel A: 🚨 위기 돌파 알파(α) (기존)</h5></div>
+                        <p class="text-[10px] sm:text-[11px] text-red-200/80 mb-2 sm:mb-3 leading-relaxed break-keep">하단 이탈(65% 미만)과 극도의 공포가 중첩되었습니다. 기계적 매수 금액만큼 <b class="underline decoration-red-500 text-red-400">추가 매수(더블 매수)</b>하실 것을 제안합니다.</p>
+                        <div class="bg-black/50 border border-red-900/50 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
+                            <span class="font-bold text-red-400 text-[10px] sm:text-xs shrink-0">안전자산 추가 매도 ➔ QLD 매수</span>
+                            <span class="font-black text-red-500 text-sm sm:text-lg num-font break-all text-right">${window.formatKRW(alpha_A_amt)}</span>
+                        </div>
+                        <div class="flex items-center justify-center p-2 bg-zinc-950/80 border border-zinc-800 rounded-md">
+                            <span class="text-yellow-500 mr-1.5 text-xs"><i class="fa-solid fa-lightbulb"></i></span>
+                            <span class="text-[8px] sm:text-[10px] font-bold text-zinc-400 break-keep">Panel A 매수 후 나스닥 비중: <span class="text-white num-font">${final_weight.toFixed(1)}%</span> ➔ <b class="text-red-500 num-font">${weight_A.toFixed(1)}%</b></span>
+                        </div>
+                    </div>`;
+                } else {
+                    panelA_html = `
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 shadow-sm relative overflow-hidden transition-all opacity-90 mt-4">
+                        <div class="absolute top-0 right-0 bg-red-600 text-white text-[8px] font-black px-2 py-1 rounded-bl-lg uppercase">매수 차단</div>
+                        <div class="flex items-center mb-2"><i class="fa-solid fa-shield-halved text-red-500 text-sm mr-2"></i><h5 class="text-[11px] sm:text-xs font-black text-red-400">Panel A: 🚨 위기 돌파 알파(α) 매수 차단</h5></div>
+                        <p class="text-[9px] sm:text-[10px] text-zinc-500 leading-relaxed break-keep">조건은 충족되었으나 <b>안전자산이 10% 방어선에 도달</b>하여, 추가 매수를 강제로 차단합니다.</p>
+                    </div>`;
+                }
+            } else {
+                panelA_html = `
+                <div class="bg-black border border-zinc-900 rounded-xl p-4 shadow-sm relative overflow-hidden transition-all opacity-80 mt-4">
+                    <div class="absolute top-0 right-0 bg-zinc-800 text-zinc-400 text-[8px] font-black px-2 py-1 rounded-bl-lg uppercase">대기 중</div>
+                    <div class="flex items-center mb-2"><i class="fa-solid fa-lock text-zinc-600 text-sm mr-2"></i><h5 class="text-[11px] sm:text-xs font-black text-zinc-500">Panel A: 위기 돌파 알파(α) (기존)</h5></div>
+                    <p class="text-[9px] sm:text-[10px] text-zinc-600 leading-relaxed break-keep">위기 이탈 조건(65% 미만) 또는 알파 스코어 미달로 대기 상태입니다.</p>
+                </div>`;
+            }
+
+            // Panel B: 신규 로직 (구간 무관, 스코어 2 이상 시 안전자산 총액의 5% 매수)
+            if (currentAlphaScore >= 2) {
+                const safe_assets_total = post_val_sgov + post_val_iau;
+                alpha_B_amt = safe_assets_total * 0.05;
+
+                if (alpha_B_amt > 0) {
+                    let base_q_after_rebal = post_q;
+                    if (actual_w_post_dca < 65) base_q_after_rebal += s2_buy_qld;
+                    else if (actual_w_post_dca > 80) base_q_after_rebal -= (post_q - post_total * 0.70); // sell_amt
+                    
+                    const weight_B = ((base_q_after_rebal + alpha_B_amt) / post_total) * 100;
+                    globalAlphaWeight = weight_B; // DB 저장을 위해 Panel B 가중치를 전달
+                    
+                    panelB_html = `
+                    <div class="bg-purple-950/30 border border-purple-900/80 rounded-xl p-4 sm:p-5 shadow-[0_0_20px_rgba(168,85,247,0.15)] relative overflow-hidden transition-all mt-4">
+                        <div class="absolute top-0 right-0 bg-purple-600 text-white text-[8px] sm:text-[9px] font-black px-2 py-1 rounded-bl-lg uppercase shadow-sm">선택 사항</div>
+                        <div class="flex items-center mb-2 sm:mb-3"><i class="fa-solid fa-bolt text-purple-500 text-lg sm:text-xl mr-2 drop-shadow-[0_0_5px_rgba(168,85,247,0.8)]"></i><h5 class="text-xs sm:text-sm font-black text-purple-100">Panel B: 🚨 전천후 알파(α) (신규)</h5></div>
+                        <p class="text-[10px] sm:text-[11px] text-purple-200/80 mb-2 sm:mb-3 leading-relaxed break-keep">공포 지수가 기준을 충족했습니다. 비중 구간에 상관없이 <b class="underline decoration-purple-500 text-purple-400">안전자산(SGOV+IAU) 총액의 5%를 매도하여 QLD를 매수</b>하실 것을 제안합니다.</p>
+                        
+                        <div class="bg-black/50 border border-purple-900/50 rounded-lg p-3 mb-2 flex flex-row items-center justify-between gap-2">
+                            <span class="font-bold text-purple-400 text-[10px] sm:text-xs shrink-0">안전자산 5% 매도 ➔ QLD 매수</span>
+                            <span class="font-black text-purple-500 text-sm sm:text-lg num-font break-all text-right">${window.formatKRW(alpha_B_amt)}</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-center p-2 bg-zinc-950/80 border border-zinc-800 rounded-md">
+                            <span class="text-yellow-500 mr-1.5 text-xs"><i class="fa-solid fa-lightbulb"></i></span>
+                            <span class="text-[8px] sm:text-[10px] font-bold text-zinc-400 break-keep">Panel B 매수 후 나스닥 비중: <span class="text-white num-font">${final_weight.toFixed(1)}%</span> ➔ <b class="text-purple-500 num-font">${weight_B.toFixed(1)}%</b></span>
+                        </div>
+                    </div>`;
+                }
+            } else {
+                panelB_html = `
+                <div class="bg-black border border-zinc-900 rounded-xl p-4 shadow-sm relative overflow-hidden transition-all opacity-80 mt-4">
+                    <div class="absolute top-0 right-0 bg-zinc-800 text-zinc-400 text-[8px] font-black px-2 py-1 rounded-bl-lg uppercase">대기 중</div>
+                    <div class="flex items-center mb-2"><i class="fa-solid fa-lock text-zinc-600 text-sm mr-2"></i><h5 class="text-[11px] sm:text-xs font-black text-zinc-500">Panel B: 전천후 알파(α) (신규)</h5></div>
+                    <p class="text-[9px] sm:text-[10px] text-zinc-600 leading-relaxed break-keep">알파 스코어 미달로 대기 상태입니다.</p>
+                </div>`;
+            }
+
+            step2_msg += panelA_html + panelB_html;
+            step2_class = "border-none p-0";
             
             document.getElementById('plan_step2').innerHTML = step2_msg;
             document.getElementById('plan_step2').className = `transition-colors ${step2_class}`;
@@ -2307,14 +2409,7 @@
             if(document.getElementById('disp_safe_final')) document.getElementById('disp_safe_final').innerText = "현금 " + final_safe_weight.toFixed(1) + "%";
             document.getElementById('q_bar').style.width = final_weight + "%";
 
-            let s2_alpha_sell_sgov = 0, s2_alpha_sell_iau = 0;
-            if (globalAlphaAmt > 0) {
-                 const current_sgov_rem = post_val_sgov - s2_sell_sgov;
-                 s2_alpha_sell_sgov = Math.min(globalAlphaAmt, current_sgov_rem);
-                 const alpha_rem = globalAlphaAmt - s2_alpha_sell_sgov;
-                 if(alpha_rem > 0) s2_alpha_sell_iau = Math.min(alpha_rem, post_val_iau - s2_sell_iau);
-            }
-
+            // 기계적 리밸런싱 주문 목록
             const orders = [
                 { t: 'QQQM', net: s1_buy_qqqm - s2_sell_qqqm, p: p_qqqm * fx, c: 'text-indigo-400' },
                 { t: 'QLD', net: s1_buy_qld + s2_buy_qld - s2_sell_qld, p: p_qld * fx, c: 'text-blue-500' },
@@ -2339,21 +2434,52 @@
                 }
             });
 
-            if (globalAlphaAmt > 0) {
-                 const alpha_qld_sh = (globalAlphaAmt / (p_qld * fx)).toFixed(2);
-                 const alpha_sgov_sh = (s2_alpha_sell_sgov / (p_sgov * fx)).toFixed(2);
-                 const alpha_iau_sh = (s2_alpha_sell_iau / (p_iau * fx)).toFixed(2);
+            // Panel A 추가 주문 렌더링
+            if (alpha_A_amt > 0) {
+                 const current_sgov_rem_A = post_val_sgov - s2_sell_sgov;
+                 const s2_alphaA_sell_sgov = Math.min(alpha_A_amt, current_sgov_rem_A);
+                 const alphaA_rem = alpha_A_amt - s2_alphaA_sell_sgov;
+                 const s2_alphaA_sell_iau = alphaA_rem > 0 ? Math.min(alphaA_rem, post_val_iau - s2_sell_iau) : 0;
+
+                 const alpha_qld_sh = (alpha_A_amt / (p_qld * fx)).toFixed(2);
+                 const alpha_sgov_sh = (s2_alphaA_sell_sgov / (p_sgov * fx)).toFixed(2);
+                 const alpha_iau_sh = (s2_alphaA_sell_iau / (p_iau * fx)).toFixed(2);
                  
                  html += `<div class="mt-4 sm:mt-6 pt-4 sm:pt-5 border-t border-dashed border-red-900/50">
-                    <h5 class="text-red-500 font-black mb-2 sm:mb-3 text-left text-[10px] sm:text-xs"><i class="fa-solid fa-plus-circle mr-1.5"></i>[선택] 알파(α) 투자 추가 주문</h5>
+                    <h5 class="text-red-500 font-black mb-2 sm:mb-3 text-left text-[10px] sm:text-xs"><i class="fa-solid fa-plus-circle mr-1.5"></i>[선택] Panel A 알파(α) 추가 주문</h5>
                     <div class="space-y-2">
-                        <div class="bg-red-950/20 border border-red-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-red-500 border border-zinc-800"><i class="fa-solid fa-cart-plus"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-red-500 bg-red-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Buy 추가 매수</p><p class="text-sm sm:text-lg font-black text-white num-font">QLD</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-red-500 num-font break-all">${alpha_qld_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(globalAlphaAmt)}</p></div></div>`;
+                        <div class="bg-red-950/20 border border-red-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-red-500 border border-zinc-800"><i class="fa-solid fa-cart-plus"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-red-500 bg-red-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Buy 추가 매수</p><p class="text-sm sm:text-lg font-black text-white num-font">QLD</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-red-500 num-font break-all">${alpha_qld_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(alpha_A_amt)}</p></div></div>`;
                  
-                 if (s2_alpha_sell_sgov > 0) {
-                    html += `<div class="bg-blue-950/20 border border-blue-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-blue-500 border border-zinc-800"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-blue-500 bg-blue-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Sell 추가 매도</p><p class="text-sm sm:text-lg font-black text-white num-font">SGOV</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-blue-500 num-font break-all">${alpha_sgov_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(s2_alpha_sell_sgov)}</p></div></div>`;
+                 if (s2_alphaA_sell_sgov > 0) {
+                    html += `<div class="bg-blue-950/20 border border-blue-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-blue-500 border border-zinc-800"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-blue-500 bg-blue-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Sell 추가 매도</p><p class="text-sm sm:text-lg font-black text-white num-font">SGOV</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-blue-500 num-font break-all">${alpha_sgov_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(s2_alphaA_sell_sgov)}</p></div></div>`;
                  }
-                 if (s2_alpha_sell_iau > 0) {
-                    html += `<div class="bg-blue-950/20 border border-blue-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-blue-500 border border-zinc-800"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-blue-500 bg-blue-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Sell 추가 매도</p><p class="text-sm sm:text-lg font-black text-white num-font">IAU</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-blue-500 num-font break-all">${alpha_iau_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(s2_alpha_sell_iau)}</p></div></div>`;
+                 if (s2_alphaA_sell_iau > 0) {
+                    html += `<div class="bg-blue-950/20 border border-blue-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-blue-500 border border-zinc-800"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-blue-500 bg-blue-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Sell 추가 매도</p><p class="text-sm sm:text-lg font-black text-white num-font">IAU</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-blue-500 num-font break-all">${alpha_iau_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(s2_alphaA_sell_iau)}</p></div></div>`;
+                 }
+                 html += `</div></div>`;
+            }
+
+            // Panel B 추가 주문 렌더링
+            if (alpha_B_amt > 0) {
+                 const current_sgov_rem_B = post_val_sgov - s2_sell_sgov;
+                 const s2_alphaB_sell_sgov = Math.min(alpha_B_amt, current_sgov_rem_B);
+                 const alphaB_rem = alpha_B_amt - s2_alphaB_sell_sgov;
+                 const s2_alphaB_sell_iau = alphaB_rem > 0 ? Math.min(alphaB_rem, post_val_iau - s2_sell_iau) : 0;
+
+                 const alpha_qld_sh = (alpha_B_amt / (p_qld * fx)).toFixed(2);
+                 const alpha_sgov_sh = (s2_alphaB_sell_sgov / (p_sgov * fx)).toFixed(2);
+                 const alpha_iau_sh = (s2_alphaB_sell_iau / (p_iau * fx)).toFixed(2);
+                 
+                 html += `<div class="mt-4 sm:mt-6 pt-4 sm:pt-5 border-t border-dashed border-purple-900/50">
+                    <h5 class="text-purple-400 font-black mb-2 sm:mb-3 text-left text-[10px] sm:text-xs"><i class="fa-solid fa-plus-circle mr-1.5"></i>[선택] Panel B 알파(α) 추가 주문</h5>
+                    <div class="space-y-2">
+                        <div class="bg-purple-950/20 border border-purple-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-purple-500 border border-zinc-800"><i class="fa-solid fa-cart-plus"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-purple-400 bg-purple-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Buy 추가 매수</p><p class="text-sm sm:text-lg font-black text-white num-font">QLD</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-purple-400 num-font break-all">${alpha_qld_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(alpha_B_amt)}</p></div></div>`;
+                 
+                 if (s2_alphaB_sell_sgov > 0) {
+                    html += `<div class="bg-blue-950/20 border border-blue-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-blue-500 border border-zinc-800"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-blue-500 bg-blue-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Sell 추가 매도</p><p class="text-sm sm:text-lg font-black text-white num-font">SGOV</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-blue-500 num-font break-all">${alpha_sgov_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(s2_alphaB_sell_sgov)}</p></div></div>`;
+                 }
+                 if (s2_alphaB_sell_iau > 0) {
+                    html += `<div class="bg-blue-950/20 border border-blue-900/50 p-3 sm:p-4 rounded-xl flex flex-wrap items-center justify-between gap-2"><div class="flex items-center shrink-0 min-w-max"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center mr-3 shadow-sm text-sm sm:text-base text-blue-500 border border-zinc-800"><i class="fa-solid fa-hand-holding-dollar"></i></div><div class="text-left"><p class="text-[7px] sm:text-[8px] font-black uppercase text-blue-500 bg-blue-950/50 inline-block px-1 py-0.5 rounded mb-0.5">Sell 추가 매도</p><p class="text-sm sm:text-lg font-black text-white num-font">IAU</p></div></div><div class="text-right flex-grow"><p class="text-base sm:text-xl font-black text-blue-500 num-font break-all">${alpha_iau_sh}<span class="text-[8px] sm:text-[10px] ml-0.5 opacity-60 inline-block" style="font-family:'Pretendard',sans-serif;">주</span></p><p class="text-[8px] sm:text-[9px] font-bold text-zinc-500 mt-0.5 num-font break-all">예상 금액: ${window.formatKRW(s2_alphaB_sell_iau)}</p></div></div>`;
                  }
                  html += `</div></div>`;
             }
@@ -2370,7 +2496,7 @@
                 window.setVal('dca_amount', 0, true); // 가이드 산출용으로만 쓰고 0으로 초기화
                 window.calculateAssets(); 
 
-                await saveAssetToDB(post_total, w_current, actual_w_post_dca, final_weight, globalAlphaWeight, finalPrincipal);
+                await saveAssetToDB(total_before, w_current, actual_w_post_dca, final_weight, globalAlphaWeight, finalPrincipal);
                 window.showToast("매매 가이드 확정 및 DB 저장 완료");
             } else {
                 window.showToast("시뮬레이션 완료 (DB 미저장)", false, true);
