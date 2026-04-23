@@ -736,22 +736,22 @@
                     </div>
                 </div>
                 <div>
-                    <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest ml-1 mb-1.5 block">1주당 평균 매수단가 (원화 기준)</label>
+                    <label class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest ml-1 mb-1.5 block">총 매수 금액 (실제 결제된 원화)</label>
                     <div class="input-group focus-within:border-blue-500">
-                        <input type="text" inputmode="numeric" id="buy_modal_price" class="text-white num-font" oninput="formatNumber(this); calcBuyModal();" placeholder="0">
+                        <input type="text" inputmode="numeric" id="buy_modal_total_cost" class="text-white num-font" oninput="formatNumber(this); calcBuyModal();" placeholder="0">
                         <div class="unit text-zinc-500">원</div>
                     </div>
                 </div>
                 
                 <div class="bg-black p-3.5 rounded-xl border border-zinc-800 flex justify-between items-center mt-2">
-                    <span class="text-[10px] font-bold text-zinc-400">총 매수 금액 (원금 추가분)</span>
-                    <span class="text-sm font-black text-blue-500 num-font" id="buy_modal_total">0원</span>
+                    <span class="text-[10px] font-bold text-zinc-400">계산된 1주당 체결단가</span>
+                    <span class="text-sm font-black text-blue-500 num-font" id="buy_modal_calc_price">0원</span>
                 </div>
                 
                 <!-- 🌟 추가된 UX 안내 문구 -->
                 <p class="text-[9px] text-zinc-500 mt-3 font-bold break-keep leading-relaxed border-t border-zinc-800/50 pt-3">
-                    * 💡 <span class="text-blue-400">안내:</span> 입력하신 1주당 평단가(예: 10,000원)는 '투입 원금' 합산에만 사용됩니다.<br>
-                    추가된 수량은 <b>현재 시장가 기준</b>으로 자산 평가액에 실시간 반영됩니다.
+                    * 💡 <span class="text-blue-400">안내:</span> 소수점 모으기 등 실제 증권사 앱에서 매수한 <span class="text-zinc-300 underline">총 금액과 획득한 수량</span>만 입력하세요.<br>
+                    입력하신 금액은 <b>원금</b>에 정확히 합산되며, 추가된 수량은 <b>현재 시장가 기준</b>으로 자산 평가액에 실시간 반영됩니다.
                 </p>
             </div>
             
@@ -800,7 +800,7 @@
         let weightChartInstance = null;
         let historyData = [];
         
-        window.simChartInstance = null; // 🌟 시뮬레이터 차트 인스턴스
+        window.simChartInstance = null; 
         
         window.pendingBuys = { qqqm: { qty: 0, cost: 0 }, qld: { qty: 0, cost: 0 }, sgov: { qty: 0, cost: 0 }, iau: { qty: 0, cost: 0 } };
         window.totalPendingCost = 0;
@@ -821,7 +821,7 @@
             }
         } catch(e) {}
 
-        // 🌟 탭 스위치 로직 업데이트 (3번 탭 연동)
+        // 🌟 탭 스위치 로직 업데이트
         window.switchTab = (tabIndex) => {
             document.getElementById('tab1').classList.toggle('hidden', tabIndex !== 1);
             document.getElementById('tab2').classList.toggle('hidden', tabIndex !== 2);
@@ -905,8 +905,8 @@
             document.getElementById('buy_modal_target').value = target;
             document.getElementById('buy_modal_title').innerText = target.toUpperCase() + ' 추가 매수 기록';
             document.getElementById('buy_modal_qty').value = '';
-            document.getElementById('buy_modal_price').value = '';
-            document.getElementById('buy_modal_total').innerText = '0원';
+            document.getElementById('buy_modal_total_cost').value = '';
+            document.getElementById('buy_modal_calc_price').innerText = '0원';
             
             const modal = document.getElementById('buy_modal');
             const content = document.getElementById('buy_modal_content');
@@ -929,22 +929,23 @@
 
         window.calcBuyModal = () => {
             const qty = parseFloat(document.getElementById('buy_modal_qty').value.replace(/,/g, '')) || 0;
-            const price = parseFloat(document.getElementById('buy_modal_price').value.replace(/,/g, '')) || 0;
-            const total = qty * price;
-            document.getElementById('buy_modal_total').innerText = window.formatKRW(total);
+            const totalCost = parseFloat(document.getElementById('buy_modal_total_cost').value.replace(/,/g, '')) || 0;
+            let pricePerShare = 0;
+            if (qty > 0 && totalCost > 0) {
+                pricePerShare = totalCost / qty;
+            }
+            document.getElementById('buy_modal_calc_price').innerText = window.formatKRW(pricePerShare);
         };
 
         window.executeBuy = () => {
             const target = document.getElementById('buy_modal_target').value;
             const qty = parseFloat(document.getElementById('buy_modal_qty').value.replace(/,/g, '')) || 0;
-            const price = parseFloat(document.getElementById('buy_modal_price').value.replace(/,/g, '')) || 0;
+            const cost = parseFloat(document.getElementById('buy_modal_total_cost').value.replace(/,/g, '')) || 0;
             
-            if (qty <= 0 || price <= 0) {
-                window.showToast("수량과 매수단가를 정확히 입력해주세요.", true);
+            if (qty <= 0 || cost <= 0) {
+                window.showToast("수량과 총 매수 금액을 정확히 입력해주세요.", true);
                 return;
             }
-
-            const cost = qty * price;
 
             window.pendingBuys[target].qty += qty;
             window.pendingBuys[target].cost += cost;
@@ -997,7 +998,6 @@
                 rsi: document.getElementById('api_rsi') ? document.getElementById('api_rsi').value : "",
                 start_date: document.getElementById('start_date') ? document.getElementById('start_date').value : "",
                 last_sync: document.getElementById('last_sync_time') ? document.getElementById('last_sync_time').innerHTML : "",
-                // 🌟 시뮬레이터 저장값 추가
                 sim_monthly: window.getVal('sim_monthly_dca') || 100,
                 sim_cagr_qqqm: document.getElementById('sim_cagr_qqqm')?.value || "13.8",
                 sim_cagr_qld: document.getElementById('sim_cagr_qld')?.value || "24.6",
@@ -1198,6 +1198,12 @@
             }
             if(document.getElementById('is_manual_trade')) document.getElementById('is_manual_trade').checked = false;
             window.renderChart(30); 
+            
+            // 🌟 확정 후 현황판 업데이트
+            if (typeof window.pushToCoupleDashboard === 'function') {
+                const coreData = JSON.parse(localStorage.getItem('q7s3_v2_core') || '{}');
+                window.pushToCoupleDashboard({ core: coreData, history: localHist });
+            }
         }
 
         async function loadHistoryFromDB() {
@@ -1594,6 +1600,13 @@
                 window.saveLocalState();
 
                 window.showToast("최신 시장 데이터 동기화 완료!");
+
+                // 🌟 부부 현황판 자동 전송 (개인 DB 동기화 완료 직후)
+                if (typeof window.pushToCoupleDashboard === 'function') {
+                    const coreData = JSON.parse(localStorage.getItem('q7s3_v2_core') || '{}');
+                    const historyDataLocal = JSON.parse(localStorage.getItem('q7s3_v2_history') || '[]');
+                    window.pushToCoupleDashboard({ core: coreData, history: historyDataLocal });
+                }
 
             } catch (error) {
                 console.error("Fetch Error:", error);
@@ -2496,8 +2509,15 @@
                 window.setVal('dca_amount', 0, true); // 가이드 산출용으로만 쓰고 0으로 초기화
                 window.calculateAssets(); 
 
-                await saveAssetToDB(total_before, w_current, actual_w_post_dca, final_weight, globalAlphaWeight, finalPrincipal);
+                await saveAssetToDB(post_total, w_current, actual_w_post_dca, final_weight, globalAlphaWeight, finalPrincipal);
                 window.showToast("매매 가이드 확정 및 DB 저장 완료");
+                
+                // 🌟 확정 후 현황판 업데이트
+                if (typeof window.pushToCoupleDashboard === 'function') {
+                    const coreData = JSON.parse(localStorage.getItem('q7s3_v2_core') || '{}');
+                    const historyDataLocal = JSON.parse(localStorage.getItem('q7s3_v2_history') || '[]');
+                    window.pushToCoupleDashboard({ core: coreData, history: historyDataLocal });
+                }
             } else {
                 window.showToast("시뮬레이션 완료 (DB 미저장)", false, true);
             }
@@ -2535,6 +2555,65 @@
             loadHistoryFromDB();
             window.calculateAssets(); 
             window.updateIndicators(); 
+        };
+    </script>
+
+    <!-- 🌟 부부 자산 현황판 전송 엔진 🌟 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // 💡 아래 빈칸에 부부 현황판(배당앱 등)에서 사용하는 Firebase 정보를 입력하세요.
+        const myFirebaseConfig = {
+            apiKey: "AIzaSyDrzoH50qvRtirqi4nAleoss5xTVLJJyL8",
+            authDomain: "total-asset-f1796.firebaseapp.com",
+            projectId: "total-asset-f1796",
+            storageBucket: "total-asset-f1796.firebasestorage.app",
+            messagingSenderId: "441490194600",
+            appId: "1:441490194600:web:bd4889cb0796dd4694429d"
+        };
+
+        const firebaseConfig = myFirebaseConfig.apiKey ? myFirebaseConfig : (typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {});
+        // 메인 앱과의 충돌 방지를 위해 "SharedDashboard"라는 이름으로 별도 초기화
+        const app = firebaseConfig.apiKey ? initializeApp(firebaseConfig, "SharedDashboard") : null;
+        const db = app ? getFirestore(app) : null;
+
+        window.pushToCoupleDashboard = async (data) => {
+            if (!data || !db) return;
+            
+            let principal = 0;
+            let totalValue = 0;
+
+            // 1. 최근 히스토리에서 데이터 추출 시도
+            if (data.history && data.history.length > 0) {
+                const lastEntry = data.history[data.history.length - 1];
+                principal = lastEntry.principal || 0;
+                totalValue = lastEntry.total || 0;
+            } 
+            
+            // 2. 만약 히스토리가 없다면, 현재 화면(localStorage/DOM)의 라이브 데이터 사용
+            if (principal === 0 && data.core && data.core.total_principal) {
+                principal = parseFloat(data.core.total_principal) || 0;
+            }
+            if (totalValue === 0) {
+                const liveTotal = document.getElementById('total_val_disp');
+                totalValue = liveTotal ? (parseFloat(liveTotal.innerText.replace(/[^0-9.]/g, '')) || 0) : 0;
+            }
+
+            const summary = {
+                principal: principal,
+                totalValue: totalValue,
+                profit: totalValue - principal,
+                rate: principal > 0 ? ((totalValue - principal) / principal * 100) : 0,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                await setDoc(doc(db, "artifacts", "gire-sunny-asset-app", "public", "data", "shared_assets", "latest_status"), { longTerm: summary }, { merge: true });
+                console.log("부부 현황판 업데이트 완료:", summary);
+            } catch (e) { 
+                console.error("현황판 전송 실패:", e); 
+            }
         };
     </script>
 </body>
