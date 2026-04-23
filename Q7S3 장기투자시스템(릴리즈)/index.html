@@ -584,6 +584,12 @@
                         <div class="relative w-full h-[300px] sm:h-[400px] shrink-0">
                             <canvas id="simulationChart"></canvas>
                             
+                            <div class="flex justify-center items-center h-8 sm:h-10 bg-zinc-900/50 rounded-lg border border-zinc-800/50 gap-3 sm:gap-4 shrink-0 mt-3">
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 align-middle shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span><span class="text-[9px] sm:text-[10px] text-zinc-400 font-bold">예상 시나리오</span></div>
+                                <div class="flex items-center gap-1.5"><span class="w-4 h-0.5 border-t-2 border-solid border-amber-500 align-middle"></span><span class="text-[9px] sm:text-[10px] text-zinc-400 font-bold">실제 자산 기록</span></div>
+                                <div class="flex items-center gap-1.5"><span class="w-4 h-0.5 border-t-2 border-dashed border-zinc-500 align-middle"></span><span class="text-[9px] sm:text-[10px] text-zinc-400 font-bold">누적 투입 원금</span></div>
+                            </div>
+                            
                             <!-- 🌟 복구 및 최적화: 그래프 내부 듀얼 플로팅 박스 (시작금액 부활, 터치 이벤트 추가) -->
                             <div id="sim_floating_box" onclick="this.classList.add('hidden')" class="absolute top-2 sm:top-6 left-2 sm:left-20 z-10 bg-zinc-900/90 backdrop-blur-md border border-zinc-700/50 p-2.5 sm:p-4 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.5)] hidden w-[160px] sm:w-[240px] space-y-2 sm:space-y-3 cursor-pointer transition-opacity">
                                 
@@ -644,12 +650,6 @@
                             </div>
                             <!-- 🌟 추가 끝 -->
                             
-                        </div>
-                        
-                        <div class="flex justify-center items-center h-8 sm:h-10 bg-zinc-900/50 rounded-lg border border-zinc-800/50 gap-3 sm:gap-4 shrink-0 mt-4">
-                            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 align-middle shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span><span class="text-[9px] sm:text-[10px] text-zinc-400 font-bold">예상 시나리오</span></div>
-                            <div class="flex items-center gap-1.5"><span class="w-4 h-0.5 border-t-2 border-solid border-amber-500 align-middle"></span><span class="text-[9px] sm:text-[10px] text-zinc-400 font-bold">실제 자산 기록</span></div>
-                            <div class="flex items-center gap-1.5"><span class="w-4 h-0.5 border-t-2 border-dashed border-zinc-500 align-middle"></span><span class="text-[9px] sm:text-[10px] text-zinc-400 font-bold">누적 투입 원금</span></div>
                         </div>
                     </section>
                 </div>
@@ -1201,8 +1201,7 @@
             
             // 🌟 확정 후 현황판 업데이트
             if (typeof window.pushToCoupleDashboard === 'function') {
-                const coreData = JSON.parse(localStorage.getItem('q7s3_v2_core') || '{}');
-                window.pushToCoupleDashboard({ core: coreData, history: localHist });
+                window.pushToCoupleDashboard();
             }
         }
 
@@ -1601,11 +1600,9 @@
 
                 window.showToast("최신 시장 데이터 동기화 완료!");
 
-                // 🌟 부부 현황판 자동 전송 (개인 DB 동기화 완료 직후)
+                // 🌟 부부 현황판 자동 전송
                 if (typeof window.pushToCoupleDashboard === 'function') {
-                    const coreData = JSON.parse(localStorage.getItem('q7s3_v2_core') || '{}');
-                    const historyDataLocal = JSON.parse(localStorage.getItem('q7s3_v2_history') || '[]');
-                    window.pushToCoupleDashboard({ core: coreData, history: historyDataLocal });
+                    window.pushToCoupleDashboard();
                 }
 
             } catch (error) {
@@ -1751,7 +1748,6 @@
                 }
             }
 
-            // 🌟 자산 재계산 후 시뮬레이터 차트 연동
             if (typeof window.runSimulation === 'function') {
                 window.runSimulation();
             }
@@ -1760,7 +1756,6 @@
             return total_post_dca;
         };
 
-        // 🌟 탭 3: 시뮬레이터 구동 로직 (시간 동기화 적용)
         window.runSimulation = () => {
             const fx = window.getVal('api_fx') || 1;
             const v_qqqm = window.getVal('h_qqqm') * window.getVal('api_qqqm') * fx;
@@ -1782,7 +1777,6 @@
             const simCagrSgov = parseFloat(document.getElementById('sim_cagr_sgov')?.value) || 0;
             const simCagrIau = parseFloat(document.getElementById('sim_cagr_iau')?.value) || 0;
 
-            // 가중 평균 기대 수익률 계산
             const expectedCagr = (w_qqqm * simCagrQqqm) + (w_qld * simCagrQld) + (w_sgov * simCagrSgov) + (w_iau * simCagrIau);
             
             if (document.getElementById('sim_exp_cagr')) {
@@ -1796,7 +1790,6 @@
             }
             const yearlyAddition = monthlyAddition * 12;
 
-            // 🌟 시작일 연동 로직
             const startDateStr = document.getElementById('start_date').value;
             const startDate = startDateStr ? new Date(startDateStr) : new Date();
             const startYear = startDate.getFullYear();
@@ -1807,7 +1800,6 @@
             if (elapsedYears < 0) elapsedYears = 0;
             if (elapsedYears > 20) elapsedYears = 20;
 
-            // 시작 당시의 대략적인 초기 원금 역산
             const initialPrin = Math.max(0, totalPrincipal - (elapsedYears * yearlyAddition));
             
             let expectedBalance = initialPrin > 0 ? initialPrin : currentTotalAsset; 
@@ -1831,7 +1823,6 @@
                 }
             }
 
-            // 🌟 실제 자산 기록(dataActual) 데이터 생성
             const dataActual = [];
             if (historyData && historyData.length > 0 && startDateStr) {
                 historyData.forEach(d => {
@@ -1842,21 +1833,19 @@
                     }
                 });
             }
-            // 현재의 라이브 자산 기록 추가 (가장 마지막 기록과 1일 이상 차이날 경우만)
             if (elapsedYears >= 0 && elapsedYears <= 20) {
                 if (dataActual.length > 0) {
                     const lastX = dataActual[dataActual.length - 1].x;
-                    if (Math.abs(lastX - elapsedYears) > 0.005) { // 약 1.8일 이상 차이
+                    if (Math.abs(lastX - elapsedYears) > 0.005) { 
                         dataActual.push({ x: elapsedYears, y: currentTotalAsset });
                     } else {
-                        dataActual[dataActual.length - 1].y = currentTotalAsset; // 오늘 데이터 갱신
+                        dataActual[dataActual.length - 1].y = currentTotalAsset; 
                     }
                 } else {
                     dataActual.push({ x: elapsedYears, y: currentTotalAsset });
                 }
             }
 
-            // 🌟 올해(현재 연도)의 목표치 계산
             let targetIndex = currentYear - startYear;
             if (targetIndex === 0) targetIndex = 1; 
 
@@ -1869,7 +1858,6 @@
                 targetValue = dataBalance[20].y;
             }
 
-            // 🌟 억 단위 자동 변환 포맷팅 함수
             const formatForceBillion = (val) => {
                 return (val / 100000000).toFixed(2) + '억 원';
             };
@@ -1883,11 +1871,9 @@
                 document.getElementById('sim_final_asset').innerText = formatForceBillion(dataBalance[20].y);
                 document.getElementById('sim_final_invested').innerText = formatForceBillion(dataInvested[20].y);
                 
-                // 🌟 타이틀 연도 연동
                 document.getElementById('sim_asset_label').innerText = `${startYear + 20}년 최종 예상 자산`;
                 document.getElementById('sim_invested_label').innerText = `${startYear + 20}년 누적 투입원금`;
                 
-                // 🌟 현재 내 수익금 표시 연동
                 const currentProfit = currentTotalAsset - totalPrincipal;
                 const profitColor = currentProfit >= 0 ? 'text-red-500' : 'text-blue-500';
                 const profitSign = currentProfit > 0 ? '+' : '';
@@ -1897,27 +1883,22 @@
                     profitEl.innerText = profitSign + formatBillion(currentProfit);
                 }
                 
-                // 🌟 신규 수정: 시작금액 부활 및 찐 진행률(Progress %) 재적용 완료
                 if (document.getElementById('sim_float_year_pct')) {
                     const finalAsset = dataBalance[20].y;
                     const currentYearStr = currentYear.toString();
                     
-                    // 1. 올해 시작 자산 구하기
                     let yearStartAsset = initialPrin;
                     const thisYearData = historyData.filter(d => d.date.startsWith(currentYearStr));
                     if (thisYearData.length > 0) {
-                        yearStartAsset = thisYearData[0].total; // 올해의 첫 기록
+                        yearStartAsset = thisYearData[0].total; 
                     } else if (historyData.length > 0) {
-                        yearStartAsset = historyData[0].total; // 올해 기록이 없으면 전체 중 첫 기록
+                        yearStartAsset = historyData[0].total; 
                     }
 
-                    // 2. 전체 시작 자산 구하기
                     let finalStartAsset = historyData.length > 0 ? historyData[0].total : initialPrin;
                     
-                    // 당년 목표
                     let currentYearTarget = targetValue || finalAsset;
                     
-                    // 달성률 계산 (구간 내 진짜 진행률)
                     let yearDenom = currentYearTarget - yearStartAsset;
                     let achievePct = 0;
                     if (yearDenom > 0) {
@@ -1934,7 +1915,6 @@
                     document.getElementById('sim_float_current').innerText = formatBillion(currentTotalAsset);
                     document.getElementById('sim_float_year_target').innerText = formatForceBillion(currentYearTarget);
                     
-                    // 20년 뒤 목표 연동 로직 (구간 내 진짜 진행률)
                     let finalDenom = finalAsset - finalStartAsset;
                     let finalAchievePct = 0;
                     if (finalDenom > 0) {
@@ -1955,7 +1935,6 @@
             const ctxSim = document.getElementById('simulationChart');
             if(!ctxSim) return;
 
-            // 🌟 수정: 수직선(현재 위치)만 남기고 초록/빨강 목표선, 점은 제거
             const simChartPlugin = {
                 id: 'simChartPlugin',
                 afterDraw: (chart) => {
@@ -1965,17 +1944,15 @@
                     
                     const xCoord = xAxis.getPixelForValue(elapsedYears);
 
-                    // 1. 수직선 (과거/미래 경계 구분선)
                     ctx.save();
                     ctx.beginPath();
                     ctx.moveTo(xCoord, yAxis.top);
                     ctx.lineTo(xCoord, yAxis.bottom);
                     ctx.lineWidth = 1.5;
-                    ctx.strokeStyle = 'rgba(245, 158, 11, 0.6)'; // Amber
+                    ctx.strokeStyle = 'rgba(245, 158, 11, 0.6)'; 
                     ctx.setLineDash([4, 4]);
                     ctx.stroke();
                     
-                    // 수직선 텍스트 뱃지 (Today) - 클릭 유도를 위한 디자인 변경
                     ctx.fillStyle = '#f59e0b';
                     ctx.fillRect(xCoord - 35, yAxis.top - 20, 70, 18);
                     ctx.fillStyle = '#000';
@@ -2017,7 +1994,7 @@
                         { 
                             label: '실제 자산 기록', 
                             data: dataActual, 
-                            borderColor: '#f59e0b', // Amber
+                            borderColor: '#f59e0b', 
                             backgroundColor: 'transparent', 
                             borderWidth: 2.5, 
                             tension: 0.2, 
@@ -2032,19 +2009,16 @@
                     maintainAspectRatio: false, 
                     interaction: { mode: 'index', intersect: false },
                     layout: { padding: { top: 25, bottom: 5, left: 5 } }, 
-                    // 🌟 캔버스 터치(클릭) 이벤트 추가
                     onClick: (e, elements, chart) => {
                         const canvasPosition = Chart.helpers.getRelativePosition(e, chart);
                         const xAxis = chart.scales.x;
                         const xCoord = xAxis.getPixelForValue(elapsedYears);
                         
-                        // Today 수직선 근처(좌우 40px 이내) 터치 시 말풍선 토글
                         if (Math.abs(canvasPosition.x - xCoord) < 40) {
                             const box = document.getElementById('sim_floating_box');
                             if (box) box.classList.toggle('hidden');
                         }
                     },
-                    // 🌟 PC 환경을 위한 마우스 호버 커서 이벤트
                     onHover: (e, elements, chart) => {
                         const canvasPosition = Chart.helpers.getRelativePosition(e, chart);
                         const xAxis = chart.scales.x;
@@ -2122,7 +2096,6 @@
             const p_qld = window.getVal('api_qld');
             const p_sgov = window.getVal('api_sgov');
             const p_iau = window.getVal('api_iau');
-            // 🌟 픽스: DCA는 별도 입력란에서 가져오도록 수정
             const dca = window.getVal('dca_amount');
             const rsi_val = window.getVal('api_rsi');
             const fg_val = window.getVal('api_fg');
@@ -2255,7 +2228,7 @@
             let base_target_buy_amt = 0;
             if (actual_w_post_dca < 65) {
                 const target_buy_amt = post_total * ((70 - actual_w_post_dca)/100) * 0.5;
-                base_target_buy_amt = target_buy_amt; // Panel A 연산을 위해 저장
+                base_target_buy_amt = target_buy_amt; 
                 const safe_assets = post_val_sgov + post_val_iau;
                 const min_safe_req = post_total * 0.10; 
                 const max_spendable = Math.max(0, safe_assets - min_safe_req);
@@ -2331,11 +2304,10 @@
             let alpha_A_amt = 0;
             let alpha_B_amt = 0;
 
-            // Panel A: 기존 로직 (65% 미만 & 스코어 2 이상 시 더블 매수)
             if (actual_w_post_dca < 65 && currentAlphaScore >= 2) {
                 const min_safe_req = post_total * 0.10;
                 const safe_assets = post_val_sgov + post_val_iau;
-                const rem_safe_assets = safe_assets - s2_buy_qld; // 기계적 매수 후 남은 안전자산
+                const rem_safe_assets = safe_assets - s2_buy_qld; 
                 
                 alpha_A_amt = Math.min(base_target_buy_amt, Math.max(0, rem_safe_assets - min_safe_req));
 
@@ -2372,7 +2344,6 @@
                 </div>`;
             }
 
-            // Panel B: 신규 로직 (구간 무관, 스코어 2 이상 시 안전자산 총액의 5% 매수)
             if (currentAlphaScore >= 2) {
                 const safe_assets_total = post_val_sgov + post_val_iau;
                 alpha_B_amt = safe_assets_total * 0.05;
@@ -2380,10 +2351,10 @@
                 if (alpha_B_amt > 0) {
                     let base_q_after_rebal = post_q;
                     if (actual_w_post_dca < 65) base_q_after_rebal += s2_buy_qld;
-                    else if (actual_w_post_dca > 80) base_q_after_rebal -= (post_q - post_total * 0.70); // sell_amt
+                    else if (actual_w_post_dca > 80) base_q_after_rebal -= (post_q - post_total * 0.70); 
                     
                     const weight_B = ((base_q_after_rebal + alpha_B_amt) / post_total) * 100;
-                    globalAlphaWeight = weight_B; // DB 저장을 위해 Panel B 가중치를 전달
+                    globalAlphaWeight = weight_B; 
                     
                     panelB_html = `
                     <div class="bg-purple-950/30 border border-purple-900/80 rounded-xl p-4 sm:p-5 shadow-[0_0_20px_rgba(168,85,247,0.15)] relative overflow-hidden transition-all mt-4">
@@ -2422,7 +2393,6 @@
             if(document.getElementById('disp_safe_final')) document.getElementById('disp_safe_final').innerText = "현금 " + final_safe_weight.toFixed(1) + "%";
             document.getElementById('q_bar').style.width = final_weight + "%";
 
-            // 기계적 리밸런싱 주문 목록
             const orders = [
                 { t: 'QQQM', net: s1_buy_qqqm - s2_sell_qqqm, p: p_qqqm * fx, c: 'text-indigo-400' },
                 { t: 'QLD', net: s1_buy_qld + s2_buy_qld - s2_sell_qld, p: p_qld * fx, c: 'text-blue-500' },
@@ -2447,7 +2417,6 @@
                 }
             });
 
-            // Panel A 추가 주문 렌더링
             if (alpha_A_amt > 0) {
                  const current_sgov_rem_A = post_val_sgov - s2_sell_sgov;
                  const s2_alphaA_sell_sgov = Math.min(alpha_A_amt, current_sgov_rem_A);
@@ -2472,7 +2441,6 @@
                  html += `</div></div>`;
             }
 
-            // Panel B 추가 주문 렌더링
             if (alpha_B_amt > 0) {
                  const current_sgov_rem_B = post_val_sgov - s2_sell_sgov;
                  const s2_alphaB_sell_sgov = Math.min(alpha_B_amt, current_sgov_rem_B);
@@ -2501,23 +2469,15 @@
             document.getElementById('plan_section').classList.remove('hidden');
             setTimeout(() => { document.getElementById('plan_section').scrollIntoView({ behavior: 'smooth' }); }, 100);
             
-            // 🌟 픽스: 확정 및 DB 저장 로직 복구
             if(shouldSave) {
-                let finalPrincipal = window.getVal('total_principal'); // 가확정이 선반영된 값
+                let finalPrincipal = window.getVal('total_principal'); 
                 
-                // 🌟 DCA 합산 로직 제거 (추매 팝업에서 처리하므로 더 이상 원금에 강제 합산하지 않음)
-                window.setVal('dca_amount', 0, true); // 가이드 산출용으로만 쓰고 0으로 초기화
+                window.setVal('dca_amount', 0, true); 
                 window.calculateAssets(); 
 
                 await saveAssetToDB(post_total, w_current, actual_w_post_dca, final_weight, globalAlphaWeight, finalPrincipal);
                 window.showToast("매매 가이드 확정 및 DB 저장 완료");
                 
-                // 🌟 확정 후 현황판 업데이트
-                if (typeof window.pushToCoupleDashboard === 'function') {
-                    const coreData = JSON.parse(localStorage.getItem('q7s3_v2_core') || '{}');
-                    const historyDataLocal = JSON.parse(localStorage.getItem('q7s3_v2_history') || '[]');
-                    window.pushToCoupleDashboard({ core: coreData, history: historyDataLocal });
-                }
             } else {
                 window.showToast("시뮬레이션 완료 (DB 미저장)", false, true);
             }
@@ -2544,7 +2504,6 @@
                 if(document.getElementById('start_date') && d.start_date) document.getElementById('start_date').value = d.start_date;
                 if(d.last_sync && document.getElementById('last_sync_time')) document.getElementById('last_sync_time').innerHTML = d.last_sync;
                 
-                // 🌟 시뮬레이터 저장값 불러오기
                 if(d.sim_monthly !== undefined && document.getElementById('sim_monthly_dca')) document.getElementById('sim_monthly_dca').value = d.sim_monthly;
                 if(d.sim_cagr_qqqm !== undefined && document.getElementById('sim_cagr_qqqm')) document.getElementById('sim_cagr_qqqm').value = d.sim_cagr_qqqm;
                 if(d.sim_cagr_qld !== undefined && document.getElementById('sim_cagr_qld')) document.getElementById('sim_cagr_qld').value = d.sim_cagr_qld;
@@ -2558,10 +2517,11 @@
         };
     </script>
 
-    <!-- 🌟 부부 자산 현황판 전송 엔진 🌟 -->
+    <!-- 🌟 부부 자산 현황판 전송 엔진 (익명 로그인 포함) 🌟 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         // 💡 아래 빈칸에 부부 현황판(배당앱 등)에서 사용하는 Firebase 정보를 입력하세요.
         const myFirebaseConfig = {
@@ -2573,32 +2533,37 @@
             appId: "1:441490194600:web:bd4889cb0796dd4694429d"
         };
 
-        const firebaseConfig = myFirebaseConfig.apiKey ? myFirebaseConfig : (typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {});
-        // 메인 앱과의 충돌 방지를 위해 "SharedDashboard"라는 이름으로 별도 초기화
-        const app = firebaseConfig.apiKey ? initializeApp(firebaseConfig, "SharedDashboard") : null;
-        const db = app ? getFirestore(app) : null;
+        // 기존 파이어베이스와 충돌을 막기 위해 'coupleApp'으로 독립적 실행
+        const coupleApp = (myFirebaseConfig.apiKey) ? initializeApp(myFirebaseConfig, 'coupleApp') : null;
+        const coupleDb = coupleApp ? getFirestore(coupleApp) : null;
+        const coupleAuth = coupleApp ? getAuth(coupleApp) : null;
 
-        window.pushToCoupleDashboard = async (data) => {
-            if (!data || !db) return;
+        // 🌟 파이어베이스 보안 규칙 통과를 위한 익명 로그인 실행
+        if (coupleAuth) {
+            signInAnonymously(coupleAuth).catch(e => console.error("인증 에러:", e));
+        }
+
+        window.pushToCoupleDashboard = async () => {
+            if (!coupleDb) return;
             
             let principal = 0;
             let totalValue = 0;
 
-            // 1. 최근 히스토리에서 데이터 추출 시도
-            if (data.history && data.history.length > 0) {
-                const lastEntry = data.history[data.history.length - 1];
-                principal = lastEntry.principal || 0;
-                totalValue = lastEntry.total || 0;
-            } 
+            const localHist = JSON.parse(localStorage.getItem('q7s3_v2_history') || '[]');
+            const coreData = JSON.parse(localStorage.getItem('q7s3_v2_core') || '{}');
             
-            // 2. 만약 히스토리가 없다면, 현재 화면(localStorage/DOM)의 라이브 데이터 사용
-            if (principal === 0 && data.core && data.core.total_principal) {
-                principal = parseFloat(data.core.total_principal) || 0;
-            }
-            if (totalValue === 0) {
+            if (localHist.length > 0) {
+                const lastEntry = localHist[localHist.length - 1];
+                principal = lastEntry.principal || coreData.total_principal || 0;
+                totalValue = lastEntry.total || 0;
+            } else {
+                principal = parseFloat(coreData.total_principal) || 0;
                 const liveTotal = document.getElementById('total_val_disp');
                 totalValue = liveTotal ? (parseFloat(liveTotal.innerText.replace(/[^0-9.]/g, '')) || 0) : 0;
             }
+
+            // 전송할 데이터가 0이면 전송하지 않음
+            if (principal === 0 && totalValue === 0) return;
 
             const summary = {
                 principal: principal,
@@ -2609,10 +2574,10 @@
             };
 
             try {
-                await setDoc(doc(db, "artifacts", "gire-sunny-asset-app", "public", "data", "shared_assets", "latest_status"), { longTerm: summary }, { merge: true });
-                console.log("부부 현황판 업데이트 완료:", summary);
+                await setDoc(doc(coupleDb, "artifacts", "gire-sunny-asset-app", "public", "data", "shared_assets", "latest_status"), { longTerm: summary }, { merge: true });
+                console.log("✅ 부부 현황판 업데이트 완료:", summary);
             } catch (e) { 
-                console.error("현황판 전송 실패:", e); 
+                console.error("❌ 현황판 전송 실패:", e); 
             }
         };
     </script>
